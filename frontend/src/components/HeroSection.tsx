@@ -42,7 +42,7 @@ export default function HeroSection() {
         mixBlendMode: "multiply"
       }} />
 
-      {/* Modern Decorative Shapes */}
+    {/* Modern Decorative Shapes */}{/*}
       <motion.div
         className="absolute -top-24 -left-24 w-72 h-72 rounded-full z-20"
         style={{ background: "radial-gradient(circle at 30% 30%, #2ECC7190 0%, transparent 80%)" }}
@@ -60,7 +60,7 @@ export default function HeroSection() {
         style={{ background: "#2ECC71", opacity: 0.6, filter: "blur(18px)" }}
         animate={{ y: [0, 20, 0] }}
         transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-      />
+      />*/}
 
       {/* Content */}
       <div className="relative z-40 w-full flex flex-col items-center text-center px-4 py-16 md:py-36">
@@ -87,7 +87,7 @@ export default function HeroSection() {
           href="/appointments"
           className="inline-block rounded-full px-8 py-4 text-lg font-bold shadow-lg"
           style={{
-            background: "linear-gradient(90deg, #2ECC71 30%, #0074D9 100%)",
+            background: "#2ECC71",
             color: "#EDFCFD",
             letterSpacing: 1.2,
             boxShadow: "0 4px 32px 0 #0074D980"
