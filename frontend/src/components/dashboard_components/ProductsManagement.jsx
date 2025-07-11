@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Search, Eye, Star } from 'lucide-react';
 import toast from 'react-hot-toast';
-import apiService from '../services/api';
-import ProductModal from './modals/ProductModal';
-import ConfirmModal from './modals/ConfirmModal';
+import apiService from '../../services/api';
+import ProductModal from './ProductModal';
+import ConfirmModal from './ConfirmModal';
 
 const ProductsManagement = () => {
   const [products, setProducts] = useState([]);

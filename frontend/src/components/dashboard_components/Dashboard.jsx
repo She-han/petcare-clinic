@@ -14,7 +14,7 @@ import {
   BarChart3
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import apiService from '../services/api';
+import apiService from '../../services/api';
 import toast from 'react-hot-toast';
 
 const Dashboard = () => {
@@ -233,7 +233,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <div className="w-12 h-12 border-b-2 rounded-full animate-spin border-primary"></div>
       </div>
     );
   }
@@ -241,16 +241,16 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-secondary rounded-lg p-6 text-white">
+      <div className="p-6 text-white rounded-lg bg-gradient-to-r from-primary to-secondary">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Welcome back, She-han! 👋</h1>
-            <p className="text-primary-100 text-lg">
+            <h1 className="mb-2 text-3xl font-bold">Welcome back, She-han! 👋</h1>
+            <p className="text-lg text-primary-100">
               Here's what's happening with your pet care business today.
             </p>
           </div>
-          <div className="mt-4 md:mt-0 text-right">
-            <p className="text-primary-100 text-sm">Current Date & Time</p>
+          <div className="mt-4 text-right md:mt-0">
+            <p className="text-sm text-primary-100">Current Date & Time</p>
             <p className="text-xl font-semibold">{date}</p>
             <p className="text-primary-100">{time}</p>
           </div>
@@ -258,26 +258,26 @@ const Dashboard = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {statCards.map((card) => (
-          <div key={card.title} className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+          <div key={card.title} className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-sm font-medium text-gray-600 mb-1">
+                <p className="mb-1 text-sm font-medium text-gray-600">
                   {card.title}
                 </p>
-                <p className="text-3xl font-bold text-gray-900 mb-1">
+                <p className="mb-1 text-3xl font-bold text-gray-900">
                   {card.value.toLocaleString()}
                 </p>
                 <p className="text-sm text-gray-500">
                   {card.subValue}
                 </p>
                 <div className="flex items-center mt-2">
-                  <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
+                  <TrendingUp className="w-4 h-4 mr-1 text-green-500" />
                   <span className="text-sm font-medium text-green-600">
                     {card.change}
                   </span>
-                  <span className="text-sm text-gray-500 ml-1">vs last month</span>
+                  <span className="ml-1 text-sm text-gray-500">vs last month</span>
                 </div>
               </div>
               <div className={`${card.bgColor} p-3 rounded-full`}>
@@ -289,20 +289,20 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
-            <BarChart3 className="h-5 w-5 text-gray-400" />
+            <BarChart3 className="w-5 h-5 text-gray-400" />
           </div>
           <div className="space-y-3">
             {quickActions.map((action, index) => (
               <button
                 key={index}
                 onClick={action.action}
-                className="w-full text-left p-4 rounded-lg border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all duration-200 group"
+                className="w-full p-4 text-left transition-all duration-200 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 group"
               >
                 <div className="flex items-center">
                   <div className={`${action.bgColor} p-2 rounded-lg group-hover:scale-110 transition-transform`}>
@@ -312,7 +312,7 @@ const Dashboard = () => {
                     <p className="text-sm font-medium text-gray-900">{action.title}</p>
                     <p className="text-xs text-gray-500">{action.description}</p>
                   </div>
-                  <Plus className="h-4 w-4 text-gray-400 ml-auto group-hover:text-primary" />
+                  <Plus className="w-4 h-4 ml-auto text-gray-400 group-hover:text-primary" />
                 </div>
               </button>
             ))}
@@ -320,12 +320,12 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Users */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Recent Users</h3>
             <button
               onClick={() => navigate('/users')}
-              className="text-sm text-primary hover:text-primary/80 font-medium"
+              className="text-sm font-medium text-primary hover:text-primary/80"
             >
               View All
             </button>
@@ -334,10 +334,10 @@ const Dashboard = () => {
             {recentUsers.length > 0 ? (
               recentUsers.map((user) => (
                 <div key={user.id} className="flex items-center p-3 rounded-lg hover:bg-gray-50">
-                  <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center text-sm font-medium">
+                  <div className="flex items-center justify-center w-10 h-10 text-sm font-medium text-white rounded-full bg-primary">
                     {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
                   </div>
-                  <div className="ml-3 flex-1">
+                  <div className="flex-1 ml-3">
                     <p className="text-sm font-medium text-gray-900">
                       {user.firstName} {user.lastName}
                     </p>
@@ -353,54 +353,54 @@ const Dashboard = () => {
                 </div>
               ))
             ) : (
-              <div className="text-center py-8">
-                <Users className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="text-sm text-gray-500 mt-2">No users found</p>
+              <div className="py-8 text-center">
+                <Users className="w-12 h-12 mx-auto text-gray-400" />
+                <p className="mt-2 text-sm text-gray-500">No users found</p>
               </div>
             )}
           </div>
         </div>
 
         {/* System Status */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">System Status</h3>
-            <Activity className="h-5 w-5 text-gray-400" />
+            <Activity className="w-5 h-5 text-gray-400" />
           </div>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
               <div className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
                 <span className="text-sm font-medium text-gray-900">Database</span>
               </div>
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
                 Online
               </span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
               <div className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
                 <span className="text-sm font-medium text-gray-900">API Services</span>
               </div>
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
                 Online
               </span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
               <div className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
                 <span className="text-sm font-medium text-gray-900">Email Service</span>
               </div>
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
                 Online
               </span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-50">
               <div className="flex items-center">
-                <AlertCircle className="h-5 w-5 text-yellow-500 mr-2" />
+                <AlertCircle className="w-5 h-5 mr-2 text-yellow-500" />
                 <span className="text-sm font-medium text-gray-900">Backup Service</span>
               </div>
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">
                 Maintenance
               </span>
             </div>
@@ -409,15 +409,15 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         
         {/* Recent Products */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Recent Products</h3>
             <button
               onClick={() => navigate('/products')}
-              className="text-sm text-primary hover:text-primary/80 font-medium"
+              className="text-sm font-medium text-primary hover:text-primary/80"
             >
               View All
             </button>
@@ -426,18 +426,18 @@ const Dashboard = () => {
             {recentProducts.length > 0 ? (
               recentProducts.map((product) => (
                 <div key={product.id} className="flex items-center p-3 rounded-lg hover:bg-gray-50">
-                  <div className="h-12 w-12 rounded-lg bg-gray-200 flex items-center justify-center overflow-hidden">
+                  <div className="flex items-center justify-center w-12 h-12 overflow-hidden bg-gray-200 rounded-lg">
                     {product.imageUrl ? (
                       <img
                         src={product.imageUrl}
                         alt={product.name}
-                        className="h-full w-full object-cover"
+                        className="object-cover w-full h-full"
                       />
                     ) : (
-                      <Package className="h-6 w-6 text-gray-400" />
+                      <Package className="w-6 h-6 text-gray-400" />
                     )}
                   </div>
-                  <div className="ml-3 flex-1">
+                  <div className="flex-1 ml-3">
                     <p className="text-sm font-medium text-gray-900">{product.name}</p>
                     <p className="text-xs text-gray-500">{product.category} • ${product.price}</p>
                   </div>
@@ -453,21 +453,21 @@ const Dashboard = () => {
                 </div>
               ))
             ) : (
-              <div className="text-center py-8">
-                <Package className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="text-sm text-gray-500 mt-2">No products found</p>
+              <div className="py-8 text-center">
+                <Package className="w-12 h-12 mx-auto text-gray-400" />
+                <p className="mt-2 text-sm text-gray-500">No products found</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Upcoming Appointments */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Upcoming Appointments</h3>
             <button
               onClick={() => navigate('/appointments')}
-              className="text-sm text-primary hover:text-primary/80 font-medium"
+              className="text-sm font-medium text-primary hover:text-primary/80"
             >
               View All
             </button>
@@ -476,10 +476,10 @@ const Dashboard = () => {
             {upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appointment) => (
                 <div key={appointment.id} className="flex items-center p-3 rounded-lg hover:bg-gray-50">
-                  <div className="h-10 w-10 rounded-full bg-secondary text-white flex items-center justify-center">
-                    <Calendar className="h-5 w-5" />
+                  <div className="flex items-center justify-center w-10 h-10 text-white rounded-full bg-secondary">
+                    <Calendar className="w-5 h-5" />
                   </div>
-                  <div className="ml-3 flex-1">
+                  <div className="flex-1 ml-3">
                     <p className="text-sm font-medium text-gray-900">
                       {appointment.user?.firstName} {appointment.user?.lastName}
                     </p>
@@ -495,9 +495,9 @@ const Dashboard = () => {
                 </div>
               ))
             ) : (
-              <div className="text-center py-8">
-                <Calendar className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="text-sm text-gray-500 mt-2">No upcoming appointments</p>
+              <div className="py-8 text-center">
+                <Calendar className="w-12 h-12 mx-auto text-gray-400" />
+                <p className="mt-2 text-sm text-gray-500">No upcoming appointments</p>
               </div>
             )}
           </div>

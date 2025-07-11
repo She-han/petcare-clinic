@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Search, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
-import apiService from '../services/api';
-import UserModal from './modals/UserModal';
-import ConfirmModal from './modals/ConfirmModal';
+import apiService from '../../services/api';
+import UserModal from './UserModal';
+import ConfirmModal from './ConfirmModal';
 
 const UsersManagement = () => {
   const [users, setUsers] = useState([]);

@@ -1,13 +1,13 @@
-package com.petcare.controller;
+package com.petcareclinic.controller;
 
-import com.petcare.model.Product;
-import com.petcare.model.ProductCategory;
-import com.petcare.service.ProductService;
+import com.petcareclinic.model.Product;
+import com.petcareclinic.model.ProductCategory;
+import com.petcareclinic.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Optional;
 

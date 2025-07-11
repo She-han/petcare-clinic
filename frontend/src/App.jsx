@@ -6,12 +6,12 @@ import Appointments from "./pages/Appointments";
 import Products from "./pages/Products";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   return (
     <BrowserRouter>
-      {/* Navbar must be inside BrowserRouter! */}
-      <Navbar />
+      
       <div className="min-h-screen pt-20 bg-light">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -19,9 +19,11 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          {/* Admin routes - note the /* at the end */}
+          <Route path="/admin/*" element={<AdminDashboard />} />
         </Routes>
       </div>
-      <Footer />
+      
     </BrowserRouter>
   );
 }
