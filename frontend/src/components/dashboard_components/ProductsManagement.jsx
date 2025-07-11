@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, Eye, Star } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Eye, Star, Package } from 'lucide-react';
 import toast from 'react-hot-toast';
 import apiService from '../../services/api';
 import ProductModal from './ProductModal';
@@ -13,6 +13,8 @@ const ProductsManagement = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [categories, setCategories] = useState(['FOOD', 'TOYS', 'MEDICINE', 'ACCESSORIES', 'GROOMING']);
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   // Fetch products from API
   useEffect(() => {
@@ -104,6 +106,11 @@ const ProductsManagement = () => {
     }
   };
 
+  // Filter products by category
+  const filteredProducts = selectedCategory 
+    ? products.filter(product => product.category === selectedCategory)
+    : products;
+
   // Get category badge color
   const getCategoryBadgeColor = (category) => {
     switch (category) {
@@ -145,16 +152,76 @@ const ProductsManagement = () => {
         </div>
         <button
           onClick={handleCreateProduct}
-          className="inline-flex items-center px-4 py-2 text-white transition-colors rounded-lg bg-primary hover:bg-primary/90"
+          className="inline-flex items-center px-4 py-2 text-white transition-colors rounded-lg shadow-lg bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 shadow-violet-500/25"
         >
           <Plus size={16} className="mr-2" />
-          Add Product
+          Add New Product
         </button>
       </div>
 
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="flex items-center">
+            <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-600">
+              <Package className="w-6 h-6 text-white" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Total Products</p>
+              <p className="text-2xl font-bold text-gray-900">{products.length}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="flex items-center">
+            <div className="p-3 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600">
+              <Package className="w-6 h-6 text-white" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Active Products</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {products.filter(p => p.isActive).length}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="flex items-center">
+            <div className="p-3 rounded-lg bg-gradient-to-r from-orange-500 to-amber-600">
+              <Package className="w-6 h-6 text-white" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Low Stock</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {products.filter(p => p.stockQuantity <= 10).length}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="flex items-center">
+            <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600">
+              <Star className="w-6 h-6 text-white" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Avg Rating</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {products.length > 0 
+                  ? (products.reduce((acc, p) => acc + (p.rating || 0), 0) / products.length).toFixed(1)
+                  : '0.0'
+                }
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Search and Filters */}
-      <div className="p-6 bg-white rounded-lg shadow-sm">
-        <form onSubmit={handleSearch} className="flex flex-col gap-4 sm:flex-row">
+      <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+        <form onSubmit={handleSearch} className="flex flex-col gap-4 lg:flex-row">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2" size={16} />
@@ -163,61 +230,77 @@ const ProductsManagement = () => {
                 placeholder="Search products by name, brand, or description..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
               />
             </div>
           </div>
-          <button
-            type="submit"
-            className="px-6 py-2 text-white transition-colors rounded-lg bg-secondary hover:bg-secondary/90"
-          >
-            Search
-          </button>
-          <button
-            type="button"
-            onClick={fetchProducts}
-            className="px-6 py-2 text-white transition-colors bg-gray-500 rounded-lg hover:bg-gray-600"
-          >
-            Clear
-          </button>
+          <div className="flex gap-2">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+            >
+              <option value="">All Categories</option>
+              {categories.map(category => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
+            <button
+              type="submit"
+              className="px-6 py-3 text-white transition-colors rounded-lg bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSearchTerm('');
+                setSelectedCategory('');
+                fetchProducts();
+              }}
+              className="px-6 py-3 text-gray-600 transition-colors bg-gray-100 rounded-lg hover:bg-gray-200"
+            >
+              Clear
+            </button>
+          </div>
         </form>
       </div>
 
       {/* Products Table */}
-      <div className="overflow-hidden bg-white rounded-lg shadow-sm">
+      <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Product
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Category
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Price
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Stock
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Rating
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Status
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-right text-gray-500 uppercase">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50">
+              {filteredProducts.map((product) => (
+                <tr key={product.id} className="transition-colors hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex items-center justify-center w-12 h-12 overflow-hidden bg-gray-200 rounded-lg">
+                      <div className="flex items-center justify-center w-16 h-16 overflow-hidden bg-gray-100 rounded-xl">
                         {product.imageUrl ? (
                           <img
                             src={product.imageUrl}
@@ -225,26 +308,29 @@ const ProductsManagement = () => {
                             className="object-cover w-full h-full"
                           />
                         ) : (
-                          <span className="text-xs text-gray-500">No Image</span>
+                          <Package className="w-8 h-8 text-gray-400" />
                         )}
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="max-w-xs text-sm font-semibold text-gray-900 truncate">
                           {product.name}
                         </div>
                         <div className="text-sm text-gray-500">
                           {product.brand || 'No Brand'} • {product.petType || 'All Pets'}
                         </div>
+                        <div className="text-xs text-gray-400">
+                          SKU: {product.sku || 'N/A'}
+                        </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getCategoryBadgeColor(product.category)}`}>
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getCategoryBadgeColor(product.category)}`}>
                       {product.category}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">${product.price}</div>
+                    <div className="text-sm font-semibold text-gray-900">${product.price}</div>
                     {product.discountPrice && (
                       <div className="text-sm text-gray-500 line-through">
                         ${product.discountPrice}
@@ -252,9 +338,18 @@ const ProductsManagement = () => {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className={`text-sm font-medium ${product.stockQuantity > 10 ? 'text-green-600' : product.stockQuantity > 0 ? 'text-yellow-600' : 'text-red-600'}`}>
+                    <div className={`text-sm font-medium ${
+                      product.stockQuantity > 10 
+                        ? 'text-green-600' 
+                        : product.stockQuantity > 0 
+                        ? 'text-yellow-600' 
+                        : 'text-red-600'
+                    }`}>
                       {product.stockQuantity} units
                     </div>
+                    {product.stockQuantity <= 10 && (
+                      <div className="text-xs text-red-500">Low Stock</div>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -265,7 +360,7 @@ const ProductsManagement = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeColor(product.isActive)}`}>
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getStatusBadgeColor(product.isActive)}`}>
                       {product.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </td>
@@ -273,14 +368,14 @@ const ProductsManagement = () => {
                     <div className="flex items-center justify-end space-x-2">
                       <button
                         onClick={() => handleEditProduct(product)}
-                        className="p-1 rounded text-accent hover:text-accent/80"
+                        className="p-2 text-blue-600 transition-colors rounded-lg hover:bg-blue-50"
                         title="Edit Product"
                       >
                         <Edit size={16} />
                       </button>
                       <button
                         onClick={() => handleDeleteProduct(product)}
-                        className="p-1 text-red-600 rounded hover:text-red-800"
+                        className="p-2 text-red-600 transition-colors rounded-lg hover:bg-red-50"
                         title="Delete Product"
                       >
                         <Trash2 size={16} />
@@ -293,8 +388,9 @@ const ProductsManagement = () => {
           </table>
         </div>
         
-        {products.length === 0 && (
+        {filteredProducts.length === 0 && (
           <div className="py-12 text-center">
+            <Package className="w-12 h-12 mx-auto mb-4 text-gray-400" />
             <p className="text-gray-500">No products found</p>
           </div>
         )}

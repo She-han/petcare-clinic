@@ -14,9 +14,14 @@ const Header = ({ setSidebarOpen }) => {
             <Menu size={20} />
           </button>
           
-          <div className="ml-4 lg:ml-0">
-            <h2 className="text-xl font-semibold text-gray-800">Admin Dashboard</h2>
-            <p className="text-sm text-gray-600">Welcome back, She-han!</p>
+          <div className="ml-4 text-gray-600 lg:ml-0">
+                   <div>
+            <h1 className="mb-2 text-2xl font-bold">Welcome back, She-han! 👋</h1>
+            <p className="text-xs text-primary-100">
+              Here's what's happening with your pet care business today.
+            </p>
+          </div>
+            
           </div>
         </div>
         

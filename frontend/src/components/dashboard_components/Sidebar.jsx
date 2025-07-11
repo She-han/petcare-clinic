@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   Home, 
@@ -9,18 +9,24 @@ import {
   MessageSquare, 
   ShoppingCart,
   X,
-  ChevronRight
+  Settings,
+  LogOut,
+  Bell,
+  Search,
+  MoreHorizontal
 } from 'lucide-react';
 
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
+  const [hoveredItem, setHoveredItem] = useState(null);
+
   const navigation = [
-    { name: 'Dashboard', href: '/admin', icon: Home },
-    { name: 'Users', href: '/admin/users', icon: Users },
-    { name: 'Products', href: '/admin/products', icon: Package },
-    { name: 'Veterinarians', href: '/admin/veterinarians', icon: Stethoscope },
-    { name: 'Appointments', href: '/admin/appointments', icon: Calendar },
-    { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
-    { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+    { name: 'Dashboard', href: '/admin', icon: Home, color: 'from-violet-500 to-purple-600' },
+    { name: 'Users', href: '/admin/users', icon: Users, color: 'from-blue-500 to-cyan-600' },
+    { name: 'Products', href: '/admin/products', icon: Package, color: 'from-emerald-500 to-teal-600' },
+    { name: 'Veterinarians', href: '/admin/veterinarians', icon: Stethoscope, color: 'from-rose-500 to-pink-600' },
+    { name: 'Appointments', href: '/admin/appointments', icon: Calendar, color: 'from-orange-500 to-amber-600' },
+    { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare, color: 'from-indigo-500 to-blue-600' },
+    { name: 'Orders', href: '/admin/orders', icon: ShoppingCart, color: 'from-green-500 to-emerald-600' },
   ];
 
   return (
@@ -28,82 +34,106 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 transition-opacity duration-300 bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 transition-all duration-300 bg-black/60 backdrop-blur-md lg:hidden"
           onClick={() => setSidebarOpen(false)} 
         />
       )}
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl transform transition-all duration-300 ease-out
+        fixed inset-y-0 h-screen left-0 z-50 w-80 bg-white/95 backdrop-blur-xl shadow-2xl transform transition-all duration-500 ease-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:inset-0
-        border-r border-gray-100
+        border-r border-gray-200/50 h-screen
       `}>
-        {/* Header */}
-        <div className="relative flex items-center justify-between h-20 px-6 overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/90 to-indigo-800/90"></div>
-          <div className="relative z-10">
-            <h1 className="text-2xl font-bold tracking-tight text-white">PetCare</h1>
-            <p className="text-sm font-medium text-blue-100">Admin Panel</p>
+        
+        {/* Header Section */}
+        <div className="relative h-24 overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+          {/* Animated Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-600/20 via-purple-600/20 to-pink-600/20 animate-pulse"></div>
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-white/5 to-transparent"></div>
+          
+          {/* Header Content */}
+          <div className="relative z-10 flex items-center justify-between h-full px-6">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 shadow-lg bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl">
+                <span className="text-lg font-bold text-white">P</span>
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">PetCare</h1>
+                <p className="text-xs font-medium text-purple-200">Admin Console</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="p-2 transition-all duration-200 rounded-lg lg:hidden text-white/80 hover:text-white hover:bg-white/10"
+            >
+              <X size={20} />
+            </button>
           </div>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="relative z-10 p-2 text-blue-100 transition-all duration-200 rounded-lg lg:hidden hover:text-white hover:bg-white/10"
-          >
-            <X size={20} />
-          </button>
         </div>
 
+
+
         {/* Navigation */}
-        <nav className="px-4 mt-8 space-y-2">
-          {navigation.map((item) => (
+        <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+          {navigation.map((item, index) => (
             <NavLink
               key={item.name}
               to={item.href}
               end={item.href === '/admin'}
+              onMouseEnter={() => setHoveredItem(index)}
+              onMouseLeave={() => setHoveredItem(null)}
               className={({ isActive }) => `
-                group flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-200 relative
+                group relative flex items-center px-3 py-3 text-sm font-normal rounded-2xl transition-all duration-300 overflow-hidden
                 ${isActive 
-                  ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 shadow-sm border border-blue-100' 
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-violet-50 to-purple-50 text-violet-700 shadow-lg shadow-violet-500/20' 
+                  : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
                 }
               `}
               onClick={() => setSidebarOpen(false)}
             >
               {({ isActive }) => (
                 <>
-                  {/* Active indicator */}
+                  {/* Active background effect */}
                   {isActive && (
-                    <div className="absolute top-0 bottom-0 left-0 w-1 rounded-r-full bg-gradient-to-b from-blue-500 to-indigo-600"></div>
-                  )}
-                  
-                  {/* Icon */}
-                  <div className={`
-                    p-2 rounded-lg transition-all duration-200
-                    ${isActive 
-                      ? 'bg-blue-100 text-blue-600' 
-                      : 'text-gray-400 group-hover:text-gray-600 group-hover:bg-gray-100'
-                    }
-                  `}>
-                    <item.icon size={18} />
-                  </div>
-                  
-                  {/* Text */}
-                  <span className="ml-3 font-medium tracking-wide">
-                    {item.name}
-                  </span>
-                  
-                  {/* Chevron for active state */}
-                  {isActive && (
-                    <ChevronRight size={16} className="ml-auto text-blue-500" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-purple-500/10 rounded-2xl"></div>
                   )}
                   
                   {/* Hover effect */}
-                  {!isActive && (
-                    <div className="ml-auto transition-opacity duration-200 opacity-0 group-hover:opacity-100">
-                      <ChevronRight size={16} className="text-gray-400" />
-                    </div>
+                  {hoveredItem === index && !isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 rounded-2xl"></div>
+                  )}
+                  
+                  {/* Icon container */}
+                  <div className={`
+                    relative z-10 flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300
+                    ${isActive 
+                      ? `bg-gradient-to-br ${item.color} shadow-lg shadow-violet-500/30` 
+                      : hoveredItem === index
+                        ? `bg-gradient-to-br ${item.color} shadow-md`
+                        : 'bg-gray-100 text-gray-500'
+                    }
+                  `}>
+                    <item.icon 
+                      size={18} 
+                      className={isActive || hoveredItem === index ? 'text-white' : 'text-gray-600'} 
+                    />
+                  </div>
+                  
+                  {/* Text */}
+                  <span className="relative z-10 ml-4 font-semibold tracking-wide">
+                    {item.name}
+                  </span>
+                  
+                  {/* Active indicator */}
+                  {isActive && (
+                    <div className="absolute w-2 h-2 rounded-full right-3 bg-gradient-to-br from-violet-500 to-purple-600"></div>
+                  )}
+                  
+                  {/* Ripple effect */}
+                  {hoveredItem === index && (
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/10 to-transparent animate-ping"></div>
                   )}
                 </>
               )}
@@ -111,17 +141,48 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
           ))}
         </nav>
 
-        {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 bg-gray-50/50">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600">
-              <span className="text-sm font-bold text-white">S</span>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-900">She-han</p>
-              <p className="text-xs text-gray-500">Administrator</p>
-            </div>
+        {/* Settings Section */}
+        <div className="p-4 border-t border-gray-100">
+          <div className="space-y-1">
+            <button className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200">
+              <div className="flex items-center justify-center w-8 h-8 mr-3 bg-gray-100 rounded-lg">
+                <Settings size={16} className="text-gray-600" />
+              </div>
+              Settings
+            </button>
+            <button className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200">
+              <div className="flex items-center justify-center w-8 h-8 mr-3 bg-gray-100 rounded-lg">
+                <Bell size={16} className="text-gray-600" />
+              </div>
+              Notifications
+            </button>
           </div>
+        </div>
+
+        {/* User Profile */}
+        <div className="p-4 border-t border-gray-100">
+          <div className="flex items-center p-3 space-x-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl">
+            <div className="relative">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full shadow-lg bg-gradient-to-br from-violet-500 to-purple-600">
+                <span className="text-lg font-bold text-white">S</span>
+              </div>
+              <div className="absolute w-4 h-4 bg-green-500 border-2 border-white rounded-full -top-1 -right-1"></div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">She-han</p>
+              <p className="text-xs text-gray-500">Administrator</p>
+              <p className="text-xs text-gray-400">Online</p>
+            </div>
+            <button className="p-2 text-gray-400 transition-all duration-200 rounded-lg hover:text-gray-600 hover:bg-white/50">
+              <MoreHorizontal size={16} />
+            </button>
+          </div>
+          
+          {/* Logout Button */}
+          <button className="w-full mt-3 flex items-center justify-center px-4 py-2.5 text-sm font-medium text-red-600 bg-red-50 rounded-xl hover:bg-red-100 transition-all duration-200">
+            <LogOut size={16} className="mr-2" />
+            Sign Out
+          </button>
         </div>
       </div>
     </>

@@ -241,16 +241,14 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="p-6 text-white rounded-lg bg-gradient-to-r from-primary to-secondary">
+      <div className="p-2 text-gray-900 rounded-lg bg-gradient-to-r from-primary to-secondary">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="mb-2 text-3xl font-bold">Welcome back, She-han! 👋</h1>
-            <p className="text-lg text-primary-100">
-              Here's what's happening with your pet care business today.
-            </p>
-          </div>
+         <div>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-sm text-gray-600">Complete Overview</p>
+        </div>
           <div className="mt-4 text-right md:mt-0">
-            <p className="text-sm text-primary-100">Current Date & Time</p>
+            
             <p className="text-xl font-semibold">{date}</p>
             <p className="text-primary-100">{time}</p>
           </div>
