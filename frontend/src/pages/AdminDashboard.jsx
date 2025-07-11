@@ -6,7 +6,7 @@ import Dashboard from '../components/dashboard_components/Dashboard';
 import UsersManagement from '../components/dashboard_components/UsersManagement';
 import ProductsManagement from '../components/dashboard_components/ProductsManagement';
 // Import other components
-// import VeterinariansManagement from '../components/dashboard_components/VeterinariansManagement';
+import VeterinariansManagement from '../components/dashboard_components/VeterinariansManagement';
 // import AppointmentsManagement from '../components/dashboard_components/AppointmentsManagement';
 // import TestimonialsManagement from '../components/dashboard_components/TestimonialsManagement';
 
@@ -31,8 +31,9 @@ const AdminDashboard = () => {
               <Route index element={<Dashboard />} />
               <Route path="users" element={<UsersManagement />} />
               <Route path="products" element={<ProductsManagement />} />
+              <Route path="veterinarians" element={<VeterinariansManagement />} />
               {/* Uncomment when components are ready */}
-              {/* <Route path="veterinarians" element={<VeterinariansManagement />} />
+              {/* 
               <Route path="appointments" element={<AppointmentsManagement />} />
               <Route path="testimonials" element={<TestimonialsManagement />} /> */}
             </Routes>

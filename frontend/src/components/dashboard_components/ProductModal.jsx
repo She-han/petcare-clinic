@@ -107,24 +107,30 @@ const ProductModal = ({ product, onClose, onSave }) => {
     }
   };
 
-  const uploadImage = async (file) => {
-    try {
-      // For now, we'll use a placeholder image service
-      // In production, you'd upload to your server or cloud storage
-      const formData = new FormData();
-      formData.append('image', file);
-      
-      // Simulate image upload - replace with actual upload logic
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const imageUrl = `https://picsum.photos/400/400?random=${Date.now()}`;
-          resolve(imageUrl);
-        }, 1000);
-      });
-    } catch (error) {
-      throw new Error('Failed to upload image');
+// Replace the uploadImage function with this:
+
+const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append('image', file);
+  
+  try {
+    const response = await fetch(`https://api.imgbb.com/1/upload?key=f0704ab7e2b5ffaa5bf3f536bd7effea`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      return data.data.url;
+    } else {
+      throw new Error('Upload failed');
     }
-  };
+  } catch (error) {
+    console.error('Upload error:', error);
+    throw new Error('Failed to upload image');
+  }
+};
 
   const validateForm = () => {
     const newErrors = {};

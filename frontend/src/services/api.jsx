@@ -9,21 +9,33 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000,
 });
+
+// Response interceptor to handle the new response format
+apiClient.interceptors.response.use(
+  (response) => {
+    // If the response has the new format with success/data structure
+    if (response.data && response.data.hasOwnProperty('success') && response.data.hasOwnProperty('data')) {
+      // Return the data directly for easier use in components
+      return {
+        ...response,
+        data: response.data.data, // Extract the actual data
+        success: response.data.success,
+        message: response.data.message
+      };
+    }
+    return response;
+  },
+  (error) => {
+    // Handle errors
+    console.error('API Error:', error);
+    return Promise.reject(error);
+  }
+);
 
 // API service object with all endpoints
 const apiService = {
-  // Users API
-  users: {
-    getAll: () => apiClient.get('/users'),
-    getById: (id) => apiClient.get(`/users/${id}`),
-    create: (user) => apiClient.post('/users', user),
-    update: (id, user) => apiClient.put(`/users/${id}`, user),
-    delete: (id) => apiClient.delete(`/users/${id}`),
-    search: (query) => apiClient.get(`/users/search?q=${query}`),
-    getActive: () => apiClient.get('/users/active'),
-  },
-
   // Products API
   products: {
     getAll: () => apiClient.get('/products'),
@@ -34,41 +46,19 @@ const apiService = {
     search: (query) => apiClient.get(`/products/search?q=${query}`),
     getByCategory: (category) => apiClient.get(`/products/category/${category}`),
     getFeatured: () => apiClient.get('/products/featured'),
+    getActive: () => apiClient.get('/products/active'),
+    updateStock: (id, stock) => apiClient.patch(`/products/${id}/stock`, { stockQuantity: stock }),
   },
 
-  // Veterinarians API
-  veterinarians: {
-    getAll: () => apiClient.get('/veterinarians'),
-    getById: (id) => apiClient.get(`/veterinarians/${id}`),
-    create: (vet) => apiClient.post('/veterinarians', vet),
-    update: (id, vet) => apiClient.put(`/veterinarians/${id}`, vet),
-    delete: (id) => apiClient.delete(`/veterinarians/${id}`),
-    getAvailable: () => apiClient.get('/veterinarians/available'),
-  },
-
-  // Appointments API
-  appointments: {
-    getAll: () => apiClient.get('/appointments'),
-    getById: (id) => apiClient.get(`/appointments/${id}`),
-    create: (appointment) => apiClient.post('/appointments', appointment),
-    update: (id, appointment) => apiClient.put(`/appointments/${id}`, appointment),
-    delete: (id) => apiClient.delete(`/appointments/${id}`),
-    getByUser: (userId) => apiClient.get(`/appointments/user/${userId}`),
-    getByVet: (vetId) => apiClient.get(`/appointments/vet/${vetId}`),
-    getToday: () => apiClient.get('/appointments/today'),
-    getUpcoming: () => apiClient.get('/appointments/upcoming'),
-  },
-
-  // Testimonials API
-  testimonials: {
-    getAll: () => apiClient.get('/testimonials'),
-    getById: (id) => apiClient.get(`/testimonials/${id}`),
-    create: (testimonial) => apiClient.post('/testimonials', testimonial),
-    update: (id, testimonial) => apiClient.put(`/testimonials/${id}`, testimonial),
-    delete: (id) => apiClient.delete(`/testimonials/${id}`),
-    getApproved: () => apiClient.get('/testimonials/approved'),
-    getFeatured: () => apiClient.get('/testimonials/featured'),
-    getPending: () => apiClient.get('/testimonials/pending'),
+  // Other APIs...
+  users: {
+    getAll: () => apiClient.get('/users'),
+    getById: (id) => apiClient.get(`/users/${id}`),
+    create: (user) => apiClient.post('/users', user),
+    update: (id, user) => apiClient.put(`/users/${id}`, user),
+    delete: (id) => apiClient.delete(`/users/${id}`),
+    search: (query) => apiClient.get(`/users/search?q=${query}`),
+    getActive: () => apiClient.get('/users/active'),
   },
 };
 
