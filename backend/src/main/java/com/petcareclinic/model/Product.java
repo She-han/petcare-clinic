@@ -1,4 +1,4 @@
 package com.petcareclinic.model;
 
-public class User {
+public class Product {
 }
