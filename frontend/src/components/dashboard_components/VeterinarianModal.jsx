@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Loader2, Stethoscope, Clock, DollarSign } from 'lucide-react';
+import { X, Save, Loader2, Stethoscope, Clock, DollarSign, Upload, Image as ImageIcon, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const VeterinarianModal = ({ veterinarian, onClose, onSave }) => {
-  const [formData, setFormData] = useState({
-    userId: '',
-    licenseNumber: '',
-    specialization: '',
-    yearsOfExperience: '',
-    education: '',
-    bio: '',
-    consultationFee: '',
-    availableFrom: '09:00',
-    availableTo: '17:00',
-    workingDays: 'MON,TUE,WED,THU,FRI',
-    isAvailable: true,
-    rating: 0,
-    totalReviews: 0
-  });
+const [formData, setFormData] = useState({
+  fullName: '',
+  email: '',
+  phoneNumber: '',
+  licenseNumber: '',
+  specialization: '',
+  yearsOfExperience: '',
+  education: '',
+  bio: '',
+  consultationFee: '',
+  availableFrom: '09:00',
+  availableTo: '17:00',
+  workingDays: 'MON,TUE,WED,THU,FRI',
+  isAvailable: true,
+  rating: 0,
+  totalReviews: 0,
+  imageUrl: ''
+});
 
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -62,8 +67,10 @@ const VeterinarianModal = ({ veterinarian, onClose, onSave }) => {
         workingDays: veterinarian.workingDays || 'MON,TUE,WED,THU,FRI',
         isAvailable: veterinarian.isAvailable !== undefined ? veterinarian.isAvailable : true,
         rating: veterinarian.rating || 0,
-        totalReviews: veterinarian.totalReviews || 0
+        totalReviews: veterinarian.totalReviews || 0,
+        imageUrl: veterinarian.imageUrl || ''
       });
+      setImagePreview(veterinarian.imageUrl || '');
     }
   }, [veterinarian]);
 
@@ -80,6 +87,57 @@ const VeterinarianModal = ({ veterinarian, onClose, onSave }) => {
         ...prev,
         [name]: ''
       }));
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        toast.error('Please select a valid image file (JPEG, PNG, WebP)');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        toast.error('Image size must be less than 5MB');
+        return;
+      }
+
+      setImageFile(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadImage = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      // Replace with your ImgBB API key
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=f0704ab7e2b5ffaa5bf3f536bd7effea`, {
+        method: 'POST',
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        return data.data.url;
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error) {
+      throw new Error('Failed to upload image');
     }
   };
 
@@ -128,8 +186,16 @@ const VeterinarianModal = ({ veterinarian, onClose, onSave }) => {
     setLoading(true);
 
     try {
+      let imageUrl = formData.imageUrl;
+      
+      // Upload image if a new one is selected
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile);
+      }
+
       const veterinarianData = {
         ...formData,
+        imageUrl,
         userId: parseInt(formData.userId),
         yearsOfExperience: parseInt(formData.yearsOfExperience),
         consultationFee: parseFloat(formData.consultationFee),
@@ -177,24 +243,92 @@ const VeterinarianModal = ({ veterinarian, onClose, onSave }) => {
         <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[calc(90vh-140px)]">
           <div className="p-6 space-y-6">
             
+            {/* Image Upload Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Profile Photo</h3>
+              <div className="flex items-start space-x-6">
+                <div className="flex-shrink-0">
+                  <div className="w-32 h-32 overflow-hidden bg-gray-100 border-2 border-gray-300 border-dashed rounded-xl">
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full">
+                        <User className="w-8 h-8 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <label className="block">
+                    <span className="sr-only">Choose image</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                    />
+                  </label>
+                  <p className="mt-1 text-xs text-gray-500">
+                    PNG, JPG, WebP up to 5MB
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Basic Information */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">
-                  User ID *
+                  Full Name *
                 </label>
                 <input
-                  type="number"
-                  name="userId"
-                  value={formData.userId}
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
                   onChange={handleInputChange}
                   className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
-                    errors.userId ? 'border-red-500' : 'border-gray-300'
+                    errors.fullName ? 'border-red-500' : 'border-gray-300'
                   }`}
-                  placeholder="Enter user ID"
+                  placeholder="Enter full name"
                 />
-                {errors.userId && <p className="mt-1 text-xs text-red-500">{errors.userId}</p>}
+                {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
               </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
+                    errors.email ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter email address"
+                />
+                {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+              </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  placeholder="Enter phone number"
+                />
+              </div>
+
 
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">

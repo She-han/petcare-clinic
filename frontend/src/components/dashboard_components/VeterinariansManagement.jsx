@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, Star, Stethoscope, Clock, DollarSign } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Star, Stethoscope, Clock, DollarSign, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 import apiService from '../../services/api';
 import VeterinarianModal from './VeterinarianModal';
@@ -137,6 +137,10 @@ const VeterinariansManagement = () => {
       'Oncology': 'bg-pink-100 text-pink-800',
       'Neurology': 'bg-indigo-100 text-indigo-800',
       'Dentistry': 'bg-teal-100 text-teal-800',
+      'Emergency Medicine': 'bg-orange-100 text-orange-800',
+      'Internal Medicine': 'bg-cyan-100 text-cyan-800',
+      'Ophthalmology': 'bg-violet-100 text-violet-800',
+      'Radiology': 'bg-gray-100 text-gray-800',
     };
     return colors[specialization] || 'bg-gray-100 text-gray-800';
   };
@@ -310,19 +314,31 @@ const VeterinariansManagement = () => {
                 <tr key={veterinarian.id} className="transition-colors hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl">
-                        <Stethoscope className="w-8 h-8 text-white" />
+                      <div className="flex items-center justify-center w-16 h-16 overflow-hidden bg-gray-100 rounded-xl">
+                        {veterinarian.imageUrl ? (
+                          <img
+                            src={veterinarian.imageUrl}
+                            alt={`Dr. Veterinarian #${veterinarian.id}`}
+                            className="object-cover w-full h-full"
+                          />
+                        ) : (
+                          <User className="w-8 h-8 text-gray-400" />
+                        )}
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-semibold text-gray-900">
-                          Dr. Veterinarian #{veterinarian.id}
-                        </div>
+                       <div className="text-sm font-semibold text-gray-900">
+                        {veterinarian.fullName}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {veterinarian.email}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {veterinarian.phoneNumber}
+                      </div>
                         <div className="text-sm text-gray-500">
                           License: {veterinarian.licenseNumber}
                         </div>
-                        <div className="text-xs text-gray-400">
-                          User ID: {veterinarian.userId}
-                        </div>
+                    
                       </div>
                     </div>
                   </td>

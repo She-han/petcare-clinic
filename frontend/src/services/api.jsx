@@ -46,11 +46,25 @@ const apiService = {
     search: (query) => apiClient.get(`/products/search?q=${query}`),
     getByCategory: (category) => apiClient.get(`/products/category/${category}`),
     getFeatured: () => apiClient.get('/products/featured'),
-    getActive: () => apiClient.get('/products/active'),
-    updateStock: (id, stock) => apiClient.patch(`/products/${id}/stock`, { stockQuantity: stock }),
   },
 
-  // Other APIs...
+getByEmail: (email) => apiClient.get(`/veterinarians/email/${email}`),
+
+// Complete veterinarians API section:
+veterinarians: {
+  getAll: () => apiClient.get('/veterinarians'),
+  getById: (id) => apiClient.get(`/veterinarians/${id}`),
+  getByEmail: (email) => apiClient.get(`/veterinarians/email/${email}`),
+  create: (veterinarian) => apiClient.post('/veterinarians', veterinarian),
+  update: (id, veterinarian) => apiClient.put(`/veterinarians/${id}`, veterinarian),
+  delete: (id) => apiClient.delete(`/veterinarians/${id}`),
+  search: (query) => apiClient.get(`/veterinarians/search?q=${query}`),
+  getBySpecialization: (specialization) => apiClient.get(`/veterinarians/specialization/${specialization}`),
+  getAvailable: () => apiClient.get('/veterinarians/available'),
+  getSpecializations: () => apiClient.get('/veterinarians/specializations'),
+},
+
+  // Users API
   users: {
     getAll: () => apiClient.get('/users'),
     getById: (id) => apiClient.get(`/users/${id}`),
@@ -58,7 +72,6 @@ const apiService = {
     update: (id, user) => apiClient.put(`/users/${id}`, user),
     delete: (id) => apiClient.delete(`/users/${id}`),
     search: (query) => apiClient.get(`/users/search?q=${query}`),
-    getActive: () => apiClient.get('/users/active'),
   },
 };
 

@@ -1,29 +1,45 @@
 package com.petcareclinic.repository;
 
-
 import com.petcareclinic.model.Veterinarian;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface VeterinarianRepository extends JpaRepository<Veterinarian, Long> {
 
-    // Find veterinarian by user ID
-    Optional<Veterinarian> findByUserId(Long userId);
+    // Remove this method since we don't have user_id anymore
+    // Optional<Veterinarian> findByUserId(Long userId);
 
-    // Find available veterinarians
+    Optional<Veterinarian> findByEmail(String email);
+
+    Optional<Veterinarian> findByLicenseNumber(String licenseNumber);
+
+    List<Veterinarian> findBySpecialization(String specialization);
+
+    List<Veterinarian> findByIsAvailableTrue();
+
     @Query("SELECT v FROM Veterinarian v WHERE v.isAvailable = true")
-    List<Veterinarian> findAvailableVeterinarians();
+    List<Veterinarian> findAllAvailableVeterinarians();
 
-    // Find veterinarians by specialization
-    @Query("SELECT v FROM Veterinarian v WHERE LOWER(v.specialization) LIKE LOWER(CONCAT('%', :specialization, '%'))")
-    List<Veterinarian> findBySpecialization(@Param("specialization") String specialization);
+    @Query("SELECT v FROM Veterinarian v WHERE " +
+            "LOWER(v.fullName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(v.specialization) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(v.licenseNumber) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(v.email) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(v.bio) LIKE LOWER(CONCAT('%', :query, '%'))")
+    List<Veterinarian> searchVeterinarians(@Param("query") String query);
 
-    // Find veterinarians with high ratings
-    @Query("SELECT v FROM Veterinarian v WHERE v.rating >= :minRating ORDER BY v.rating DESC")
-    List<Veterinarian> findByMinRating(@Param("minRating") java.math.BigDecimal minRating);
+    @Query("SELECT v FROM Veterinarian v WHERE v.yearsOfExperience >= :minYears")
+    List<Veterinarian> findByMinimumExperience(@Param("minYears") Integer minYears);
+
+    @Query("SELECT v FROM Veterinarian v WHERE v.rating >= :minRating")
+    List<Veterinarian> findByMinimumRating(@Param("minRating") Double minRating);
+
+    @Query("SELECT DISTINCT v.specialization FROM Veterinarian v WHERE v.specialization IS NOT NULL")
+    List<String> findAllSpecializations();
 }
