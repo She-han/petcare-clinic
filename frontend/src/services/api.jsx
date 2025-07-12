@@ -10,69 +10,70 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
   timeout: 10000,
+  withCredentials: true,
 });
 
-// Response interceptor to handle the new response format
+// Add request interceptor
+apiClient.interceptors.request.use(
+  (config) => {
+    console.log('Making request to:', config.url);
+    return config;
+  },
+  (error) => {
+    console.error('Request error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor
 apiClient.interceptors.response.use(
   (response) => {
-    // If the response has the new format with success/data structure
-    if (response.data && response.data.hasOwnProperty('success') && response.data.hasOwnProperty('data')) {
-      // Return the data directly for easier use in components
-      return {
-        ...response,
-        data: response.data.data, // Extract the actual data
-        success: response.data.success,
-        message: response.data.message
-      };
-    }
+    console.log('Response received:', response.status);
     return response;
   },
   (error) => {
-    // Handle errors
     console.error('API Error:', error);
     return Promise.reject(error);
   }
 );
 
-// API service object with all endpoints
 const apiService = {
-  // Products API
-  products: {
-    getAll: () => apiClient.get('/products'),
-    getById: (id) => apiClient.get(`/products/${id}`),
-    create: (product) => apiClient.post('/products', product),
-    update: (id, product) => apiClient.put(`/products/${id}`, product),
-    delete: (id) => apiClient.delete(`/products/${id}`),
-    search: (query) => apiClient.get(`/products/search?q=${query}`),
-    getByCategory: (category) => apiClient.get(`/products/category/${category}`),
-    getFeatured: () => apiClient.get('/products/featured'),
+  // Authentication API
+  auth: {
+    register: (userData) => apiClient.post('/auth/register', userData),
+    login: (credentials) => apiClient.post('/auth/login', credentials),
+    getProfile: (id) => apiClient.get(`/auth/profile/${id}`),
+    updateProfile: (id, userData) => apiClient.put(`/auth/profile/${id}`, userData),
   },
 
-getByEmail: (email) => apiClient.get(`/veterinarians/email/${email}`),
-
-// Complete veterinarians API section:
-veterinarians: {
-  getAll: () => apiClient.get('/veterinarians'),
-  getById: (id) => apiClient.get(`/veterinarians/${id}`),
-  getByEmail: (email) => apiClient.get(`/veterinarians/email/${email}`),
-  create: (veterinarian) => apiClient.post('/veterinarians', veterinarian),
-  update: (id, veterinarian) => apiClient.put(`/veterinarians/${id}`, veterinarian),
-  delete: (id) => apiClient.delete(`/veterinarians/${id}`),
-  search: (query) => apiClient.get(`/veterinarians/search?q=${query}`),
-  getBySpecialization: (specialization) => apiClient.get(`/veterinarians/specialization/${specialization}`),
-  getAvailable: () => apiClient.get('/veterinarians/available'),
-  getSpecializations: () => apiClient.get('/veterinarians/specializations'),
-},
-
-  // Users API
-  users: {
-    getAll: () => apiClient.get('/users'),
-    getById: (id) => apiClient.get(`/users/${id}`),
-    create: (user) => apiClient.post('/users', user),
-    update: (id, user) => apiClient.put(`/users/${id}`, user),
-    delete: (id) => apiClient.delete(`/users/${id}`),
-    search: (query) => apiClient.get(`/users/search?q=${query}`),
+  // Veterinarians API
+  veterinarians: {
+    getAll: () => apiClient.get('/veterinarians'),
+    getById: (id) => apiClient.get(`/veterinarians/${id}`),
+    getByEmail: (email) => apiClient.get(`/veterinarians/email/${email}`),
+    create: (veterinarian) => apiClient.post('/veterinarians', veterinarian),
+    update: (id, veterinarian) => apiClient.put(`/veterinarians/${id}`, veterinarian),
+    delete: (id) => apiClient.delete(`/veterinarians/${id}`),
+    search: (query) => apiClient.get(`/veterinarians/search?q=${query}`),
+    getBySpecialization: (specialization) => apiClient.get(`/veterinarians/specialization/${specialization}`),
+    getAvailable: () => apiClient.get('/veterinarians/available'),
+    getSpecializations: () => apiClient.get('/veterinarians/specializations'),
   },
+
+  // Appointments API
+  appointments: {
+    getAll: () => apiClient.get('/appointments'),
+    getById: (id) => apiClient.get(`/appointments/${id}`),
+    create: (appointment) => apiClient.post('/appointments', appointment),
+    update: (id, appointment) => apiClient.put(`/appointments/${id}`, appointment),
+    delete: (id) => apiClient.delete(`/appointments/${id}`),
+    getByVeterinarian: (veterinarianId) => apiClient.get(`/appointments/veterinarian/${veterinarianId}`),
+    getByUser: (userId) => apiClient.get(`/appointments/user/${userId}`),
+    checkAvailability: (veterinarianId, date, time) => 
+      apiClient.get(`/appointments/check-availability?veterinarianId=${veterinarianId}&date=${date}&time=${time}`),
+  },
+
+  // Other APIs can be added here
 };
 
 export default apiService;

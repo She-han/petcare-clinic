@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Loader2, Stethoscope, Clock, DollarSign, Upload, Image as ImageIcon, User } from 'lucide-react';
+import { X, Save, Loader2, Stethoscope, Clock, DollarSign, Upload, User, Mail, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const VeterinarianModal = ({ veterinarian, onClose, onSave }) => {
-const [formData, setFormData] = useState({
-  fullName: '',
-  email: '',
-  phoneNumber: '',
-  licenseNumber: '',
-  specialization: '',
-  yearsOfExperience: '',
-  education: '',
-  bio: '',
-  consultationFee: '',
-  availableFrom: '09:00',
-  availableTo: '17:00',
-  workingDays: 'MON,TUE,WED,THU,FRI',
-  isAvailable: true,
-  rating: 0,
-  totalReviews: 0,
-  imageUrl: ''
-});
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phoneNumber: '',
+    licenseNumber: '',
+    specialization: '',
+    yearsOfExperience: '',
+    education: '',
+    bio: '',
+    consultationFee: '',
+    availableFrom: '09:00',
+    availableTo: '17:00',
+    workingDays: 'MON,TUE,WED,THU,FRI',
+    isAvailable: true,
+    rating: 0,
+    totalReviews: 0,
+    imageUrl: ''
+  });
 
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -55,7 +55,9 @@ const [formData, setFormData] = useState({
   useEffect(() => {
     if (veterinarian) {
       setFormData({
-        userId: veterinarian.userId || '',
+        fullName: veterinarian.fullName || '',
+        email: veterinarian.email || '',
+        phoneNumber: veterinarian.phoneNumber || '',
         licenseNumber: veterinarian.licenseNumber || '',
         specialization: veterinarian.specialization || '',
         yearsOfExperience: veterinarian.yearsOfExperience || '',
@@ -161,7 +163,8 @@ const [formData, setFormData] = useState({
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.userId) newErrors.userId = 'User ID is required';
+    if (!formData.fullName.trim()) newErrors.fullName = 'Full name is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
     if (!formData.licenseNumber.trim()) newErrors.licenseNumber = 'License number is required';
     if (!formData.specialization) newErrors.specialization = 'Specialization is required';
     if (!formData.consultationFee || parseFloat(formData.consultationFee) <= 0) {
@@ -169,6 +172,12 @@ const [formData, setFormData] = useState({
     }
     if (!formData.yearsOfExperience || parseInt(formData.yearsOfExperience) < 0) {
       newErrors.yearsOfExperience = 'Valid years of experience is required';
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.email && !emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
 
     setErrors(newErrors);
@@ -194,15 +203,25 @@ const [formData, setFormData] = useState({
       }
 
       const veterinarianData = {
-        ...formData,
-        imageUrl,
-        userId: parseInt(formData.userId),
+        fullName: formData.fullName.trim(),
+        email: formData.email.trim(),
+        phoneNumber: formData.phoneNumber?.trim() || null,
+        licenseNumber: formData.licenseNumber.trim(),
+        specialization: formData.specialization,
         yearsOfExperience: parseInt(formData.yearsOfExperience),
+        education: formData.education?.trim() || null,
+        bio: formData.bio?.trim() || null,
         consultationFee: parseFloat(formData.consultationFee),
-        rating: parseFloat(formData.rating),
-        totalReviews: parseInt(formData.totalReviews)
+        availableFrom: formData.availableFrom,
+        availableTo: formData.availableTo,
+        workingDays: formData.workingDays,
+        isAvailable: formData.isAvailable,
+        rating: parseFloat(formData.rating) || 0,
+        totalReviews: parseInt(formData.totalReviews) || 0,
+        imageUrl: imageUrl
       };
 
+      console.log('Submitting veterinarian data:', veterinarianData);
       await onSave(veterinarianData);
       toast.success(`Veterinarian ${veterinarian ? 'updated' : 'created'} successfully!`);
     } catch (error) {
@@ -285,16 +304,19 @@ const [formData, setFormData] = useState({
                 <label className="block mb-2 text-sm font-medium text-gray-700">
                   Full Name *
                 </label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
-                    errors.fullName ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Enter full name"
-                />
+                <div className="relative">
+                  <User className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
+                      errors.fullName ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter full name"
+                  />
+                </div>
                 {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
               </div>
 
@@ -302,16 +324,19 @@ const [formData, setFormData] = useState({
                 <label className="block mb-2 text-sm font-medium text-gray-700">
                   Email *
                 </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Enter email address"
-                />
+                <div className="relative">
+                  <Mail className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
+                      errors.email ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter email address"
+                  />
+                </div>
                 {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
               </div>
 
@@ -319,16 +344,18 @@ const [formData, setFormData] = useState({
                 <label className="block mb-2 text-sm font-medium text-gray-700">
                   Phone Number
                 </label>
-                <input
-                  type="tel"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-                  placeholder="Enter phone number"
-                />
+                <div className="relative">
+                  <Phone className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                    placeholder="Enter phone number"
+                  />
+                </div>
               </div>
-
 
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">
@@ -377,6 +404,7 @@ const [formData, setFormData] = useState({
                   value={formData.yearsOfExperience}
                   onChange={handleInputChange}
                   min="0"
+                  max="50"
                   className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
                     errors.yearsOfExperience ? 'border-red-500' : 'border-gray-300'
                   }`}

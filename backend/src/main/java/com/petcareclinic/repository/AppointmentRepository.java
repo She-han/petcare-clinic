@@ -1,38 +1,34 @@
 package com.petcareclinic.repository;
 
 import com.petcareclinic.model.Appointment;
-import com.petcareclinic.model.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-    // Find appointments by user
-    @Query("SELECT a FROM Appointment a WHERE a.user.id = :userId ORDER BY a.appointmentDate DESC, a.appointmentTime DESC")
-    List<Appointment> findByUserId(@Param("userId") Long userId);
+    List<Appointment> findByVeterinarianId(Long veterinarianId);
 
-    // Find appointments by veterinarian
-    @Query("SELECT a FROM Appointment a WHERE a.veterinarian.id = :vetId ORDER BY a.appointmentDate DESC, a.appointmentTime DESC")
-    List<Appointment> findByVeterinarianId(@Param("vetId") Long vetId);
+    List<Appointment> findByUserId(Long userId); // Get appointments by user
 
-    // Find appointments by date range
-    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate BETWEEN :startDate AND :endDate ORDER BY a.appointmentDate, a.appointmentTime")
-    List<Appointment> findByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    List<Appointment> findByClientEmail(String clientEmail);
 
-    // Find appointments by status - This will work now!
-    @Query("SELECT a FROM Appointment a WHERE a.status = :status ORDER BY a.appointmentDate DESC, a.appointmentTime DESC")
-    List<Appointment> findByStatus(@Param("status") AppointmentStatus status);
+    List<Appointment> findByAppointmentDate(LocalDate appointmentDate);
 
-    // Find today's appointments
-    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate = :today ORDER BY a.appointmentTime")
-    List<Appointment> findTodayAppointments(@Param("today") LocalDate today);
+    List<Appointment> findByStatus(String status);
 
-    // Find upcoming appointments
-    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate >= :today AND a.status IN ('SCHEDULED', 'CONFIRMED') ORDER BY a.appointmentDate, a.appointmentTime")
-    List<Appointment> findUpcomingAppointments(@Param("today") LocalDate today);
+    @Query("SELECT a FROM Appointment a WHERE a.veterinarianId = :veterinarianId AND a.appointmentDate = :date")
+    List<Appointment> findByVeterinarianAndDate(@Param("veterinarianId") Long veterinarianId, @Param("date") LocalDate date);
+
+    @Query("SELECT a FROM Appointment a WHERE a.veterinarianId = :veterinarianId AND a.appointmentDate = :date AND a.appointmentTime = :time")
+    List<Appointment> findByVeterinarianDateAndTime(@Param("veterinarianId") Long veterinarianId, @Param("date") LocalDate date, @Param("time") LocalTime time);
+
+    @Query("SELECT a FROM Appointment a WHERE a.userId = :userId ORDER BY a.appointmentDate DESC, a.appointmentTime DESC")
+    List<Appointment> findByUserIdOrderByDateTimeDesc(@Param("userId") Long userId);
 }

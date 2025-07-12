@@ -3,9 +3,9 @@ package com.petcareclinic.service;
 import com.petcareclinic.model.User;
 import com.petcareclinic.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.List;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -14,77 +14,103 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    public User registerUser(User user) {
+        try {
+            // Set timestamps
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
 
-    // Get all users
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+            // Set default values
+            if (user.getRole() == null || user.getRole().isEmpty()) {
+                user.setRole("USER");
+            }
+            if (user.getIsActive() == null) {
+                user.setIsActive(true);
+            }
+            if (user.getEmailVerified() == null) {
+                user.setEmailVerified(false);
+            }
+            if (user.getCountry() == null) {
+                user.setCountry("USA");
+            }
+
+            return userRepository.save(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to register user: " + e.getMessage());
+        }
     }
 
-    // Get user by ID
+    public Optional<User> loginUser(String usernameOrEmail, String password) {
+        try {
+            Optional<User> userOptional = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+
+                // Simple password comparison (in production, use proper password hashing)
+                if (password.equals(user.getPasswordHash())) {
+                    // Update last login
+                    user.setLastLogin(LocalDateTime.now());
+                    userRepository.save(user);
+                    return Optional.of(user);
+                }
+            }
+
+            return Optional.empty();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
-    // Get user by email
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    // Create new user
-    public User createUser(User user) {
-        // Hash password before saving
-        if (user.getPasswordHash() != null) {
-            user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        }
-        return userRepository.save(user);
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 
-    // Update user
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     public User updateUser(Long id, User userDetails) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setFirstName(userDetails.getFirstName());
-            user.setLastName(userDetails.getLastName());
-            user.setEmail(userDetails.getEmail());
-            user.setPhone(userDetails.getPhone());
-            user.setAddress(userDetails.getAddress());
-            user.setCity(userDetails.getCity());
-            user.setState(userDetails.getState());
-            user.setZipCode(userDetails.getZipCode());
-            user.setCountry(userDetails.getCountry());
-            user.setRole(userDetails.getRole());
-            user.setIsActive(userDetails.getIsActive());
-            user.setEmailVerified(userDetails.getEmailVerified());
-            user.setDateOfBirth(userDetails.getDateOfBirth());
+        try {
+            Optional<User> optionalUser = userRepository.findById(id);
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
 
-            // Update password if provided
-            if (userDetails.getPasswordHash() != null && !userDetails.getPasswordHash().isEmpty()) {
-                user.setPasswordHash(passwordEncoder.encode(userDetails.getPasswordHash()));
+                // Update fields (don't update username, email, password here)
+                user.setFirstName(userDetails.getFirstName());
+                user.setLastName(userDetails.getLastName());
+                user.setPhone(userDetails.getPhone());
+                user.setAddress(userDetails.getAddress());
+                user.setCity(userDetails.getCity());
+                user.setState(userDetails.getState());
+                user.setZipCode(userDetails.getZipCode());
+                user.setCountry(userDetails.getCountry());
+                user.setDateOfBirth(userDetails.getDateOfBirth());
+                user.setProfileImageUrl(userDetails.getProfileImageUrl());
+
+                // Update timestamp
+                user.setUpdatedAt(LocalDateTime.now());
+
+                return userRepository.save(user);
             }
-
-            return userRepository.save(user);
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to update user: " + e.getMessage());
         }
-        return null;
-    }
-
-    // Delete user
-    public boolean deleteUser(Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
-
-    // Search users
-    public List<User> searchUsers(String search) {
-        return userRepository.searchUsers(search);
-    }
-
-    // Get active users
-    public List<User> getActiveUsers() {
-        return userRepository.findActiveUsers();
     }
 }
