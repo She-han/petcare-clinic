@@ -60,7 +60,7 @@ const Navbar = () => {
   }
 
   const handleAdminDashboard = () => {
-    window.location.href = '/admin/dashboard'
+    window.location.href = '/admin'
     handleUserMenuClose()
   }
 
@@ -258,6 +258,16 @@ const Navbar = () => {
                       </Button>
                     ) : (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: '#28283E',
+                            fontWeight: 600,
+                            ml: 1
+                          }}
+                        >
+                          {user.firstName}
+                        </Typography>
                         <IconButton
                           onClick={handleUserMenuOpen}
                           sx={{
@@ -281,16 +291,7 @@ const Navbar = () => {
                             <PersonIcon />
                           </Avatar>
                         </IconButton>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: '#28283E',
-                            fontWeight: 600,
-                            ml: 1
-                          }}
-                        >
-                          {user.firstName}
-                        </Typography>
+
                       </Box>
                     )}
                   </>

@@ -1,7 +1,11 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import apiService from '../services/api';
+import toast from 'react-hot-toast';
 
-const AuthContext = createContext();
+// Create the context
+export const AuthContext = createContext();
 
+// Create a custom hook to use the AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -10,42 +14,79 @@ export const useAuth = () => {
   return context;
 };
 
+// AuthProvider component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Check if user is logged in on app start
   useEffect(() => {
-    // Check if user is stored in localStorage
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
       try {
-        const userData = JSON.parse(storedUser);
-        setUser(userData);
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
         setIsAuthenticated(true);
       } catch (error) {
-        console.error('Error parsing stored user data:', error);
+        console.error('Error parsing user data:', error);
+        localStorage.removeItem('token');
         localStorage.removeItem('user');
       }
     }
     setLoading(false);
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    setIsAuthenticated(true);
-    localStorage.setItem('user', JSON.stringify(userData));
+  // Login function
+  const login = async (credentials) => {
+    try {
+      const response = await apiService.auth.login(credentials);
+      const { token, user: userData } = response.data;
+      
+      // Store token and user data
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      setUser(userData);
+      setIsAuthenticated(true);
+      
+      toast.success('Login successful!');
+      return { success: true };
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Login failed. Please check your credentials.');
+      return { success: false, error: error.message };
+    }
   };
 
+  // Register function
+  const register = async (userData) => {
+    try {
+      const response = await apiService.auth.register(userData);
+      toast.success('Registration successful! Please login.');
+      return { success: true };
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast.error('Registration failed. Please try again.');
+      return { success: false, error: error.message };
+    }
+  };
+
+  // Logout function
   const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('user');
+    toast.success('Logged out successfully!');
   };
 
-  const updateUser = (updatedUserData) => {
-    setUser(updatedUserData);
-    localStorage.setItem('user', JSON.stringify(updatedUserData));
+  // Update user function
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
   const value = {
@@ -53,6 +94,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated,
     loading,
     login,
+    register,
     logout,
     updateUser
   };
@@ -63,3 +105,6 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+// Default export
+export default AuthProvider;

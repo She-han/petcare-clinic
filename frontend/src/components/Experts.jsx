@@ -131,14 +131,15 @@ const Experts = () => {
                 alignItems: 'stretch'
               }}
             >
-              {veterinarians.map((veterinarian, index) => (
+              {veterinarians.slice(0,3).map((veterinarian, index)  => (
                 <Grid item xs={12} sm={6} lg={4} key={veterinarian.id}>
                   <motion.div
                     variants={fadeInUp}
-                    whileHover={{ y: -10 }}
+                    whileHover={{ y: 0 }}
                   >
                     <Card
                       sx={{
+                        maxWidth: 345,
                         height: '100%',
                         display: 'flex',
                         flexDirection: 'column',

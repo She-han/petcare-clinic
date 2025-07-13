@@ -1,5 +1,5 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect, useContext } from 'react';
+import { motion } from 'framer-motion';
 import {
   Typography,
   Button,
@@ -8,65 +8,52 @@ import {
   CardContent,
   CardMedia,
   Box,
-  Chip
-} from '@mui/material'
+  Chip,
+  CircularProgress,
+  Alert
+} from '@mui/material';
 import {
   ShoppingCart as ShoppingIcon,
-  Star as StarIcon
-} from '@mui/icons-material'
+  Star as StarIcon,
+  ShoppingBag as BuyNowIcon
+} from '@mui/icons-material';
+import { AuthContext } from '../contexts/AuthContext';
+import apiService from '../services/api';
+import toast from 'react-hot-toast';
+import ProductDetailsModal from '../components/ProductDetailsModal';
+import AuthModal from '../components/AuthModal';
 
 const Products = () => {
-  const products = [
-    {
-      id: 1,
-      name: 'Premium Dog Food',
-      category: 'Nutrition',
-      price: '$29.99',
-      originalPrice: '$39.99',
-      image: 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&h=300&fit=crop',
-      rating: 4.8,
-      reviews: 245,
-      badge: 'Best Seller'
-    },
-    {
-      id: 2,
-      name: 'Cat Wellness Kit',
-      category: 'Healthcare',
-      price: '$45.99',
-      originalPrice: '$55.99',
-      image: 'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=300&h=300&fit=crop',
-      rating: 4.9,
-      reviews: 189,
-      badge: 'New'
-    },
-    {
-      id: 3,
-      name: 'Interactive Pet Toys',
-      category: 'Toys & Enrichment',
-      price: '$19.99',
-      originalPrice: '$24.99',
-      image: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&h=300&fit=crop',
-      rating: 4.7,
-      reviews: 312,
-      badge: 'Sale'
-    },
-    {
-      id: 4,
-      name: 'Pet Grooming Set',
-      category: 'Grooming',
-      price: '$34.99',
-      originalPrice: '$44.99',
-      image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&h=300&fit=crop',
-      rating: 4.6,
-      reviews: 156,
-      badge: 'Popular'
+  const { user, isAuthenticated } = useContext(AuthContext);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [actionType, setActionType] = useState(''); // 'cart' or 'buy'
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await apiService.products.getAll();
+      setProducts(response.data || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setError('Failed to load products');
+    } finally {
+      setLoading(false);
     }
-  ]
+  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 60 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
-  }
+  };
 
   const stagger = {
     visible: {
@@ -74,21 +61,82 @@ const Products = () => {
         staggerChildren: 0.1
       }
     }
+  };
+
+  const getBadgeColor = (category) => {
+    switch (category) {
+      case 'FOOD':
+        return { backgroundColor: '#2ECC71', color: 'white' };
+      case 'TOYS':
+        return { backgroundColor: '#0074D9', color: 'white' };
+      case 'MEDICINE':
+        return { backgroundColor: '#FF6B6B', color: 'white' };
+      case 'ACCESSORIES':
+        return { backgroundColor: '#144E8C', color: 'white' };
+      case 'GROOMING':
+        return { backgroundColor: '#9B59B6', color: 'white' };
+      default:
+        return { backgroundColor: '#2ECC71', color: 'white' };
+    }
+  };
+
+  const handleAddToCart = async (product) => {
+    if (!isAuthenticated) {
+      setActionType('cart');
+      setShowAuthModal(true);
+      return;
+    }
+
+    try {
+      await apiService.cart.addItem({
+        productId: product.id,
+        quantity: 1,
+        unitPrice: product.price
+      });
+      toast.success('Product added to cart successfully!');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Failed to add product to cart');
+    }
+  };
+
+  const handleBuyNow = (product) => {
+    if (!isAuthenticated) {
+      setActionType('buy');
+      setSelectedProduct(product);
+      setShowAuthModal(true);
+      return;
+    }
+
+    setSelectedProduct(product);
+    setShowProductModal(true);
+  };
+
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false);
+    if (actionType === 'cart' && selectedProduct) {
+      handleAddToCart(selectedProduct);
+    } else if (actionType === 'buy' && selectedProduct) {
+      setShowProductModal(true);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <CircularProgress size={60} sx={{ color: '#2ECC71' }} />
+      </Box>
+    );
   }
 
-  const getBadgeColor = (badge) => {
-    switch (badge) {
-      case 'Best Seller':
-        return { backgroundColor: '#2ECC71', color: 'white' }
-      case 'New':
-        return { backgroundColor: '#0074D9', color: 'white' }
-      case 'Sale':
-        return { backgroundColor: '#FF6B6B', color: 'white' }
-      case 'Popular':
-        return { backgroundColor: '#144E8C', color: 'white' }
-      default:
-        return { backgroundColor: '#2ECC71', color: 'white' }
-    }
+  if (error) {
+    return (
+      <Box sx={{ width: '90%', mx: 'auto', py: 8 }}>
+        <Alert severity="error" sx={{ mb: 4 }}>
+          {error}
+        </Alert>
+      </Box>
+    );
   }
 
   return (
@@ -110,7 +158,7 @@ const Products = () => {
                 mb: 2
               }}
             >
-              Featured <span className="text-gradient">Products</span>
+              Pet Care <span className="text-gradient">Products</span>
             </Typography>
             <Typography
               variant="h6"
@@ -126,13 +174,8 @@ const Products = () => {
           </Box>
         </motion.div>
 
-        <Grid container spacing={4}
-                  sx={{ 
-            justifyContent: 'center',
-            alignItems: 'stretch' // Ensures all cards have equal height
-          }}
-        >
-          {products.map((product, index) => (
+        <Grid container spacing={4} sx={{ justifyContent: 'center', alignItems: 'stretch' }}>
+          {products.map((product) => (
             <Grid item xs={12} sm={6} lg={3} key={product.id}>
               <motion.div
                 variants={fadeInUp}
@@ -143,7 +186,6 @@ const Products = () => {
               >
                 <Card 
                   sx={{
-                    
                     height: '100%',
                     borderRadius: 4,
                     border: 'none',
@@ -155,12 +197,14 @@ const Products = () => {
                     transition: 'all 0.3s ease',
                     backgroundColor: 'white',
                     position: 'relative',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column'
                   }}
                 >
                   {/* Badge */}
                   <Chip
-                    label={product.badge}
+                    label={product.category}
                     sx={{
                       position: 'absolute',
                       top: 12,
@@ -168,9 +212,26 @@ const Products = () => {
                       zIndex: 2,
                       fontWeight: 600,
                       fontSize: '0.7rem',
-                      ...getBadgeColor(product.badge)
+                      ...getBadgeColor(product.category)
                     }}
                   />
+
+                  {/* Stock Status */}
+                  {product.stockQuantity <= 10 && (
+                    <Chip
+                      label={product.stockQuantity === 0 ? 'Out of Stock' : 'Low Stock'}
+                      sx={{
+                        position: 'absolute',
+                        top: 12,
+                        left: 12,
+                        zIndex: 2,
+                        fontWeight: 600,
+                        fontSize: '0.7rem',
+                        backgroundColor: product.stockQuantity === 0 ? '#FF6B6B' : '#F39C12',
+                        color: 'white'
+                      }}
+                    />
+                  )}
 
                   <motion.div
                     whileHover={{ scale: 1.05 }}
@@ -179,7 +240,7 @@ const Products = () => {
                     <CardMedia
                       component="img"
                       height={200}
-                      image={product.image}
+                      image={product.imageUrl || 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&h=300&fit=crop'}
                       alt={product.name}
                       sx={{
                         objectFit: 'cover',
@@ -188,7 +249,7 @@ const Products = () => {
                     />
                   </motion.div>
 
-                  <CardContent sx={{ p: 3 }}>
+                  <CardContent sx={{ p: 3, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                     <Typography
                       variant="body2"
                       sx={{
@@ -200,7 +261,7 @@ const Products = () => {
                         letterSpacing: 1
                       }}
                     >
-                      {product.category}
+                      {product.brand || 'Premium Brand'}
                     </Typography>
 
                     <Typography
@@ -208,8 +269,9 @@ const Products = () => {
                       sx={{
                         fontWeight: 600,
                         color: '#28283E',
-                        mb: 0,
-                        fontSize: { xs: '1.1rem', md: '1.3rem' }
+                        mb: 1,
+                        fontSize: { xs: '1.1rem', md: '1.3rem' },
+                        flexGrow: 1
                       }}
                     >
                       {product.name}
@@ -229,14 +291,14 @@ const Products = () => {
                           variant="body2"
                           sx={{ color: '#144E8C', fontWeight: 500 }}
                         >
-                          {product.rating}
+                          {product.rating || 4.5}
                         </Typography>
                       </Box>
                       <Typography
                         variant="body2"
                         sx={{ color: '#144E8C', opacity: 0.7 }}
                       >
-                        ({product.reviews} reviews)
+                        ({product.totalReviews || 0} reviews)
                       </Typography>
                     </Box>
 
@@ -256,40 +318,80 @@ const Products = () => {
                           fontSize: { xs: '1.3rem', md: '1.5rem' }
                         }}
                       >
-                        {product.price}
+                        ${product.price}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: '#144E8C',
-                          textDecoration: 'line-through',
-                          opacity: 0.6
-                        }}
-                      >
-                        {product.originalPrice}
-                      </Typography>
+                      {product.discountPrice && (
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: '#144E8C',
+                            textDecoration: 'line-through',
+                            opacity: 0.6
+                          }}
+                        >
+                          ${product.discountPrice}
+                        </Typography>
+                      )}
                     </Box>
 
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      startIcon={<ShoppingIcon />}
-                      sx={{
-                        backgroundColor: '#2ECC71',
-                        color: 'white',
-                        borderRadius: 3,
-                        py: 1.5,
-                        fontWeight: 600,
-                        fontSize: { xs: '0.8rem', md: '0.9rem' },
-                        '&:hover': {
-                          backgroundColor: '#144E8C',
-                          transform: 'translateY(-2px)'
-                        },
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      Add to Cart
-                    </Button>
+                    {/* Action Buttons */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        startIcon={<ShoppingIcon />}
+                        onClick={() => handleAddToCart(product)}
+                        disabled={product.stockQuantity === 0}
+                        sx={{
+                          backgroundColor: '#2ECC71',
+                          color: 'white',
+                          borderRadius: 3,
+                          py: 1.5,
+                          fontWeight: 600,
+                          fontSize: { xs: '0.8rem', md: '0.9rem' },
+                          '&:hover': {
+                            backgroundColor: '#144E8C',
+                            transform: 'translateY(-2px)'
+                          },
+                          '&:disabled': {
+                            backgroundColor: '#ccc',
+                            color: '#999'
+                          },
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        Add to Cart
+                      </Button>
+
+                      <Button
+                        variant="outlined"
+                        fullWidth
+                        startIcon={<BuyNowIcon />}
+                        onClick={() => handleBuyNow(product)}
+                        disabled={product.stockQuantity === 0}
+                        sx={{
+                          color: '#144E8C',
+                          borderColor: '#144E8C',
+                          borderWidth: 2,
+                          borderRadius: 3,
+                          py: 1.5,
+                          fontWeight: 600,
+                          fontSize: { xs: '0.8rem', md: '0.9rem' },
+                          '&:hover': {
+                            backgroundColor: '#144E8C',
+                            color: 'white',
+                            transform: 'translateY(-2px)'
+                          },
+                          '&:disabled': {
+                            borderColor: '#ccc',
+                            color: '#999'
+                          },
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        Buy Now
+                      </Button>
+                    </Box>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -325,8 +427,24 @@ const Products = () => {
           </Box>
         </motion.div>
       </motion.div>
-    </Box>
-  )
-}
 
-export default Products
+      {/* Product Details Modal */}
+      {showProductModal && (
+        <ProductDetailsModal
+          product={selectedProduct}
+          onClose={() => setShowProductModal(false)}
+        />
+      )}
+
+      {/* Auth Modal */}
+      {showAuthModal && (
+        <AuthModal
+          onClose={() => setShowAuthModal(false)}
+          onSuccess={handleAuthSuccess}
+        />
+      )}
+    </Box>
+  );
+};
+
+export default Products;

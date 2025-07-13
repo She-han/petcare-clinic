@@ -127,7 +127,7 @@ const AuthModal = ({ open, onClose }) => {
         // Check if user is admin
         if (response.data.user.role === 'ADMIN') {
           // Redirect to admin dashboard
-          window.location.href = '/admin/dashboard';
+          window.location.href = '/admin';
         } else {
           // Close modal for regular users
           onClose();

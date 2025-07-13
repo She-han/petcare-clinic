@@ -10,7 +10,10 @@ import {
   Avatar,
   Divider,
   Alert,
-  CircularProgress
+  CircularProgress,
+  Card,
+  CardContent,
+  Chip
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -40,9 +43,13 @@ const UserProfile = () => {
     profileImageUrl: ''
   });
 
+  const [userAppointments, setUserAppointments] = useState([]);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(false);
+
   useEffect(() => {
     if (user) {
       fetchUserProfile();
+      fetchUserAppointments();
     }
   }, [user]);
 
@@ -65,6 +72,19 @@ const UserProfile = () => {
     } catch (error) {
       console.error('Error fetching profile:', error);
       toast.error('Failed to load profile data');
+    }
+  };
+
+  const fetchUserAppointments = async () => {
+    try {
+      setAppointmentsLoading(true);
+      const response = await apiService.appointments.getByUser(user.id);
+      setUserAppointments(response.data);
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      toast.error('Failed to load appointments');
+    } finally {
+      setAppointmentsLoading(false);
     }
   };
 
@@ -119,6 +139,7 @@ const UserProfile = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
+        {/* Profile Information Section */}
         <Paper
           elevation={0}
           sx={{
@@ -410,6 +431,90 @@ const UserProfile = () => {
               />
             </Grid>
           </Grid>
+        </Paper>
+
+        {/* User Appointments Section */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: 4,
+            mt: 4,
+            borderRadius: 4,
+            border: '1px solid',
+            borderColor: 'rgba(46, 204, 113, 0.2)',
+            background: 'linear-gradient(135deg, rgba(237, 252, 253, 0.8) 0%, rgba(255, 255, 255, 0.9) 100%)'
+          }}
+        >
+          <Typography variant="h5" fontWeight="bold" color="#28283E" mb={3}>
+            My Appointments
+          </Typography>
+          
+          {appointmentsLoading ? (
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+              <CircularProgress sx={{ color: '#2ECC71' }} />
+            </Box>
+          ) : userAppointments.length === 0 ? (
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+              <Typography variant="h6" color="#144E8C">
+                No appointments found
+              </Typography>
+              <Typography variant="body1" color="#666">
+                Book your first appointment with our expert veterinarians!
+              </Typography>
+            </Box>
+          ) : (
+            <Grid container spacing={3}>
+              {userAppointments.map((appointment) => (
+                <Grid item xs={12} md={6} key={appointment.id}>
+                  <Card
+                    sx={{
+                      borderRadius: 3,
+                      border: '1px solid rgba(46, 204, 113, 0.1)',
+                      '&:hover': {
+                        boxShadow: '0 8px 25px rgba(46, 204, 113, 0.15)'
+                      },
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    <CardContent sx={{ p: 3 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                        <Typography variant="h6" fontWeight="600" color="#28283E">
+                          {appointment.petName}
+                        </Typography>
+                        <Chip
+                          label={appointment.status}
+                          size="small"
+                          sx={{
+                            backgroundColor: appointment.status === 'SCHEDULED' ? 'rgba(46, 204, 113, 0.1)' : 'rgba(255, 193, 7, 0.1)',
+                            color: appointment.status === 'SCHEDULED' ? '#2ECC71' : '#FFC107',
+                            fontWeight: 600
+                          }}
+                        />
+                      </Box>
+                      
+                      <Typography variant="body2" color="#144E8C" mb={1}>
+                        <strong>Pet Type:</strong> {appointment.petType}
+                      </Typography>
+                      
+                      <Typography variant="body2" color="#144E8C" mb={1}>
+                        <strong>Reason:</strong> {appointment.reasonForVisit}
+                      </Typography>
+                      
+                      <Typography variant="body2" color="#144E8C" mb={1}>
+                        <strong>Date & Time:</strong> {appointment.appointmentDate} at {appointment.appointmentTime}
+                      </Typography>
+                      
+                      {appointment.additionalNotes && (
+                        <Typography variant="body2" color="#666" mt={2}>
+                          <strong>Notes:</strong> {appointment.additionalNotes}
+                        </Typography>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          )}
         </Paper>
       </motion.div>
     </Container>

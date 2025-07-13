@@ -97,25 +97,6 @@ const Dashboard = () => {
     }
   };
 
-  // Get current date and time
-  const getCurrentDateTime = () => {
-    const now = new Date();
-    return {
-      date: now.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      }),
-      time: now.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      })
-    };
-  };
-
-  const { date, time } = getCurrentDateTime();
 
   const statCards = [
     {
@@ -247,11 +228,7 @@ const Dashboard = () => {
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-sm text-gray-600">Complete Overview</p>
         </div>
-          <div className="mt-4 text-right md:mt-0">
-            
-            <p className="text-xl font-semibold">{date}</p>
-            <p className="text-primary-100">{time}</p>
-          </div>
+      
         </div>
       </div>
 
