@@ -16,16 +16,22 @@ import {
   Star as StarIcon
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AuthContext } from '../contexts/AuthContext';
+import { AuthContext } from '../contexts/AuthContext'; // Make sure this import is correct
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const ProductDetailsModal = ({ product, onClose }) => {
-  const { user } = useContext(AuthContext);
+  const { user, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
 
   const handleCheckout = () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to continue with checkout');
+      onClose();
+      return;
+    }
+
     // Navigate to checkout page with product details
     navigate('/checkout', {
       state: {

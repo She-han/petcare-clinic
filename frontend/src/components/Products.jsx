@@ -175,24 +175,25 @@ const Products = () => {
         </motion.div>
 
         <Grid container spacing={4} sx={{ justifyContent: 'center', alignItems: 'stretch' }}>
-          {products.map((product) => (
+          {products.slice(1,5).map((product,index) => (
             <Grid item xs={12} sm={6} lg={3} key={product.id}>
               <motion.div
                 variants={fadeInUp}
                 whileHover={{ 
-                  y: -10,
+                  y: 0,
                   transition: { duration: 0.3 }
                 }}
               >
                 <Card 
                   sx={{
-                    height: '100%',
+                    width: '300px',
+                    height: '600px ',
                     borderRadius: 4,
                     border: 'none',
                     boxShadow: '0 4px 20px rgba(46, 204, 113, 0.1)',
                     '&:hover': {
-                      boxShadow: '0 20px 40px rgba(46, 204, 113, 0.2)',
-                      transform: 'translateY(-5px)'
+                      boxShadow: '0 20px 40px rgba(46, 204, 113, 0.2)'
+                     
                     },
                     transition: 'all 0.3s ease',
                     backgroundColor: 'white',
@@ -255,7 +256,7 @@ const Products = () => {
                       sx={{
                         color: '#0074D9',
                         fontWeight: 500,
-                        mb: 1,
+                        mb: 0,
                         fontSize: '0.8rem',
                         textTransform: 'uppercase',
                         letterSpacing: 1
@@ -269,7 +270,7 @@ const Products = () => {
                       sx={{
                         fontWeight: 600,
                         color: '#28283E',
-                        mb: 1,
+                        mb: 0,
                         fontSize: { xs: '1.1rem', md: '1.3rem' },
                         flexGrow: 1
                       }}
@@ -315,7 +316,7 @@ const Products = () => {
                         sx={{
                           fontWeight: 700,
                           color: '#2ECC71',
-                          fontSize: { xs: '1.3rem', md: '1.5rem' }
+                          fontSize: { xs: '1rem', md: '1.2rem' }
                         }}
                       >
                         ${product.price}

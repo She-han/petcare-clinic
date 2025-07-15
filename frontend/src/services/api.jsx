@@ -73,9 +73,12 @@ veterinarians: {
     delete: (id) => apiClient.delete(`/users/${id}`),
     search: (query) => apiClient.get(`/users/search?q=${query}`),
   },
-    auth: {
+  auth: {
     register: (userData) => apiClient.post('/auth/register', userData),
-    login: (credentials) => apiClient.post('/auth/login', credentials),
+    login: (credentials) => {
+      console.log('API: Attempting login with credentials:', credentials);
+      return apiClient.post('/auth/login', credentials);
+    },
     getProfile: (id) => apiClient.get(`/auth/profile/${id}`),
     updateProfile: (id, userData) => apiClient.put(`/auth/profile/${id}`, userData),
   },
