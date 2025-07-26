@@ -10,6 +10,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import AdminDashboard from "./pages/AdminDashboard";
 import Checkout from './pages/Checkout';
+import Cart from './pages/Cart';
 
 function App() {
   console.log('App component rendering...');
@@ -27,6 +28,8 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/cart" element={<Cart />} />
+            
             
             
             {/* Admin Routes */}

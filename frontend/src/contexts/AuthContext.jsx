@@ -18,26 +18,37 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Start with loading=true
+  const [initialized, setInitialized] = useState(false); // Add this
 
   // Check if user is logged in on app start
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    
-    if (token && userData) {
-      try {
-        const parsedUser = JSON.parse(userData);
-        setUser(parsedUser);
-        setIsAuthenticated(true);
-        console.log('User restored from localStorage:', parsedUser);
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+    const initializeAuth = async () => {
+      console.log('AuthContext: Initializing...');
+      
+      const token = localStorage.getItem('token');
+      const userData = localStorage.getItem('user');
+      
+      if (token && userData) {
+        try {
+          const parsedUser = JSON.parse(userData);
+          console.log('User restored from localStorage:', parsedUser);
+          
+          setUser(parsedUser);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
       }
-    }
-    setLoading(false);
+      
+      setLoading(false);
+      setInitialized(true); // Mark as initialized
+      console.log('AuthContext: Initialization complete');
+    };
+
+    initializeAuth();
   }, []);
 
   // Login function that makes API call
@@ -51,17 +62,14 @@ export const AuthProvider = ({ children }) => {
       let token, userData, success;
       
       if (response.data.success !== undefined) {
-        // Backend returns { success: true/false, user: {...}, token: "..." }
         success = response.data.success;
         userData = response.data.user;
         token = response.data.token;
       } else if (response.data.token && response.data.user) {
-        // Backend returns { token: "...", user: {...} }
         success = true;
         token = response.data.token;
         userData = response.data.user;
       } else {
-        // Handle other formats
         success = true;
         token = response.data.token || response.data.accessToken || 'temp-token';
         userData = response.data.user || response.data;
@@ -82,7 +90,7 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       setIsAuthenticated(true);
       
-      console.log('AuthContext: Login successful, user set:', userData);
+      console.log('Login response user data:', userData);
       return { success: true, user: userData };
       
     } catch (error) {
@@ -113,26 +121,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login function that accepts user data directly (for when API call is made elsewhere)
+  // Login function that accepts user data directly
   const loginWithUserData = (userData) => {
     console.log('AuthContext: Login with user data:', userData);
     
     setUser(userData);
     setIsAuthenticated(true);
     
-    // Store user data (token should already be stored)
     localStorage.setItem('user', JSON.stringify(userData));
     
     return { success: true, user: userData };
   };
 
-  // Main login function that can handle both cases
+  // Main login function
   const login = (credentialsOrUserData) => {
-    // If it has email/usernameOrEmail and password, it's credentials
     if (credentialsOrUserData.password && (credentialsOrUserData.email || credentialsOrUserData.usernameOrEmail)) {
       return loginWithCredentials(credentialsOrUserData);
     } else {
-      // It's user data
       return loginWithUserData(credentialsOrUserData);
     }
   };
@@ -193,8 +198,9 @@ export const AuthProvider = ({ children }) => {
     user,
     isAuthenticated,
     loading,
+    initialized, // Add this to the context value
     login,
-    loginWithCredentials, // Expose both methods
+    loginWithCredentials,
     loginWithUserData,
     register,
     logout,
@@ -208,5 +214,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Default export
 export default AuthProvider;

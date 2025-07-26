@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
   AppBar,
@@ -16,7 +16,8 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  Divider
+  Divider,
+  Badge
 } from '@mui/material'
 import {
   Menu as MenuIcon,
@@ -24,18 +25,42 @@ import {
   Pets as PetsIcon,
   Person as PersonIcon,
   Dashboard as DashboardIcon,
-  ExitToApp as LogoutIcon
+  ExitToApp as LogoutIcon,
+  ShoppingCart as ShoppingCartIcon
 } from '@mui/icons-material'
 import { useAuth } from '../contexts/AuthContext'
+import { AuthContext } from '../contexts/AuthContext'
 import AuthModal from './AuthModal'
+import apiService from '../services/api'
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [userMenuAnchor, setUserMenuAnchor] = useState(null)
+  const [cartCount, setCartCount] = useState(0)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const { user, isAuthenticated, logout } = useAuth()
+  const { user, isAuthenticated, logout, initialized } = useAuth()
+
+  // Fetch cart count when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && user?.id && initialized) {
+      fetchCartCount()
+    } else {
+      setCartCount(0)
+    }
+  }, [isAuthenticated, user, initialized])
+
+  const fetchCartCount = async () => {
+    try {
+      const response = await apiService.cart.getCount(user.id)
+      const count = response.data || 0
+      setCartCount(count)
+    } catch (error) {
+      console.error('Error fetching cart count:', error)
+      setCartCount(0)
+    }
+  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -52,6 +77,7 @@ const Navbar = () => {
   const handleLogout = () => {
     logout()
     handleUserMenuClose()
+    setCartCount(0)
   }
 
   const handleProfile = () => {
@@ -64,7 +90,11 @@ const Navbar = () => {
     handleUserMenuClose()
   }
 
-  const navItems = ['Home',  'Products', 'Doctors', 'About', 'Contact']
+  const handleCartClick = () => {
+    window.location.href = '/cart'
+  }
+
+  const navItems = ['Home', 'Products', 'Doctors', 'About', 'Contact']
 
   const drawer = (
     <Box sx={{ width: 250, backgroundColor: '#EDFCFD', height: '100%' }}>
@@ -87,6 +117,35 @@ const Navbar = () => {
             />
           </ListItem>
         ))}
+        
+        {/* Cart in mobile drawer */}
+        {isAuthenticated && (
+          <ListItem button onClick={() => { handleCartClick(); handleDrawerToggle(); }}>
+            <Badge 
+              badgeContent={cartCount} 
+              color="error"
+              sx={{
+                mr: 2,
+                '& .MuiBadge-badge': {
+                  backgroundColor: '#e74c3c',
+                  color: 'white'
+                }
+              }}
+            >
+              <ShoppingCartIcon sx={{ color: '#2ECC71' }} />
+            </Badge>
+            <ListItemText 
+              primary="Cart" 
+              sx={{ 
+                '& .MuiTypography-root': { 
+                  color: '#28283E',
+                  fontWeight: 500
+                }
+              }} 
+            />
+          </ListItem>
+        )}
+        
         <ListItem>
           <Button
             variant="contained"
@@ -215,7 +274,41 @@ const Navbar = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 {!isMobile && (
                   <>
-                    
+                    {/* Cart Icon - Desktop */}
+                    {isAuthenticated && (
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <IconButton
+                          onClick={handleCartClick}
+                          sx={{
+                            color: '#28283E',
+                            '&:hover': {
+                              color: '#2ECC71',
+                              backgroundColor: 'rgba(46, 204, 113, 0.04)'
+                            },
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          <Badge 
+                            badgeContent={cartCount} 
+                            color="error"
+                            sx={{
+                              '& .MuiBadge-badge': {
+                                backgroundColor: '#e74c3c',
+                                color: 'white',
+                                fontSize: '0.75rem',
+                                minWidth: '18px',
+                                height: '18px'
+                              }
+                            }}
+                          >
+                            <ShoppingCartIcon sx={{ fontSize: 24 }} />
+                          </Badge>
+                        </IconButton>
+                      </motion.div>
+                    )}
                     
                     {!isAuthenticated ? (
                       <Button
@@ -273,7 +366,6 @@ const Navbar = () => {
                             <PersonIcon />
                           </Avatar>
                         </IconButton>
-
                       </Box>
                     )}
                   </>
@@ -318,10 +410,30 @@ const Navbar = () => {
           </Typography>
         </Box>
         <Divider />
+        
+        {/* Cart in user menu */}
+        <MenuItem onClick={() => { handleCartClick(); handleUserMenuClose(); }} sx={{ py: 1.5 }}>
+          <Badge 
+            badgeContent={cartCount} 
+            color="error"
+            sx={{
+              mr: 2,
+              '& .MuiBadge-badge': {
+                backgroundColor: '#e74c3c',
+                color: 'white'
+              }
+            }}
+          >
+            <ShoppingCartIcon sx={{ color: '#2ECC71' }} />
+          </Badge>
+          My Cart
+        </MenuItem>
+        
         <MenuItem onClick={handleProfile} sx={{ py: 1.5 }}>
           <PersonIcon sx={{ mr: 2, color: '#2ECC71' }} />
           My Profile
         </MenuItem>
+        
         {user?.role === 'ADMIN' && (
           <MenuItem onClick={handleAdminDashboard} sx={{ py: 1.5 }}>
             <DashboardIcon sx={{ mr: 2, color: '#2ECC71' }} />
@@ -346,7 +458,6 @@ const Navbar = () => {
         {drawer}
       </Drawer>
 
-      {/* Auth Modal */}
       <AuthModal
         open={authModalOpen}
         onClose={() => setAuthModalOpen(false)}

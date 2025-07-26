@@ -48,21 +48,19 @@ const apiService = {
     getFeatured: () => apiClient.get('/products/featured'),
   },
 
-getByEmail: (email) => apiClient.get(`/veterinarians/email/${email}`),
-
-// Complete veterinarians API section:
-veterinarians: {
-  getAll: () => apiClient.get('/veterinarians'),
-  getById: (id) => apiClient.get(`/veterinarians/${id}`),
-  getByEmail: (email) => apiClient.get(`/veterinarians/email/${email}`),
-  create: (veterinarian) => apiClient.post('/veterinarians', veterinarian),
-  update: (id, veterinarian) => apiClient.put(`/veterinarians/${id}`, veterinarian),
-  delete: (id) => apiClient.delete(`/veterinarians/${id}`),
-  search: (query) => apiClient.get(`/veterinarians/search?q=${query}`),
-  getBySpecialization: (specialization) => apiClient.get(`/veterinarians/specialization/${specialization}`),
-  getAvailable: () => apiClient.get('/veterinarians/available'),
-  getSpecializations: () => apiClient.get('/veterinarians/specializations'),
-},
+  // Veterinarians API
+  veterinarians: {
+    getAll: () => apiClient.get('/veterinarians'),
+    getById: (id) => apiClient.get(`/veterinarians/${id}`),
+    getByEmail: (email) => apiClient.get(`/veterinarians/email/${email}`),
+    create: (veterinarian) => apiClient.post('/veterinarians', veterinarian),
+    update: (id, veterinarian) => apiClient.put(`/veterinarians/${id}`, veterinarian),
+    delete: (id) => apiClient.delete(`/veterinarians/${id}`),
+    search: (query) => apiClient.get(`/veterinarians/search?q=${query}`),
+    getBySpecialization: (specialization) => apiClient.get(`/veterinarians/specialization/${specialization}`),
+    getAvailable: () => apiClient.get('/veterinarians/available'),
+    getSpecializations: () => apiClient.get('/veterinarians/specializations'),
+  },
 
   // Users API
   users: {
@@ -73,22 +71,24 @@ veterinarians: {
     delete: (id) => apiClient.delete(`/users/${id}`),
     search: (query) => apiClient.get(`/users/search?q=${query}`),
   },
-// Update your auth section in api.js
-auth: {
-  register: (userData) => {
-    console.log('API: Registering user with data:', userData);
-    return apiClient.post('/auth/register', userData);
-  },
-  login: (credentials) => {
-    console.log('API: Attempting login with credentials:', credentials);
-    console.log('API: Full URL:', `${API_BASE_URL}/auth/login`);
-    return apiClient.post('/auth/login', credentials);
-  },
-  getProfile: (id) => apiClient.get(`/auth/profile/${id}`),
-  updateProfile: (id, userData) => apiClient.put(`/auth/profile/${id}`, userData),
-},
 
-    appointments: {
+  // Auth API
+  auth: {
+    register: (userData) => {
+      console.log('API: Registering user with data:', userData);
+      return apiClient.post('/auth/register', userData);
+    },
+    login: (credentials) => {
+      console.log('API: Attempting login with credentials:', credentials);
+      console.log('API: Full URL:', `${API_BASE_URL}/auth/login`);
+      return apiClient.post('/auth/login', credentials);
+    },
+    getProfile: (id) => apiClient.get(`/auth/profile/${id}`),
+    updateProfile: (id, userData) => apiClient.put(`/auth/profile/${id}`, userData),
+  },
+
+  // Appointments API
+  appointments: {
     getAll: () => apiClient.get('/appointments'),
     getById: (id) => apiClient.get(`/appointments/${id}`),
     create: (appointment) => apiClient.post('/appointments', appointment),
@@ -100,14 +100,25 @@ auth: {
       apiClient.get(`/appointments/check-availability?veterinarianId=${veterinarianId}&date=${date}&time=${time}`),
   },
 
-    cart: {
-    getCart: () => apiClient.get('/cart'),
-    addItem: (itemData) => apiClient.post('/cart/items', itemData),
-    updateItem: (itemId, itemData) => apiClient.put(`/cart/items/${itemId}`, itemData),
-    removeItem: (itemId) => apiClient.delete(`/cart/items/${itemId}`),
-    clearCart: () => apiClient.delete('/cart'),
-    applyCoupon: (couponCode) => apiClient.post('/cart/coupon', { couponCode }),
-    removeCoupon: () => apiClient.delete('/cart/coupon'),
+  // Cart API - FIXED
+  cart: {
+    // Add item to cart
+    addItem: (userId, data) => apiClient.post(`/cart/add/${userId}`, data),
+    
+    // Get cart
+    get: (userId) => apiClient.get(`/cart/${userId}`),
+    
+    // Update cart item quantity
+    updateItem: (userId, itemId, data) => apiClient.put(`/cart/${userId}/items/${itemId}`, data),
+    
+    // Remove item from cart
+    removeItem: (userId, itemId) => apiClient.delete(`/cart/${userId}/items/${itemId}`),
+    
+    // Clear entire cart
+    clear: (userId) => apiClient.delete(`/cart/${userId}/clear`),
+    
+    // Get cart items count
+    getCount: (userId) => apiClient.get(`/cart/${userId}/count`)
   },
 
   // Orders API (for checkout)
