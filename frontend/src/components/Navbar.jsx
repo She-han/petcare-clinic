@@ -64,7 +64,7 @@ const Navbar = () => {
     handleUserMenuClose()
   }
 
-  const navItems = ['Home', 'Services', 'Products', 'Doctors', 'About', 'Contact']
+  const navItems = ['Home',  'Products', 'Doctors', 'About', 'Contact']
 
   const drawer = (
     <Box sx={{ width: 250, backgroundColor: '#EDFCFD', height: '100%' }}>
@@ -215,25 +215,7 @@ const Navbar = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 {!isMobile && (
                   <>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        backgroundColor: '#2ECC71',
-                        color: 'white',
-                        px: 3,
-                        py: 1,
-                        borderRadius: 3,
-                        fontWeight: 600,
-                        '&:hover': {
-                          backgroundColor: '#144E8C',
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 8px 25px rgba(46, 204, 113, 0.3)'
-                        },
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      Book Appointment
-                    </Button>
+                    
                     
                     {!isAuthenticated ? (
                       <Button

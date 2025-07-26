@@ -106,42 +106,49 @@ const AuthModal = ({ open, onClose }) => {
     return true;
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+ // Update the handleLogin function in your AuthModal.jsx
+
+const handleLogin = async (e) => {
+  e.preventDefault();
+  
+  if (!loginData.usernameOrEmail.trim() || !loginData.password) {
+    setError('Please fill in all fields');
+    return;
+  }
+
+  setLoading(true);
+  setError('');
+
+  try {
+    console.log('AuthModal: Attempting login with:', loginData);
     
-    if (!loginData.usernameOrEmail.trim() || !loginData.password) {
-      setError('Please fill in all fields');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-
-    try {
-      const response = await apiService.auth.login(loginData);
+    // Use AuthContext's login function instead of making direct API call
+    const result = await login(loginData);
+    
+    console.log('AuthModal: Login result:', result);
+    
+    if (result.success) {
+      toast.success('Login successful!');
       
-      if (response.data.success) {
-        login(response.data.user);
-        toast.success('Login successful!');
-        
-        // Check if user is admin
-        if (response.data.user.role === 'ADMIN') {
-          // Redirect to admin dashboard
-          window.location.href = '/admin';
-        } else {
-          // Close modal for regular users
-          onClose();
-        }
+      // Check if user is admin
+      if (result.user && result.user.role === 'ADMIN') {
+        // Redirect to admin dashboard
+        window.location.href = '/admin';
       } else {
-        setError(response.data.message || 'Login failed');
+        // Close modal for regular users
+        onClose();
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      setError('Login failed. Please try again.');
-    } finally {
-      setLoading(false);
+    } else {
+      setError(result.error || 'Login failed');
     }
-  };
+    
+  } catch (error) {
+    console.error('AuthModal: Login error:', error);
+    setError('Login failed. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleSignup = async (e) => {
     e.preventDefault();
