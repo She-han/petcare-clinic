@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate, useLocation } from 'react-router-dom' // Add useNavigate and useLocation
 import {
   AppBar,
   Toolbar,
@@ -41,6 +42,19 @@ const Navbar = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const { user, isAuthenticated, logout, initialized } = useAuth()
+  
+  // Add navigation hooks
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  // Navigation items with their routes
+  const navItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Products', path: '/products' },
+    { name: 'Veterinarians', path: '/veterinarians' },
+    { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/contact' }
+  ]
 
   // Fetch cart count when user is authenticated
   useEffect(() => {
@@ -81,20 +95,32 @@ const Navbar = () => {
   }
 
   const handleProfile = () => {
-    window.location.href = '/profile'
+    navigate('/profile')
     handleUserMenuClose()
   }
 
   const handleAdminDashboard = () => {
-    window.location.href = '/admin'
+    navigate('/admin')
     handleUserMenuClose()
   }
 
   const handleCartClick = () => {
-    window.location.href = '/cart'
+    navigate('/cart')
   }
 
-  const navItems = ['Home', 'Products', 'Doctors', 'About', 'Contact']
+  // Navigation handler
+  const handleNavigation = (path) => {
+    navigate(path)
+    setMobileOpen(false) // Close mobile drawer after navigation
+  }
+
+  // Check if current route is active
+  const isActiveRoute = (path) => {
+    if (path === '/') {
+      return location.pathname === '/'
+    }
+    return location.pathname.startsWith(path)
+  }
 
   const drawer = (
     <Box sx={{ width: 250, backgroundColor: '#EDFCFD', height: '100%' }}>
@@ -105,13 +131,24 @@ const Navbar = () => {
       </Box>
       <List>
         {navItems.map((item) => (
-          <ListItem button key={item} onClick={handleDrawerToggle}>
+          <ListItem 
+            button 
+            key={item.name} 
+            onClick={() => handleNavigation(item.path)}
+            sx={{
+              backgroundColor: isActiveRoute(item.path) ? 'rgba(46, 204, 113, 0.1)' : 'transparent',
+              borderLeft: isActiveRoute(item.path) ? '4px solid #2ECC71' : '4px solid transparent',
+              '&:hover': {
+                backgroundColor: 'rgba(46, 204, 113, 0.05)'
+              }
+            }}
+          >
             <ListItemText 
-              primary={item} 
+              primary={item.name} 
               sx={{ 
                 '& .MuiTypography-root': { 
-                  color: '#28283E',
-                  fontWeight: 500
+                  color: isActiveRoute(item.path) ? '#2ECC71' : '#28283E',
+                  fontWeight: isActiveRoute(item.path) ? 600 : 500
                 }
               }} 
             />
@@ -120,7 +157,17 @@ const Navbar = () => {
         
         {/* Cart in mobile drawer */}
         {isAuthenticated && (
-          <ListItem button onClick={() => { handleCartClick(); handleDrawerToggle(); }}>
+          <ListItem 
+            button 
+            onClick={() => { handleCartClick(); handleDrawerToggle(); }}
+            sx={{
+              backgroundColor: isActiveRoute('/cart') ? 'rgba(46, 204, 113, 0.1)' : 'transparent',
+              borderLeft: isActiveRoute('/cart') ? '4px solid #2ECC71' : '4px solid transparent',
+              '&:hover': {
+                backgroundColor: 'rgba(46, 204, 113, 0.05)'
+              }
+            }}
+          >
             <Badge 
               badgeContent={cartCount} 
               color="error"
@@ -138,8 +185,8 @@ const Navbar = () => {
               primary="Cart" 
               sx={{ 
                 '& .MuiTypography-root': { 
-                  color: '#28283E',
-                  fontWeight: 500
+                  color: isActiveRoute('/cart') ? '#2ECC71' : '#28283E',
+                  fontWeight: isActiveRoute('/cart') ? 600 : 500
                 }
               }} 
             />
@@ -150,6 +197,7 @@ const Navbar = () => {
           <Button
             variant="contained"
             fullWidth
+            onClick={() => navigate('/appointments/book')}
             sx={{
               mt: 2,
               backgroundColor: '#2ECC71',
@@ -217,7 +265,10 @@ const Navbar = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box 
+                sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
+                onClick={() => navigate('/')}
+              >
                 <PetsIcon sx={{ fontSize: 32, color: '#2ECC71' }} />
                 <Typography
                   variant="h5"
@@ -242,23 +293,36 @@ const Navbar = () => {
                 <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
                   {navItems.map((item, index) => (
                     <motion.div
-                      key={item}
+                      key={item.name}
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.1 * index }}
                     >
                       <Button
+                        onClick={() => handleNavigation(item.path)}
                         sx={{
-                          color: '#28283E',
-                          fontWeight: 500,
+                          color: isActiveRoute(item.path) ? '#2ECC71' : '#28283E',
+                          fontWeight: isActiveRoute(item.path) ? 600 : 500,
                           fontSize: '0.95rem',
+                          position: 'relative',
                           '&:hover': {
                             color: '#2ECC71',
                             backgroundColor: 'transparent'
-                          }
+                          },
+                          '&::after': isActiveRoute(item.path) ? {
+                            content: '""',
+                            position: 'absolute',
+                            bottom: 0,
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            width: '80%',
+                            height: '2px',
+                            backgroundColor: '#2ECC71',
+                            borderRadius: '1px'
+                          } : {}
                         }}
                       >
-                        {item}
+                        {item.name}
                       </Button>
                     </motion.div>
                   ))}
@@ -283,7 +347,7 @@ const Navbar = () => {
                         <IconButton
                           onClick={handleCartClick}
                           sx={{
-                            color: '#28283E',
+                            color: isActiveRoute('/cart') ? '#2ECC71' : '#28283E',
                             '&:hover': {
                               color: '#2ECC71',
                               backgroundColor: 'rgba(46, 204, 113, 0.04)'

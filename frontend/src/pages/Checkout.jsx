@@ -444,7 +444,7 @@ const Checkout = () => {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleConfirmCheckout}
                   disabled={loading || selectedItems.length === 0}
-                  className="w-full py-4 text-lg font-semibold text-white transition-all duration-200 shadow-lg bg-gradient-to-r from-green-500 to-blue-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:from-green-600 hover:to-blue-700"
+                  className="w-full py-4 text-lg font-semibold text-white transition-all duration-200 shadow-lg bg-gradient-to-r from-red-600 via-red-500 to-red-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:from-red-700 hover:via-red-700 hover:to-red-700"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center">
