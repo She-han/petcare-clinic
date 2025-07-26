@@ -19,12 +19,12 @@ public class Product {
 
     private String shortDescription;
 
-    @Column(name = "category", nullable = false)
+    @Column(name = "category")
     private String category;
 
     private String brand;
 
-    @Column(nullable = false)
+    @Column(name = "price")
     private Double price;
 
     private Double discountPrice;
