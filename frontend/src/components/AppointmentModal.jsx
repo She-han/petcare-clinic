@@ -46,11 +46,11 @@ const AppointmentModal = ({ open, onClose, veterinarian }) => {
     clientEmail: '',
     clientPhone: '',
     petName: '',
-    petType: '',
+    petType: 'Rabbit', // Default to Rabbit
     petAge: '',
     appointmentDate: '',
-    appointmentTime: '',
-    reasonForVisit: '',
+    appointmentTime: '08:00',
+    reasonForVisit: 'Regular Checkup',
     additionalNotes: ''
   });
 
@@ -479,280 +479,291 @@ const AppointmentModal = ({ open, onClose, veterinarian }) => {
 
             <form onSubmit={handleSubmit}>
   <Grid container spacing={3}>
+  
+  {/* Your Information Section */}
+  <Grid item xs={12}>
+    <Typography variant="h6" fontWeight="600" color="#2ECC71" sx={{ mb: 2 }}>
+      Your Information
+    </Typography>
     
-    {/* Your Information Label Row */}
-    <Grid item xs={12}>
-      <Typography variant="h6" fontWeight="600" color="#2ECC71">
-        Your Information
-      </Typography>
-    </Grid>
-    
-    {/* Your Information Fields Row */}
-    <Grid item xs={12} sm={4}>
-      <TextField
-        fullWidth
-        label="Your Name *"
-        name="clientName"
-        value={formData.clientName}
-        onChange={handleInputChange}
-        error={!!errors.clientName}
-        helperText={errors.clientName}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
-          },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
-        }}
-      />
-    </Grid>
-
-    <Grid item xs={12} sm={4}>
-      <TextField
-        fullWidth
-        label="Email Address *"
-        name="clientEmail"
-        type="email"
-        value={formData.clientEmail}
-        onChange={handleInputChange}
-        error={!!errors.clientEmail}
-        helperText={errors.clientEmail}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
-          },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
-        }}
-      />
-    </Grid>
-
-    <Grid item xs={12} sm={4}>
-      <TextField
-        fullWidth
-        label="Phone Number"
-        name="clientPhone"
-        value={formData.clientPhone}
-        onChange={handleInputChange}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
-          },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
-        }}
-      />
-    </Grid>
-
-    {/* Pet Information Label Row */}
-    <Grid item xs={12} sx={{ mt: 2 }}>
-      <Typography variant="h6" fontWeight="600" color="#2ECC71">
-        Pet Information
-      </Typography>
-    </Grid>
-
-    {/* Pet Information Fields Row */}
-    <Grid item xs={12} sm={4}>
-      <TextField
-        fullWidth
-        label="Pet Name *"
-        name="petName"
-        value={formData.petName}
-        onChange={handleInputChange}
-        error={!!errors.petName}
-        helperText={errors.petName}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
-          },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
-        }}
-      />
-    </Grid>
-
-    <Grid item xs={12} sm={4}>
-      <FormControl 
-        fullWidth 
-        error={!!errors.petType}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
-          },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
-        }}
-      >
-        <InputLabel>Pet Type *</InputLabel>
-        <Select
-          name="petType"
-          value={formData.petType}
+    {/* Nested Grid for Your Information Fields */}
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <TextField
+          fullWidth
+          label="Your Name *"
+          name="clientName"
+          value={formData.clientName}
           onChange={handleInputChange}
-          label="Pet Type *"
-        >
-          {petTypes.map(type => (
-            <MenuItem key={type} value={type}>{type}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Grid>
-
-    <Grid item xs={12} sm={4}>
-      <TextField
-        fullWidth
-        label="Pet Age"
-        name="petAge"
-        value={formData.petAge}
-        onChange={handleInputChange}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
-          },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
-        }}
-      />
-    </Grid>
-
-    {/* Appointment Details Label Row */}
-    <Grid item xs={12} sx={{ mt: 2 }}>
-      <Typography variant="h6" fontWeight="600" color="#2ECC71">
-        Appointment Details
-      </Typography>
-    </Grid>
-
-    {/* Appointment Details Fields Row */}
-    <Grid item xs={12} sm={4}>
-      <TextField
-        fullWidth
-        label="Appointment Date *"
-        name="appointmentDate"
-        type="date"
-        value={formData.appointmentDate}
-        onChange={handleInputChange}
-        error={!!errors.appointmentDate}
-        helperText={errors.appointmentDate}
-        InputLabelProps={{ shrink: true }}
-        inputProps={{ min: getMinDate() }}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
-          },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
-        }}
-      />
-    </Grid>
-
-    <Grid item xs={12} sm={4}>
-      <FormControl 
-        fullWidth 
-        error={!!errors.appointmentTime}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
-          },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
-        }}
-      >
-        <InputLabel>Appointment Time *</InputLabel>
-        <Select
-          name="appointmentTime"
-          value={formData.appointmentTime}
-          onChange={handleInputChange}
-          label="Appointment Time *"
-        >
-          {generateTimeSlots().map(time => (
-            <MenuItem key={time} value={time}>{time}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Grid>
-
-    <Grid item xs={12} sm={4}>
-      <FormControl 
-        fullWidth 
-        error={!!errors.reasonForVisit}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
-          },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
-        }}
-      >
-        <InputLabel>Reason for Visit *</InputLabel>
-        <Select
-          name="reasonForVisit"
-          value={formData.reasonForVisit}
-          onChange={handleInputChange}
-          label="Reason for Visit *"
-        >
-          {reasonOptions.map(reason => (
-            <MenuItem key={reason} value={reason}>{reason}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Grid>
-
-    {/* Additional Notes Row */}
-    <Grid item xs={12} sx={{ mt: 1 }}>
-      <TextField
-        fullWidth
-        label="Additional Notes"
-        name="additionalNotes"
-        value={formData.additionalNotes}
-        onChange={handleInputChange}
-        multiline
-        rows={3}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
-          },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
-        }}
-      />
-    </Grid>
-
-    {/* Buttons Row */}
-    <Grid item xs={12} sx={{ mt: 3 }}>
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-        <Button
-          variant="outlined"
-          onClick={handleClose}
+          error={!!errors.clientName}
+          helperText={errors.clientName}
           sx={{
-            borderColor: '#2ECC71',
-            color: '#2ECC71',
-            px: 4,
-            py: 1.5,
-            borderRadius: 3,
-            '&:hover': {
-              borderColor: '#27AE60',
-              backgroundColor: 'rgba(46, 204, 113, 0.04)'
-            }
+            '& .MuiOutlinedInput-root': {
+              '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
+            },
+            '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
           }}
-        >
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={loading}
-          sx={{
-            backgroundColor: '#2ECC71',
-            px: 4,
-            py: 1.5,
-            borderRadius: 3,
-            fontSize: '1rem',
-            fontWeight: 600,
-            minWidth: 160,
-            '&:hover': {
-              backgroundColor: '#27AE60'
-            }
-          }}
-        >
-          {loading ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            'Book Appointment'
-          )}
-        </Button>
-      </Box>
-    </Grid>
+        />
+      </Grid>
 
+      <Grid item xs={12} sm={6}>
+        <TextField
+          fullWidth
+          label="Email Address *"
+          name="clientEmail"  
+          type="email"
+          value={formData.clientEmail}
+          onChange={handleInputChange}
+          error={!!errors.clientEmail}
+          helperText={errors.clientEmail}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
+            },
+            '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
+          }}
+        />
+      </Grid>
+
+      <Grid item xs={12} sm={6}>
+        <TextField
+          fullWidth
+          label="Phone Number"
+          name="clientPhone"
+          value={formData.clientPhone}
+          onChange={handleInputChange}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
+            },
+            '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
+          }}
+        />
+      </Grid>
+    </Grid>
   </Grid>
+
+  {/* Pet Information Section */}
+  <Grid item xs={12} sx={{ mt: 3 }}>
+    <Typography variant="h6" fontWeight="600" color="#2ECC71" sx={{ mb: 2 }}>
+      Pet Information
+    </Typography>
+    
+    {/* Nested Grid for Pet Information Fields */}
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm={4}>
+        <TextField
+          fullWidth
+          label="Pet Name *"
+          name="petName"
+          value={formData.petName}
+          onChange={handleInputChange}
+          error={!!errors.petName}
+          helperText={errors.petName}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
+            },
+            '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
+          }}
+        />
+      </Grid>
+
+      <Grid item xs={12} sm={4}>
+        <FormControl 
+          fullWidth 
+          error={!!errors.petType}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
+            },
+            '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
+          }}
+        >
+          <InputLabel>Pet Type *</InputLabel>
+          <Select
+            name="petType"
+            value={formData.petType}
+            onChange={handleInputChange}
+            defaultChecked={formData.petType === 'Dog'}
+            label="Pet Type *"
+          >
+            {petTypes.map(type => (
+              <MenuItem key={type} value={type}>{type}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+
+      <Grid item xs={12} sm={4}>
+        <TextField
+          fullWidth
+          label="Pet Age"
+          name="petAge"
+          value={formData.petAge}
+          onChange={handleInputChange}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
+            },
+            '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
+          }}
+        />
+      </Grid>
+    </Grid>
+  </Grid>
+
+  {/* Appointment Details Section */}
+  <Grid item xs={12} sx={{ mt: 3 }}>
+    <Typography variant="h6" fontWeight="600" color="#2ECC71" sx={{ mb: 2 }}>
+      Appointment Details
+    </Typography>
+    
+    {/* Nested Grid for Appointment Details Fields */}
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm={4}>
+        <TextField
+          fullWidth
+          label="Appointment Date *"
+          name="appointmentDate"
+          type="date"
+          value={formData.appointmentDate}
+          onChange={handleInputChange}
+          error={!!errors.appointmentDate}
+          helperText={errors.appointmentDate}
+          InputLabelProps={{ shrink: true }}
+          inputProps={{ min: getMinDate() }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
+            },
+            '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
+          }}
+        />
+      </Grid>
+
+      <Grid item xs={12} sm={4}>
+        <FormControl 
+          fullWidth 
+          error={!!errors.appointmentTime}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
+            },
+            '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
+          }}
+        >
+          <InputLabel>Appointment Time *</InputLabel>
+          <Select
+            name="appointmentTime"
+            value={formData.appointmentTime}
+            onChange={handleInputChange}
+            label="Appointment Time *"
+          >
+            {generateTimeSlots().map(time => (
+              <MenuItem key={time} value={time}>{time}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+
+      <Grid item xs={12} sm={4}>
+        <FormControl 
+          fullWidth 
+          error={!!errors.reasonForVisit}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
+            },
+            '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
+          }}
+        >
+          <InputLabel>Reason for Visit *</InputLabel>
+          <Select
+            name="reasonForVisit"
+            value={formData.reasonForVisit}
+            onChange={handleInputChange}
+            label="Reason for Visit *"
+          >
+            {reasonOptions.map(reason => (
+              <MenuItem key={reason} value={reason}>{reason}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+    </Grid>
+  </Grid>
+
+  {/* Additional Notes Section */}
+  <Grid item xs={12} sx={{ mt: 3 }}>
+    <Typography variant="h6" fontWeight="600" color="#2ECC71" sx={{ mb: 2 }}>
+      Additional Information
+    </Typography>
+    
+    <TextField
+      fullWidth
+      label="Additional Notes"
+      name="additionalNotes"
+      value={formData.additionalNotes}
+      onChange={handleInputChange}
+      multiline
+      rows={3}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          '&.Mui-focused fieldset': { borderColor: '#2ECC71' }
+        },
+        '& .MuiInputLabel-root.Mui-focused': { color: '#2ECC71' }
+      }}
+    />
+  </Grid>
+
+  {/* Action Buttons */}
+  <Grid item xs={12} sx={{ mt: 4 }}>
+    <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+      <Button
+        variant="outlined"
+        onClick={handleClose}
+        sx={{
+          borderColor: '#2ECC71',
+          color: '#2ECC71',
+          px: 4,
+          py: 1.5,
+          borderRadius: 3,
+          '&:hover': {
+            borderColor: '#27AE60',
+            backgroundColor: 'rgba(46, 204, 113, 0.04)'
+          }
+        }}
+      >
+        Cancel
+      </Button>
+      <Button
+        type="submit"
+        variant="contained"
+        disabled={loading}
+        sx={{
+          backgroundColor: '#2ECC71',
+          px: 4,
+          py: 1.5,
+          borderRadius: 3,
+          fontSize: '1rem',
+          fontWeight: 600,
+          minWidth: 160,
+          '&:hover': {
+            backgroundColor: '#27AE60'
+          }
+        }}
+      >
+        {loading ? (
+          <CircularProgress size={24} color="inherit" />
+        ) : (
+          'Book Appointment'
+        )}
+      </Button>
+    </Box>
+  </Grid>
+
+</Grid>
 </form>
             </Box>
           </Box>

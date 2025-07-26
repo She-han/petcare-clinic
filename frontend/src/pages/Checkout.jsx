@@ -44,7 +44,7 @@ const Checkout = () => {
 
   useEffect(() => {
     if (!orderData.product && !orderData.cartItems) {
-      navigate('/products');
+      navigate('/checkout');
     }
   }, [orderData, navigate]);
 

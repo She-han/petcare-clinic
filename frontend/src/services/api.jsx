@@ -73,15 +73,20 @@ veterinarians: {
     delete: (id) => apiClient.delete(`/users/${id}`),
     search: (query) => apiClient.get(`/users/search?q=${query}`),
   },
-  auth: {
-    register: (userData) => apiClient.post('/auth/register', userData),
-    login: (credentials) => {
-      console.log('API: Attempting login with credentials:', credentials);
-      return apiClient.post('/auth/login', credentials);
-    },
-    getProfile: (id) => apiClient.get(`/auth/profile/${id}`),
-    updateProfile: (id, userData) => apiClient.put(`/auth/profile/${id}`, userData),
+// Update your auth section in api.js
+auth: {
+  register: (userData) => {
+    console.log('API: Registering user with data:', userData);
+    return apiClient.post('/auth/register', userData);
   },
+  login: (credentials) => {
+    console.log('API: Attempting login with credentials:', credentials);
+    console.log('API: Full URL:', `${API_BASE_URL}/auth/login`);
+    return apiClient.post('/auth/login', credentials);
+  },
+  getProfile: (id) => apiClient.get(`/auth/profile/${id}`),
+  updateProfile: (id, userData) => apiClient.put(`/auth/profile/${id}`, userData),
+},
 
     appointments: {
     getAll: () => apiClient.get('/appointments'),

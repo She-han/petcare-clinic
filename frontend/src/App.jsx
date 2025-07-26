@@ -9,6 +9,7 @@ import Products from "./pages/Products";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import AdminDashboard from "./pages/AdminDashboard";
+import Checkout from './pages/Checkout';
 
 function App() {
   console.log('App component rendering...');
@@ -25,6 +26,8 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/checkout" element={<Checkout />} />
+            
             
             {/* Admin Routes */}
             <Route path="/admin/*" element={<AdminDashboard />} />
