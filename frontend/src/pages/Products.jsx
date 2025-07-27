@@ -630,7 +630,7 @@ const Products = () => {
                                 className="flex items-center justify-center flex-1 h-10 px-4 py-3 space-x-2 text-sm font-semibold text-white transition-colors duration-200 bg-green-600 rounded-lg hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                               >
                                 <ShoppingCartIcon className="w-4 h-4" />
-                                <span>Add Cart</span>
+                                <span>AddCart</span>
                               </motion.button>
                               
                               <motion.button
@@ -641,7 +641,7 @@ const Products = () => {
                                 className="flex items-center justify-center flex-1 h-10 px-4 py-3 space-x-2 text-sm font-semibold text-white transition-colors duration-200 bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                               >
                                 <ShoppingBagIcon className="w-4 h-4" />
-                                <span>Buy Now</span>
+                                <span>BuyNow</span>
                               </motion.button>
                             </div>
                           </div>

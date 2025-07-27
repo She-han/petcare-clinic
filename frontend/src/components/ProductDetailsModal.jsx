@@ -8,7 +8,8 @@ import {
   Chip,
   Rating,
   IconButton,
-  Backdrop
+  Backdrop,
+  CircularProgress
 } from '@mui/material';
 import {
   Close as CloseIcon,
@@ -16,33 +17,116 @@ import {
   Star as StarIcon
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AuthContext } from '../contexts/AuthContext'; // Make sure this import is correct
+import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import apiService from '../services/api';
 
 const ProductDetailsModal = ({ product, onClose }) => {
   const { user, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [processingCheckout, setProcessingCheckout] = useState(false);
 
-  const handleCheckout = () => {
+  const handleAddToCart = async () => {
     if (!isAuthenticated) {
-      toast.error('Please login to continue with checkout');
-      onClose();
+      toast.error('Please login to add items to cart');
       return;
     }
 
-    // Navigate to checkout page with product details
-    navigate('/checkout', {
-      state: {
-        type: 'single',
-        product: {
-          ...product,
-          quantity
-        }
+    try {
+      setAddingToCart(true);
+
+      const addToCartRequest = {
+        productId: product.id,
+        quantity: quantity,
+        unitPrice: product.price
+      };
+
+      await apiService.cart.addItem(user.id, addToCartRequest);
+      
+      toast.success(`${product.name} added to cart successfully!`, {
+        duration: 3000,
+        position: 'top-right',
+        style: {
+          background: '#2ECC71',
+          color: 'white',
+          fontWeight: '600',
+          borderRadius: '12px',
+        },
+      });
+
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      
+      let errorMessage = 'Failed to add product to cart';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
       }
-    });
-    onClose();
+      
+      toast.error(errorMessage, {
+        duration: 4000,
+        position: 'top-right',
+        style: {
+          background: '#FF6B6B',
+          color: 'white',
+          fontWeight: '600',
+          borderRadius: '12px',
+        },
+      });
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  const handleCheckout = async () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to continue with checkout');
+      return;
+    }
+
+    try {
+      setProcessingCheckout(true);
+
+      // Add item to cart silently (without notification)
+      const addToCartRequest = {
+        productId: product.id,
+        quantity: quantity,
+        unitPrice: product.price
+      };
+
+      await apiService.cart.addItem(user.id, addToCartRequest);
+      
+      // Close modal and navigate to checkout
+      onClose();
+      navigate('/checkout');
+
+    } catch (error) {
+      console.error('Error during checkout process:', error);
+      
+      let errorMessage = 'Failed to process checkout';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage, {
+        duration: 4000,
+        position: 'top-right',
+        style: {
+          background: '#FF6B6B',
+          color: 'white',
+          fontWeight: '600',
+          borderRadius: '12px',
+        },
+      });
+    } finally {
+      setProcessingCheckout(false);
+    }
   };
 
   const modalVariants = {
@@ -97,7 +181,7 @@ const ProductDetailsModal = ({ product, onClose }) => {
             <Box
               sx={{
                 position: 'relative',
-                background: 'linear-gradient(135deg, #2ECC71, #144E8C)',
+                background: 'linear-gradient(135deg, #103E70, #144E8C)',
                 color: 'white',
                 p: 3,
                 display: 'flex',
@@ -282,30 +366,76 @@ const ProductDetailsModal = ({ product, onClose }) => {
                       </Box>
                     </Box>
 
-                    {/* Action Button */}
-                    <Button
-                      variant="contained"
-                      size="large"
-                      fullWidth
-                      onClick={handleCheckout}
-                      disabled={product.stockQuantity === 0}
-                      sx={{
-                        background: 'linear-gradient(135deg, #2ECC71, #144E8C)',
-                        color: 'white',
-                        borderRadius: 3,
-                        py: 2,
-                        fontWeight: 600,
-                        fontSize: '1.1rem',
-                        '&:hover': {
-                          background: 'linear-gradient(135deg, #144E8C, #2ECC71)',
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 10px 30px rgba(46, 204, 113, 0.3)'
-                        },
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      Proceed to Checkout
-                    </Button>
+                    {/* Action Buttons */}
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                      {/* Add to Cart Button */}
+                      <Button
+                        variant="outlined"
+                        size="large"
+                        fullWidth
+                        startIcon={addingToCart ? <CircularProgress size={20} color="inherit" /> : <CartIcon />}
+                        onClick={handleAddToCart}
+                        disabled={product.stockQuantity === 0 || addingToCart || processingCheckout}
+                        sx={{
+                          color: '#2ECC71',
+                          borderColor: '#2ECC71',
+                          borderWidth: 2,
+                          borderRadius: 3,
+                          py: 2,
+                          fontWeight: 600,
+                          fontSize: '1rem',
+                          '&:hover': {
+                            backgroundColor: '#2ECC71',
+                            color: 'white',
+                            transform: 'translateY(-2px)',
+                            boxShadow: '0 8px 25px rgba(46, 204, 113, 0.3)'
+                          },
+                          '&:disabled': {
+                            borderColor: '#ccc',
+                            color: '#999'
+                          },
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        {addingToCart ? 'Adding...' : 'Add to Cart'}
+                      </Button>
+
+                      {/* Checkout Button */}
+                      <Button
+                        variant="contained"
+                        size="large"
+                        fullWidth
+                        onClick={handleCheckout}
+                        disabled={product.stockQuantity === 0 || processingCheckout || addingToCart}
+                        sx={{
+                          background: '#144E8C',
+                          color: 'white',
+                          borderRadius: 3,
+                          py: 2,
+                          fontWeight: 600,
+                          fontSize: '1rem',
+                          '&:hover': {
+                            background: '#2ECC71',
+                            transform: 'translateY(-2px)',
+                            boxShadow: '0 10px 30px rgba(46, 204, 113, 0.3)'
+                          },
+                          '&:disabled': {
+                            background: '#ccc',
+                            color: '#999'
+                          },
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        {processingCheckout ? (
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <CircularProgress size={20} color="inherit" />
+                            Processing...
+                          </Box>
+                        ) : (
+                          'Buy Now'
+                        )}
+                      </Button>
+                    </Box>
                   </Box>
                 </Grid>
               </Grid>

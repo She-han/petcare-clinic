@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   Typography,
   Button,
@@ -32,7 +33,10 @@ const Products = () => {
   const [showProductModal, setShowProductModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [actionType, setActionType] = useState(''); // 'cart' or 'buy'
+  const [addingToCart, setAddingToCart] = useState({}); // Track loading state per product
 
+  const navigate = useNavigate();
+  
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -82,28 +86,67 @@ const Products = () => {
 
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
+      setSelectedProduct(product);
       setActionType('cart');
       setShowAuthModal(true);
       return;
     }
 
     try {
-      await apiService.cart.addItem({
+      // Set loading state for this specific product
+      setAddingToCart(prev => ({ ...prev, [product.id]: true }));
+
+      const addToCartRequest = {
         productId: product.id,
         quantity: 1,
         unitPrice: product.price
+      };
+
+      // Use the correct API endpoint structure based on your CartService
+      await apiService.cart.addItem(user.id, addToCartRequest);
+      
+      toast.success(`${product.name} added to cart successfully!`, {
+        duration: 3000,
+        position: 'top-right',
+        style: {
+          background: '#2ECC71',
+          color: 'white',
+          fontWeight: '600',
+          borderRadius: '12px',
+        },
       });
-      toast.success('Product added to cart successfully!');
+
     } catch (error) {
       console.error('Error adding to cart:', error);
-      toast.error('Failed to add product to cart');
+      
+      // Handle specific error messages
+      let errorMessage = 'Failed to add product to cart';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage, {
+        duration: 4000,
+        position: 'top-right',
+        style: {
+          background: '#FF6B6B',
+          color: 'white',
+          fontWeight: '600',
+          borderRadius: '12px',
+        },
+      });
+    } finally {
+      // Clear loading state for this product
+      setAddingToCart(prev => ({ ...prev, [product.id]: false }));
     }
   };
 
   const handleBuyNow = (product) => {
     if (!isAuthenticated) {
-      setActionType('buy');
       setSelectedProduct(product);
+      setActionType('buy');
       setShowAuthModal(true);
       return;
     }
@@ -119,6 +162,15 @@ const Products = () => {
     } else if (actionType === 'buy' && selectedProduct) {
       setShowProductModal(true);
     }
+    // Clear selected product and action type
+    setSelectedProduct(null);
+    setActionType('');
+  };
+
+  const handleAuthModalClose = () => {
+    setShowAuthModal(false);
+    setSelectedProduct(null);
+    setActionType('');
   };
 
   if (loading) {
@@ -175,7 +227,7 @@ const Products = () => {
         </motion.div>
 
         <Grid container spacing={4} sx={{ justifyContent: 'center', alignItems: 'stretch' }}>
-          {products.slice(1,5).map((product,index) => (
+          {products.slice(1,5).map((product, index) => (
             <Grid item xs={12} sm={6} lg={3} key={product.id}>
               <motion.div
                 variants={fadeInUp}
@@ -187,13 +239,12 @@ const Products = () => {
                 <Card 
                   sx={{
                     width: '300px',
-                    height: '600px ',
+                    height: '600px',
                     borderRadius: 4,
                     border: 'none',
                     boxShadow: '0 4px 20px rgba(46, 204, 113, 0.1)',
                     '&:hover': {
                       boxShadow: '0 20px 40px rgba(46, 204, 113, 0.2)'
-                     
                     },
                     transition: 'all 0.3s ease',
                     backgroundColor: 'white',
@@ -241,11 +292,14 @@ const Products = () => {
                     <CardMedia
                       component="img"
                       height={200}
+                      
                       image={product.imageUrl || 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&h=300&fit=crop'}
                       alt={product.name}
                       sx={{
                         objectFit: 'cover',
-                        borderRadius: '16px 16px 0 0'
+                        borderRadius: '16px 16px 0 0',
+                        padding:'8px',
+                       
                       }}
                     />
                   </motion.div>
@@ -272,7 +326,8 @@ const Products = () => {
                         color: '#28283E',
                         mb: 0,
                         fontSize: { xs: '1.1rem', md: '1.3rem' },
-                        flexGrow: 1
+                        flexGrow: 1,
+                        minHeight: '2.6rem' // Ensure consistent height
                       }}
                     >
                       {product.name}
@@ -336,13 +391,13 @@ const Products = () => {
                     </Box>
 
                     {/* Action Buttons */}
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 'auto' }}>
                       <Button
                         variant="contained"
                         fullWidth
-                        startIcon={<ShoppingIcon />}
+                        startIcon={addingToCart[product.id] ? <CircularProgress size={16} color="inherit" /> : <ShoppingIcon />}
                         onClick={() => handleAddToCart(product)}
-                        disabled={product.stockQuantity === 0}
+                        disabled={product.stockQuantity === 0 || addingToCart[product.id]}
                         sx={{
                           backgroundColor: '#2ECC71',
                           color: 'white',
@@ -361,7 +416,7 @@ const Products = () => {
                           transition: 'all 0.3s ease'
                         }}
                       >
-                        Add to Cart
+                        {addingToCart[product.id] ? 'Adding...' : 'Add to Cart'}
                       </Button>
 
                       <Button
@@ -405,6 +460,7 @@ const Products = () => {
             <Button
               variant="outlined"
               size="large"
+              onClick={() => navigate('/products')}
               sx={{
                 color: '#2ECC71',
                 borderColor: '#2ECC71',
@@ -440,7 +496,8 @@ const Products = () => {
       {/* Auth Modal */}
       {showAuthModal && (
         <AuthModal
-          onClose={() => setShowAuthModal(false)}
+          open={showAuthModal}
+          onClose={handleAuthModalClose}
           onSuccess={handleAuthSuccess}
         />
       )}
