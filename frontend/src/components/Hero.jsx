@@ -26,14 +26,14 @@ const Hero = () => {
   const slides = [
     {
       id: 1,
-      title: "Your Pet's Health is Our",
-      highlight: "Priority",
-      subtitle: "Compassionate Care, Advanced Technology",
+      title: "Pet's Health is ",
+      highlight: "Our Priority",
+      subtitle: "Compassionate Care, Advanced Tech",
       description: "Professional veterinary care with modern technology and compassionate service. We treat your pets like family because they are family.",
       image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&h=600&fit=crop",
       stats: [
         { number: '10,000+', label: 'Happy Pets' },
-        { number: '15+', label: 'Expert Doctors' },
+       
         { number: '24/7', label: 'Emergency Care' },
         { number: '5★', label: 'Rating' }
       ],
@@ -50,7 +50,7 @@ const Hero = () => {
       image: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=800&h=600&fit=crop",
       stats: [
         { number: '24/7', label: 'Available' },
-        { number: '<5min', label: 'Response Time' },
+      
         { number: '98%', label: 'Success Rate' },
         { number: '1000+', label: 'Lives Saved' }
       ],
@@ -67,8 +67,8 @@ const Hero = () => {
       image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&h=600&fit=crop",
       stats: [
         { number: '95%', label: 'Prevention Success' },
-        { number: '12+', label: 'Years Average' },
-        { number: '500+', label: 'Monthly Checkups' },
+        
+        { number: '500+', label: 'Checkups' },
         { number: '100%', label: 'Satisfaction' }
       ],
       gradient: 'linear-gradient(135deg, #FFF8DC 0%, #F0FFFF 100%)',
@@ -84,7 +84,7 @@ const Hero = () => {
       image: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&h=600&fit=crop",
       stats: [
         { number: '50+', label: 'Species Treated' },
-        { number: '20+', label: 'Specializations' },
+      
         { number: '15', label: 'Expert Vets' },
         { number: '8', label: 'Years Experience' }
       ],
@@ -145,52 +145,12 @@ const Hero = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        mt: 2
+        mt: 0
       }}
     >
-      {/* Parallax Background */}
-      <motion.div
-        style={{ 
-          y,
-          opacity,
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 0
-        }}
-      >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '-20%',
-            right: '10%',
-            width: 300,
-            height: 300,
-            borderRadius: '50%',
-            background: `linear-gradient(45deg, ${slides[currentSlide].primaryColor}20, ${slides[currentSlide].secondaryColor}20)`,
-            filter: 'blur(60px)',
-            animation: 'float 8s ease-in-out infinite'
-          }}
-        />
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: '-10%',
-            left: '5%',
-            width: 200,
-            height: 200,
-            borderRadius: '50%',
-            background: `linear-gradient(45deg, ${slides[currentSlide].secondaryColor}15, ${slides[currentSlide].primaryColor}15)`,
-            filter: 'blur(40px)',
-            animation: 'float 6s ease-in-out infinite reverse'
-          }}
-        />
-      </motion.div>
 
-      {/* Slide Container - 80% width with proper Grid layout */}
-      <Box sx={{ width: '90%', position: 'relative', zIndex: 1 }}>
+      {/* Slide Container - 90% width with proper Grid layout */}
+      <Box sx={{ width: '98%', position: 'relative', zIndex: 1 }}>
         <AnimatePresence mode="wait" custom={currentSlide}>
           <motion.div
             key={currentSlide}
@@ -210,14 +170,14 @@ const Hero = () => {
           >
             <Grid 
               container 
-              spacing={16} 
+              spacing={{ xs: 4, sm: 6, md: 8, lg: 12, xl: 16 }} 
               alignItems="stretch" 
               sx={{ 
-                p: { xs: 3, md: 6 },
+                p: { xs: 3, sm: 4, md: 5, lg: 2, xl: 6 },
                 minHeight: '80vh'
               }}
             >
-              {/* Text Content - Left Side (Always order 1 on screens >= 900px) */}
+              {/* Text Content - Left Side */}
               <Grid 
                 item 
                 xs={12}
@@ -227,6 +187,9 @@ const Hero = () => {
                 xl={6}
                 sx={{ 
                   order: { xs: 2, sm: 2, md: 1, lg: 1, xl: 1 },
+                  marginLeft:{
+                    xl: '60px',  // No margin for xl screens
+                  },
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center'
@@ -237,13 +200,19 @@ const Hero = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                  <Box sx={{ mb: 3 }}>
+                  <Box sx={{ mb: { xs: 3, lg: 2, xl: 3 } }}>
                     <Typography
                       variant="overline"
                       sx={{
                         color: slides[currentSlide].secondaryColor,
                         fontWeight: 700,
-                        fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
+                        fontSize: { 
+                          xs: '0.8rem', 
+                          sm: '0.9rem', 
+                          md: '1rem',
+                          lg: '0.75rem',
+                          xl: '1rem' 
+                        },
                         letterSpacing: 2,
                         mb: 1,
                         display: 'block'
@@ -264,13 +233,13 @@ const Hero = () => {
                         fontSize: { 
                           xs: '2rem', 
                           sm: '2.5rem', 
-                          md: '2.8rem', 
-                          lg: '3.2rem', 
+                          md: '2.2rem', 
+                          lg: '2.0rem',  // Reduced for 1024px screens
                           xl: '3.5rem' 
                         },
                         fontWeight: 900,
                         color: '#28283E',
-                        mb: 2,
+                        mb: { xs: 2, lg: 1.5, xl: 2 },
                         lineHeight: 1.1
                       }}
                     >
@@ -283,7 +252,7 @@ const Hero = () => {
                           WebkitTextFillColor: 'transparent',
                           backgroundClip: 'text',
                           display: 'block',
-                          transform: { xs: 'none', md: 'translateX(20px)' }
+                          transform: { xs: 'none', md: 'translateX(20px)', lg: 'translateX(10px)', xl: 'translateX(20px)' }
                         }}
                       >
                         {slides[currentSlide].highlight}
@@ -296,19 +265,7 @@ const Hero = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
                   >
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: slides[currentSlide].secondaryColor,
-                        mb: 4,
-                        fontSize: { xs: '1rem', sm: '1.1rem', md: '1.2rem' },
-                        lineHeight: 1.7,
-                        maxWidth: '90%',
-                        opacity: 0.9
-                      }}
-                    >
-                      
-                    </Typography>
+                    
                   </motion.div>
 
                   <motion.div
@@ -316,56 +273,76 @@ const Hero = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
                   >
-                    <Box sx={{ display: 'flex', gap: { xs: 2, md: 3 }, mb: 5, flexWrap: 'wrap' }}>
+                    <Box sx={{ 
+                      display: 'flex', 
+                      gap: { xs: 2, md: 3, lg: 1, xl: 3 }, 
+                      mb: { xs: 5, lg: 3, xl: 5 }, 
+                      flexWrap: 'wrap' 
+                    }}>
                       <Button
-                        variant="contained"
-                        size="large"
-                        startIcon={<ScheduleIcon />}
-                        sx={{
-                          backgroundColor: slides[currentSlide].primaryColor,
-                          color: 'white',
-                          px: { xs: 3, md: 4 },
-                          py: { xs: 1.5, md: 2 },
-                          borderRadius: 4,
-                          fontWeight: 700,
-                          fontSize: { xs: '0.9rem', md: '1.1rem' },
-                          textTransform: 'none',
-                          boxShadow: `0 8px 32px ${slides[currentSlide].primaryColor}40`,
-                          '&:hover': {
-                            backgroundColor: slides[currentSlide].secondaryColor,
-                            transform: 'translateY(-4px)',
-                            boxShadow: `0 12px 40px ${slides[currentSlide].primaryColor}60`
-                          },
-                          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-                        }}
-                      >
-                        Book Appointment
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        size="large"
-                        startIcon={<ShoppingIcon />}
-                        sx={{
-                          color: slides[currentSlide].secondaryColor,
-                          borderColor: slides[currentSlide].secondaryColor,
-                          borderWidth: 2,
-                          px: { xs: 3, md: 4 },
-                          py: { xs: 1.5, md: 2 },
-                          borderRadius: 4,
-                          fontWeight: 700,
-                          fontSize: { xs: '0.9rem', md: '1.1rem' },
-                          textTransform: 'none',
-                          '&:hover': {
-                            backgroundColor: slides[currentSlide].secondaryColor,
-                            color: 'white',
-                            transform: 'translateY(-4px)',
-                            boxShadow: `0 12px 40px ${slides[currentSlide].secondaryColor}40`
-                          },
-                          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-                        }}
-                      >
-                        Shop Products
-                      </Button>
+  variant="contained"
+  size="large"
+  startIcon={<ScheduleIcon />}
+  sx={{
+    backgroundColor: slides[currentSlide].primaryColor,
+    color: 'white',
+    px: { xs: 3, md: 4, lg: 2, xl: 4 },        // Fixed: was 0, now 2
+    py: { xs: 1.5, md: 2, lg: 1, xl: 2 },      // Reduced: was 1.2, now 1
+    borderRadius: 4,
+    fontWeight: 700,
+    fontSize: { 
+      xs: '0.9rem', 
+      md: '1.1rem',
+      lg: '0.8rem',  // Reduced for lg screens
+      xl: '1.1rem' 
+    },
+    textTransform: 'none',
+    boxShadow: `0 8px 32px ${slides[currentSlide].primaryColor}40`,
+    '&:hover': {
+      backgroundColor: slides[currentSlide].secondaryColor,
+      transform: 'translateY(-4px)',
+      boxShadow: `0 12px 40px ${slides[currentSlide].primaryColor}60`
+    },
+    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+  }}
+>
+  Book Appointment
+</Button>
+
+<Button
+  variant="outlined"
+  size="large"
+  startIcon={<ShoppingIcon />}
+  sx={{
+    width: { xs: '100%', 
+      md: '150px',
+      lg: '150px',
+      xl: '150px'},
+    color: slides[currentSlide].secondaryColor,
+    borderColor: slides[currentSlide].secondaryColor,
+    borderWidth: 2,
+    px: { xs: 3, md: 4, lg: 2, xl: 4 },        // Reduced: was 2.5, now 2
+    py: { xs: 1.5, md: 2, lg: 1, xl: 2 },      // Reduced: was 1.2, now 1
+    borderRadius: 4,
+    fontWeight: 700,
+    fontSize: { 
+      xs: '0.9rem', 
+      md: '1.1rem',
+      lg: '0.8rem',  // Reduced for lg screens
+      xl: '1.1rem' 
+    },
+    textTransform: 'none',
+    '&:hover': {
+      backgroundColor: slides[currentSlide].secondaryColor,
+      color: 'white',
+      transform: 'translateY(-4px)',
+      boxShadow: `0 12px 40px ${slides[currentSlide].secondaryColor}40`
+    },
+    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+  }}
+>
+  Shop
+</Button>
                     </Box>
                   </motion.div>
 
@@ -375,7 +352,7 @@ const Hero = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 1 }}
                   >
-                    <Grid container spacing={2}>
+                    <Grid container spacing={{ xs: 2, lg: 1.5, xl: 2 }}>
                       {slides[currentSlide].stats.map((stat, index) => (
                         <Grid item xs={6} sm={3} key={index}>
                           <motion.div
@@ -391,7 +368,7 @@ const Hero = () => {
                             <Box
                               sx={{
                                 textAlign: 'center',
-                                p: { xs: 1.5, md: 2 },
+                                p: { xs: 1.5, md: 2, lg: 1, xl: 2 },
                                 borderRadius: 3,
                                 backgroundColor: 'rgba(255, 255, 255, 0.8)',
                                 backdropFilter: 'blur(10px)',
@@ -411,7 +388,13 @@ const Hero = () => {
                                   WebkitBackgroundClip: 'text',
                                   WebkitTextFillColor: 'transparent',
                                   backgroundClip: 'text',
-                                  fontSize: { xs: '1.3rem', sm: '1.6rem', md: '2rem' },
+                                  fontSize: { 
+                                    xs: '1.3rem', 
+                                    sm: '1.6rem', 
+                                    md: '2rem',
+                                    lg: '1.4rem',  // Reduced for 1024px screens
+                                    xl: '2rem' 
+                                  },
                                   mb: 0.5
                                 }}
                               >
@@ -422,7 +405,12 @@ const Hero = () => {
                                 sx={{
                                   color: slides[currentSlide].secondaryColor,
                                   fontWeight: 600,
-                                  fontSize: { xs: '0.7rem', md: '0.85rem' },
+                                  fontSize: { 
+                                    xs: '0.7rem', 
+                                    md: '0.85rem',
+                                    lg: '0.75rem',  // Reduced for 1024px screens
+                                    xl: '0.85rem' 
+                                  },
                                   opacity: 0.8
                                 }}
                               >
@@ -437,7 +425,7 @@ const Hero = () => {
                 </motion.div>
               </Grid>
 
-              {/* Image Content - Right Side (Always order 2 on screens >= 900px) */}
+              {/* Image Content - Right Side */}
               <Grid 
                 item 
                 xs={12} 
@@ -464,11 +452,14 @@ const Hero = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                       width: '100%',
+                      marginLeft: {
+                        xl: '140px',  // Added margin for xl screens
+                      },
                       height: { 
                         xs: '300px', 
                         sm: '400px', 
                         md: '500px', 
-                        lg: '500px', 
+                        lg: '400px',  // Reduced height for 1024px screens
                         xl: '500px' 
                       }
                     }}
@@ -497,7 +488,7 @@ const Hero = () => {
                             xs: 280, 
                             sm: 350, 
                             md: 400, 
-                            lg: 450, 
+                            lg: 350,  // Reduced width for 1024px screens
                             xl: 500 
                           },
                           height: 'auto',
@@ -510,7 +501,7 @@ const Hero = () => {
                       />
                     </motion.div>
 
-                    {/* Floating Elements */}
+                    {/* Floating Elements - Adjusted sizes for 1024px screens */}
                     <motion.div
                       animate={{
                         y: [0, -20, 0],
@@ -532,25 +523,31 @@ const Hero = () => {
                         sx={{
                           backgroundColor: 'white',
                           borderRadius: 4,
-                          p: { xs: 1.5, sm: 2, md: 2.5 },
+                          p: { xs: 1.5, sm: 2, md: 2.5, lg: 1.5, xl: 2.5 },
                           boxShadow: `0 15px 40px ${slides[currentSlide].primaryColor}40`,
                           display: 'flex',
                           alignItems: 'center',
-                          gap: { xs: 1, md: 1.5 },
+                          gap: { xs: 1, md: 1.5, lg: 1, xl: 1.5 },
                           border: `2px solid ${slides[currentSlide].primaryColor}20`,
                           backdropFilter: 'blur(10px)'
                         }}
                       >
                         <HeartIcon sx={{ 
                           color: slides[currentSlide].primaryColor, 
-                          fontSize: { xs: 18, sm: 22, md: 28 } 
+                          fontSize: { xs: 18, sm: 22, md: 28, lg: 20, xl: 28 } 
                         }} />
                         <Typography 
                           variant="body1" 
                           sx={{ 
                             color: '#28283E', 
                             fontWeight: 700,
-                            fontSize: { xs: '0.7rem', sm: '0.9rem', md: '1rem' }
+                            fontSize: { 
+                              xs: '0.7rem', 
+                              sm: '0.9rem', 
+                              md: '1rem',
+                              lg: '0.8rem',  // Reduced for 1024px screens
+                              xl: '1rem' 
+                            }
                           }}
                         >
                           24/7 Care
@@ -580,25 +577,31 @@ const Hero = () => {
                         sx={{
                           backgroundColor: 'white',
                           borderRadius: 4,
-                          p: { xs: 1.5, sm: 2, md: 2.5 },
+                          p: { xs: 1.5, sm: 2, md: 2.5, lg: 1.5, xl: 2.5 },
                           boxShadow: `0 15px 40px ${slides[currentSlide].secondaryColor}40`,
                           display: 'flex',
                           alignItems: 'center',
-                          gap: { xs: 1, md: 1.5 },
+                          gap: { xs: 1, md: 1.5, lg: 1, xl: 1.5 },
                           border: `2px solid ${slides[currentSlide].secondaryColor}20`,
                           backdropFilter: 'blur(10px)'
                         }}
                       >
                         <StarIcon sx={{ 
                           color: slides[currentSlide].secondaryColor, 
-                          fontSize: { xs: 18, sm: 22, md: 28 } 
+                          fontSize: { xs: 18, sm: 22, md: 28, lg: 20, xl: 28 } 
                         }} />
                         <Typography 
                           variant="body1" 
                           sx={{ 
                             color: '#28283E', 
                             fontWeight: 700,
-                            fontSize: { xs: '0.7rem', sm: '0.9rem', md: '1rem' }
+                            fontSize: { 
+                              xs: '0.7rem', 
+                              sm: '0.9rem', 
+                              md: '1rem',
+                              lg: '0.8rem',  // Reduced for 1024px screens
+                              xl: '1rem' 
+                            }
                           }}
                         >
                           5★ Rated
@@ -687,30 +690,6 @@ const Hero = () => {
         >
           <ArrowForwardIcon sx={{ fontSize: { xs: 18, md: 24 } }} />
         </IconButton>
-      </Box>
-
-      {/* Progress Bar */}
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          height: 4,
-          backgroundColor: 'rgba(255, 255, 255, 0.3)',
-          zIndex: 10
-        }}
-      >
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: '100%' }}
-          transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-          key={currentSlide}
-          style={{
-            height: '100%',
-            background: `linear-gradient(90deg, ${slides[currentSlide].primaryColor}, ${slides[currentSlide].secondaryColor})`
-          }}
-        />
       </Box>
 
       <style jsx>{`

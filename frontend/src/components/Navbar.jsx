@@ -252,7 +252,7 @@ const Navbar = () => {
         position="fixed" 
         elevation={0}
         sx={{ 
-          backgroundColor: 'rgba(237, 252, 253, 0.95)',
+          backgroundColor: 'rgba(210, 245, 225, 0.80)',
           backdropFilter: 'blur(20px)',
           borderBottom: '1px solid rgba(46, 204, 113, 0.1)',
           zIndex: 1300
