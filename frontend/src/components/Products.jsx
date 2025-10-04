@@ -241,7 +241,7 @@ const Products = () => {
                     width: '300px',
                     height: '600px',
                     borderRadius: 4,
-                    border: 'none',
+                    border: '1px solid #E0E0E0',
                     boxShadow: '0 4px 20px rgba(46, 204, 113, 0.1)',
                     '&:hover': {
                       boxShadow: '0 20px 40px rgba(46, 204, 113, 0.2)'
@@ -321,13 +321,16 @@ const Products = () => {
 
                     <Typography
                       variant="h6"
+                      onClick={() => handleBuyNow(product)}
                       sx={{
                         fontWeight: 600,
                         color: '#28283E',
                         mb: 0,
                         fontSize: { xs: '1.1rem', md: '1.3rem' },
                         flexGrow: 1,
-                        minHeight: '2.6rem' // Ensure consistent height
+                        minHeight: '0.1 rem', // Ensure consistent height
+                        cursor: 'pointer',
+         
                       }}
                     >
                       {product.name}
@@ -406,7 +409,7 @@ const Products = () => {
                           fontWeight: 600,
                           fontSize: { xs: '0.8rem', md: '0.9rem' },
                           '&:hover': {
-                            backgroundColor: '#144E8C',
+                           
                             transform: 'translateY(-2px)'
                           },
                           '&:disabled': {
