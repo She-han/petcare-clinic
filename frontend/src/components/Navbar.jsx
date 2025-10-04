@@ -252,7 +252,7 @@ const Navbar = () => {
         position="fixed" 
         elevation={0}
         sx={{ 
-          backgroundColor: 'rgba(210, 245, 225, 0.80)',
+          backgroundColor: '#28283EEE',
           backdropFilter: 'blur(20px)',
           borderBottom: '1px solid rgba(46, 204, 113, 0.1)',
           zIndex: 1300
@@ -275,7 +275,7 @@ const Navbar = () => {
                   component="div"
                   sx={{
                     fontWeight: 800,
-                    color: '#28283E',
+                    color: 'white',
                     fontSize: { xs: '1.2rem', md: '1.5rem' }
                   }}
                 >
@@ -301,7 +301,7 @@ const Navbar = () => {
                       <Button
                         onClick={() => handleNavigation(item.path)}
                         sx={{
-                          color: isActiveRoute(item.path) ? '#2ECC71' : '#28283E',
+                          color: isActiveRoute(item.path) ? '#2ECC71' : 'white',
                           fontWeight: isActiveRoute(item.path) ? 600 : 500,
                           fontSize: '0.95rem',
                           position: 'relative',
@@ -347,7 +347,7 @@ const Navbar = () => {
                         <IconButton
                           onClick={handleCartClick}
                           sx={{
-                            color: isActiveRoute('/cart') ? '#2ECC71' : '#28283E',
+                            color: isActiveRoute('/cart') ? '#2ECC71' : 'white',
                             '&:hover': {
                               color: '#2ECC71',
                               backgroundColor: 'rgba(46, 204, 113, 0.04)'
@@ -400,7 +400,7 @@ const Navbar = () => {
                         <Typography
                           variant="body2"
                           sx={{
-                            color: '#28283E',
+                            color: 'white',
                             fontWeight: 600,
                             ml: 1
                           }}
