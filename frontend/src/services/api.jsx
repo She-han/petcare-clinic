@@ -98,6 +98,10 @@ const apiService = {
     getByUser: (userId) => apiClient.get(`/appointments/user/${userId}`),
     checkAvailability: (veterinarianId, date, time) => 
       apiClient.get(`/appointments/check-availability?veterinarianId=${veterinarianId}&date=${date}&time=${time}`),
+    addTestimonial: (appointmentId, testimonialData) => 
+      apiClient.post(`/appointments/${appointmentId}/testimonial`, testimonialData),
+    getReviewsByVeterinarian: (veterinarianId) => 
+      apiClient.get(`/appointments/veterinarian/${veterinarianId}/reviews`),
   },
 
   // Cart API - FIXED
@@ -127,6 +131,18 @@ const apiService = {
     getById: (id) => apiClient.get(`/orders/${id}`),
     getByUser: (userId) => apiClient.get(`/orders/user/${userId}`),
     updateStatus: (id, status) => apiClient.put(`/orders/${id}/status`, { status }),
+  },
+
+  // Testimonials API
+  testimonials: {
+    getAll: () => apiClient.get('/testimonials'),
+    getApproved: () => apiClient.get('/testimonials/approved'),
+    getFeatured: () => apiClient.get('/testimonials/featured'),
+    getById: (id) => apiClient.get(`/testimonials/${id}`),
+    create: (testimonial) => apiClient.post('/testimonials', testimonial),
+    update: (id, testimonial) => apiClient.put(`/testimonials/${id}`, testimonial),
+    approve: (id, approvedBy) => apiClient.put(`/testimonials/${id}/approve`, { approvedBy }),
+    delete: (id) => apiClient.delete(`/testimonials/${id}`),
   },
 };
 

@@ -157,4 +157,39 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    // Add testimonial/review to appointment
+    @PostMapping("/{id}/testimonial")
+    public ResponseEntity<Appointment> addTestimonial(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, Object> testimonialData) {
+        try {
+            Integer appointmentRating = (Integer) testimonialData.get("appointmentRating");
+            Integer doctorRating = (Integer) testimonialData.get("doctorRating");
+            String reviewComment = (String) testimonialData.get("reviewComment");
+
+            Appointment updatedAppointment = appointmentService.addTestimonial(id, appointmentRating, doctorRating, reviewComment);
+            if (updatedAppointment != null) {
+                return ResponseEntity.ok(updatedAppointment);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            System.err.println("Error adding testimonial: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // Get appointments with reviews for a veterinarian
+    @GetMapping("/veterinarian/{veterinarianId}/reviews")
+    public ResponseEntity<List<Appointment>> getAppointmentsWithReviews(@PathVariable Long veterinarianId) {
+        try {
+            List<Appointment> reviewedAppointments = appointmentService.getAppointmentsWithReviewsByVeterinarian(veterinarianId);
+            return ResponseEntity.ok(reviewedAppointments);
+        } catch (Exception e) {
+            System.err.println("Error getting reviewed appointments: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

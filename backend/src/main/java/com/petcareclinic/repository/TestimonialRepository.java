@@ -11,10 +11,16 @@ import java.util.List;
 public interface TestimonialRepository extends JpaRepository<Testimonial, Long> {
 
     // Find approved testimonials
+    List<Testimonial> findByIsApprovedTrue();
+
+    // Find featured testimonials
+    List<Testimonial> findByIsFeaturedTrue();
+
+    // Find approved testimonials ordered by date
     @Query("SELECT t FROM Testimonial t WHERE t.isApproved = true ORDER BY t.createdAt DESC")
     List<Testimonial> findApprovedTestimonials();
 
-    // Find featured testimonials
+    // Find featured testimonials ordered
     @Query("SELECT t FROM Testimonial t WHERE t.isFeatured = true AND t.isApproved = true ORDER BY t.createdAt DESC")
     List<Testimonial> findFeaturedTestimonials();
 

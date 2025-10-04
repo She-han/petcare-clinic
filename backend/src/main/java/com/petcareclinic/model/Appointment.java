@@ -52,6 +52,19 @@ public class Appointment {
     @Column(name = "status")
     private String status = "SCHEDULED";
 
+    // Testimonial/Review fields
+    @Column(name = "appointment_rating")
+    private Integer appointmentRating; // 1-5
+
+    @Column(name = "doctor_rating")
+    private Integer doctorRating; // 1-5
+
+    @Column(name = "review_comment", columnDefinition = "TEXT")
+    private String reviewComment;
+
+    @Column(name = "review_created_at")
+    private LocalDateTime reviewCreatedAt;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -121,4 +134,17 @@ public class Appointment {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    // Testimonial/Review getters and setters
+    public Integer getAppointmentRating() { return appointmentRating; }
+    public void setAppointmentRating(Integer appointmentRating) { this.appointmentRating = appointmentRating; }
+
+    public Integer getDoctorRating() { return doctorRating; }
+    public void setDoctorRating(Integer doctorRating) { this.doctorRating = doctorRating; }
+
+    public String getReviewComment() { return reviewComment; }
+    public void setReviewComment(String reviewComment) { this.reviewComment = reviewComment; }
+
+    public LocalDateTime getReviewCreatedAt() { return reviewCreatedAt; }
+    public void setReviewCreatedAt(LocalDateTime reviewCreatedAt) { this.reviewCreatedAt = reviewCreatedAt; }
 }

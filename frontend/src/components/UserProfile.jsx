@@ -19,12 +19,14 @@ import {
   Edit as EditIcon,
   Save as SaveIcon,
   Cancel as CancelIcon,
-  Person as PersonIcon
+  Person as PersonIcon,
+  RateReview as RateReviewIcon
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 import apiService from '../services/api';
+import TestimonialModal from './TestimonialModal';
 
 const UserProfile = () => {
   const { user, updateUser } = useAuth();
@@ -45,6 +47,10 @@ const UserProfile = () => {
 
   const [userAppointments, setUserAppointments] = useState([]);
   const [appointmentsLoading, setAppointmentsLoading] = useState(false);
+  const [testimonialModal, setTestimonialModal] = useState({
+    open: false,
+    appointment: null
+  });
 
   useEffect(() => {
     if (user) {
@@ -122,6 +128,24 @@ const UserProfile = () => {
   const handleCancel = () => {
     setEditing(false);
     fetchUserProfile(); // Reset to original data
+  };
+
+  const handleOpenTestimonialModal = (appointment) => {
+    setTestimonialModal({
+      open: true,
+      appointment: appointment
+    });
+  };
+
+  const handleCloseTestimonialModal = () => {
+    setTestimonialModal({
+      open: false,
+      appointment: null
+    });
+  };
+
+  const handleTestimonialSuccess = () => {
+    fetchUserAppointments(); // Refresh appointments to show updated testimonial status
   };
 
   if (!user) {
@@ -509,6 +533,44 @@ const UserProfile = () => {
                           <strong>Notes:</strong> {appointment.additionalNotes}
                         </Typography>
                       )}
+
+                      {/* Testimonial Section */}
+                      {appointment.appointmentRating ? (
+                        <Box sx={{ mt: 2, p: 2, backgroundColor: 'rgba(46, 204, 113, 0.1)', borderRadius: 2 }}>
+                          <Typography variant="body2" color="#2ECC71" fontWeight="600" mb={1}>
+                            ✓ Review Submitted
+                          </Typography>
+                          <Typography variant="body2" color="#144E8C">
+                            Appointment Rating: {'⭐'.repeat(appointment.appointmentRating)}
+                          </Typography>
+                          <Typography variant="body2" color="#144E8C">
+                            Doctor Rating: {'⭐'.repeat(appointment.doctorRating)}
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <Box sx={{ mt: 2 }}>
+                          <Button
+                            variant="contained"
+                            fullWidth
+                            startIcon={<RateReviewIcon />}
+                            onClick={() => handleOpenTestimonialModal(appointment)}
+                            sx={{
+                              backgroundColor: '#2ECC71',
+                              color: 'white',
+                              borderRadius: 2,
+                              py: 1,
+                              fontWeight: 600,
+                              '&:hover': {
+                                backgroundColor: '#27AE60',
+                                transform: 'translateY(-2px)'
+                              },
+                              transition: 'all 0.3s ease'
+                            }}
+                          >
+                            Rate Appointment
+                          </Button>
+                        </Box>
+                      )}
                     </CardContent>
                   </Card>
                 </Grid>
@@ -516,6 +578,16 @@ const UserProfile = () => {
             </Grid>
           )}
         </Paper>
+
+        {/* Testimonial Modal */}
+        {testimonialModal.open && (
+          <TestimonialModal
+            open={testimonialModal.open}
+            onClose={handleCloseTestimonialModal}
+            appointment={testimonialModal.appointment}
+            onSuccess={handleTestimonialSuccess}
+          />
+        )}
       </motion.div>
     </Container>
   );
