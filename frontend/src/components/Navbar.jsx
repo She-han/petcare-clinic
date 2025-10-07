@@ -155,64 +155,133 @@ const Navbar = () => {
           </ListItem>
         ))}
         
-        {/* Cart in mobile drawer */}
+        {/* User Menu Items in mobile drawer */}
         {isAuthenticated && (
-          <ListItem 
-            button 
-            onClick={() => { handleCartClick(); handleDrawerToggle(); }}
-            sx={{
-              backgroundColor: isActiveRoute('/cart') ? 'rgba(46, 204, 113, 0.1)' : 'transparent',
-              borderLeft: isActiveRoute('/cart') ? '4px solid #2ECC71' : '4px solid transparent',
-              '&:hover': {
-                backgroundColor: 'rgba(46, 204, 113, 0.05)'
-              }
-            }}
-          >
-            <Badge 
-              badgeContent={cartCount} 
-              color="error"
+          <>
+            {/* My Profile */}
+            <ListItem 
+              button 
+              onClick={() => { handleProfile(); handleDrawerToggle(); }}
               sx={{
-                mr: 2,
-                '& .MuiBadge-badge': {
-                  backgroundColor: '#e74c3c',
-                  color: 'white'
+                backgroundColor: isActiveRoute('/profile') ? 'rgba(46, 204, 113, 0.1)' : 'transparent',
+                borderLeft: isActiveRoute('/profile') ? '4px solid #2ECC71' : '4px solid transparent',
+                '&:hover': {
+                  backgroundColor: 'rgba(46, 204, 113, 0.05)'
                 }
               }}
             >
-              <ShoppingCartIcon sx={{ color: '#2ECC71' }} />
-            </Badge>
+              <PersonIcon sx={{ mr: 2, color: '#2ECC71' }} />
+              <ListItemText 
+                primary="My Profile" 
+                sx={{ 
+                  '& .MuiTypography-root': { 
+                    color: isActiveRoute('/profile') ? '#2ECC71' : '#28283E',
+                    fontWeight: isActiveRoute('/profile') ? 600 : 500
+                  }
+                }} 
+              />
+            </ListItem>
+
+            {/* Admin Dashboard - Only for ADMIN users */}
+            {user?.role === 'ADMIN' && (
+              <ListItem 
+                button 
+                onClick={() => { handleAdminDashboard(); handleDrawerToggle(); }}
+                sx={{
+                  backgroundColor: isActiveRoute('/admin') ? 'rgba(46, 204, 113, 0.1)' : 'transparent',
+                  borderLeft: isActiveRoute('/admin') ? '4px solid #2ECC71' : '4px solid transparent',
+                  '&:hover': {
+                    backgroundColor: 'rgba(46, 204, 113, 0.05)'
+                  }
+                }}
+              >
+                <DashboardIcon sx={{ mr: 2, color: '#2ECC71' }} />
+                <ListItemText 
+                  primary="Admin Dashboard" 
+                  sx={{ 
+                    '& .MuiTypography-root': { 
+                      color: isActiveRoute('/admin') ? '#2ECC71' : '#28283E',
+                      fontWeight: isActiveRoute('/admin') ? 600 : 500
+                    }
+                  }} 
+                />
+              </ListItem>
+            )}
+
+            {/* Cart */}
+            <ListItem 
+              button 
+              onClick={() => { handleCartClick(); handleDrawerToggle(); }}
+              sx={{
+                backgroundColor: isActiveRoute('/cart') ? 'rgba(46, 204, 113, 0.1)' : 'transparent',
+                borderLeft: isActiveRoute('/cart') ? '4px solid #2ECC71' : '4px solid transparent',
+                '&:hover': {
+                  backgroundColor: 'rgba(46, 204, 113, 0.05)'
+                }
+              }}
+            >
+              <Badge 
+                badgeContent={cartCount} 
+                color="error"
+                sx={{
+                  mr: 2,
+                  '& .MuiBadge-badge': {
+                    backgroundColor: '#e74c3c',
+                    color: 'white'
+                  }
+                }}
+              >
+                <ShoppingCartIcon sx={{ color: '#2ECC71' }} />
+              </Badge>
+              <ListItemText 
+                primary="Cart" 
+                sx={{ 
+                  '& .MuiTypography-root': { 
+                    color: isActiveRoute('/cart') ? '#2ECC71' : '#28283E',
+                    fontWeight: isActiveRoute('/cart') ? 600 : 500
+                  }
+                }} 
+              />
+            </ListItem>
+          </>
+        )}
+        
+    
+
+        {/* Divider before authentication section */}
+        {isAuthenticated && <Divider sx={{ my: 1 }} />}
+
+        {/* Logout - Styled as menu item for authenticated users */}
+        {isAuthenticated && (
+          <ListItem 
+            button 
+            onClick={() => { handleLogout(); handleDrawerToggle(); }}
+            sx={{
+              '&:hover': {
+                backgroundColor: 'rgba(231, 76, 60, 0.05)'
+              }
+            }}
+          >
+            <LogoutIcon sx={{ mr: 2, color: '#e74c3c' }} />
             <ListItemText 
-              primary="Cart" 
+              primary="Logout" 
               sx={{ 
                 '& .MuiTypography-root': { 
-                  color: isActiveRoute('/cart') ? '#2ECC71' : '#28283E',
-                  fontWeight: isActiveRoute('/cart') ? 600 : 500
+                  color: '#e74c3c',
+                  fontWeight: 500
                 }
               }} 
             />
           </ListItem>
         )}
-        
-        <ListItem>
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={() => navigate('/appointments/book')}
-            sx={{
-              mt: 2,
-              backgroundColor: '#2ECC71',
-              '&:hover': { backgroundColor: '#144E8C' }
-            }}
-          >
-            Book Appointment
-          </Button>
-        </ListItem>
-        <ListItem>
-          {!isAuthenticated ? (
+
+        {/* Login/Signup Button for non-authenticated users */}
+        {!isAuthenticated && (
+          <ListItem>
             <Button
               variant="outlined"
               fullWidth
-              onClick={() => setAuthModalOpen(true)}
+              onClick={() => { setAuthModalOpen(true); handleDrawerToggle(); }}
               sx={{
                 mt: 1,
                 borderColor: '#2ECC71',
@@ -222,26 +291,8 @@ const Navbar = () => {
             >
               Login / Sign Up
             </Button>
-          ) : (
-            <Box sx={{ width: '100%', textAlign: 'center', mt: 2 }}>
-              <Typography variant="body2" color="#28283E" fontWeight={600}>
-                Welcome, {user.firstName}!
-              </Typography>
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={handleLogout}
-                sx={{
-                  mt: 1,
-                  borderColor: '#2ECC71',
-                  color: '#2ECC71'
-                }}
-              >
-                Logout
-              </Button>
-            </Box>
-          )}
-        </ListItem>
+          </ListItem>
+        )}
       </List>
     </Box>
   )
@@ -507,7 +558,7 @@ const Navbar = () => {
         <Divider />
         <MenuItem onClick={handleLogout} sx={{ py: 1.5, color: '#e74c3c' }}>
           <LogoutIcon sx={{ mr: 2 }} />
-          Logout
+            Logout
         </MenuItem>
       </Menu>
 
