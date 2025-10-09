@@ -141,7 +141,7 @@ const Hero = () => {
         width: '100%',
         minHeight: '100vh',
         position: 'relative',
-        overflow: 'hidden',
+        overflow: 'visible',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -452,12 +452,19 @@ const Hero = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                       width: '100%',
+                      marginTop: {
+                        xs: '40px',  // Increased from 10px to 20px
+                        sm: '30px',  // Increased from 20px to 30px
+                        md: '30px',  // Increased from 30px to 40px
+                        lg: '0px',  // Increased from 40px to 50px
+                        xl: '0px'   // Increased from 50px to 60px
+                      },
                       marginLeft: {
                         xl: '140px',  // Added margin for xl screens
                       },
                       height: { 
-                        xs: '300px', 
-                        sm: '400px', 
+                        xs: '350px',  // Increased from 300px to 450px
+                        sm: '450px',  // Increased from 400px to 500px
                         md: '500px', 
                         lg: '400px',  // Reduced height for 1024px screens
                         xl: '500px' 
@@ -485,8 +492,8 @@ const Hero = () => {
                         sx={{
                           width: '100%',
                           maxWidth: { 
-                            xs: 280, 
-                            sm: 350, 
+                            xs: 380,  // Increased from 280 to 380
+                            sm: 420,  // Increased from 350 to 420
                             md: 400, 
                             lg: 350,  // Reduced width for 1024px screens
                             xl: 500 
@@ -620,7 +627,7 @@ const Hero = () => {
       <Box
         sx={{
           position: 'absolute',
-          bottom: 40,
+          bottom: { xs: -40, sm: 20, md: 40 },  // Moved down 50px for mobile (40 - 50 = -10)
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 10,
@@ -631,7 +638,8 @@ const Hero = () => {
           backdropFilter: 'blur(20px)',
           borderRadius: 6,
           p: { xs: 1.5, md: 2 },
-          border: '1px solid rgba(255, 255, 255, 0.3)'
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+      
         }}
       >
         <IconButton

@@ -488,7 +488,7 @@ const Navbar = () => {
                 {isMobile && (
                   <IconButton
                     onClick={handleDrawerToggle}
-                    sx={{ color: '#28283E' }}
+                    sx={{ color: 'white' }}
                   >
                     <MenuIcon />
                   </IconButton>
