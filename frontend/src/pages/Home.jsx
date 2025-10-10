@@ -15,7 +15,7 @@ const Home = () => {
       <Navbar />
       <Hero/>
       <Services/>
-      <Experts/>
+      <Experts limit={3}/>
       <Products/>
       <Testimonials/>
       <BackToTop/>

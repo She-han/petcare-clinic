@@ -41,12 +41,12 @@ const UserModal = ({ user, onClose, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold text-gray-900">
-            {user ? 'Edit User' : 'Add New User'}
+            Edit User
           </h2>
           <button
             onClick={onClose}
@@ -227,22 +227,7 @@ const UserModal = ({ user, onClose, onSave }) => {
               )}
             </div>
 
-            {/* Password (only show for new users) */}
-            {!user && (
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Password *
-                </label>
-                <input
-                  type="password"
-                  {...register('passwordHash', { required: 'Password is required' })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-                {errors.passwordHash && (
-                  <p className="mt-1 text-sm text-red-600">{errors.passwordHash.message}</p>
-                )}
-              </div>
-            )}
+
 
             {/* Checkboxes */}
             <div className="space-y-4 md:col-span-2">
@@ -286,7 +271,7 @@ const UserModal = ({ user, onClose, onSave }) => {
               disabled={loading}
               className="px-4 py-2 text-white transition-colors rounded-lg bg-primary hover:bg-primary/90 disabled:opacity-50"
             >
-              {loading ? 'Saving...' : (user ? 'Update User' : 'Create User')}
+              {loading ? 'Updating...' : 'Update User'}
             </button>
           </div>
         </form>

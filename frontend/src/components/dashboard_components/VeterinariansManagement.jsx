@@ -159,7 +159,7 @@ const VeterinariansManagement = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Veterinarians Management</h1>
-          <p className="text-sm text-gray-600">Manage all veterinarians in the clinic</p>
+         
         </div>
         <button
           onClick={handleCreateVeterinarian}

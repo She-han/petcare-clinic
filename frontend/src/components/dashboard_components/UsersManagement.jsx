@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, Eye } from 'lucide-react';
+import { Edit, Trash2, Search, Users, UserCheck, Shield, Clock, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 import apiService from '../../services/api';
 import UserModal from './UserModal';
@@ -13,6 +13,7 @@ const UsersManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [selectedRole, setSelectedRole] = useState('USER'); // Default to USER
 
   // Fetch users from API
   useEffect(() => {
@@ -52,11 +53,7 @@ const UsersManagement = () => {
     }
   };
 
-  // Handle create user
-  const handleCreateUser = () => {
-    setSelectedUser(null);
-    setShowModal(true);
-  };
+
 
   // Handle edit user
   const handleEditUser = (user) => {
@@ -84,25 +81,26 @@ const UsersManagement = () => {
     }
   };
 
-  // Handle save user (create or update)
+  // Handle save user (update only)
   const handleSaveUser = async (userData) => {
     try {
       if (selectedUser) {
         // Update existing user
         await apiService.users.update(selectedUser.id, userData);
         toast.success('User updated successfully');
-      } else {
-        // Create new user
-        await apiService.users.create(userData);
-        toast.success('User created successfully');
+        setShowModal(false);
+        fetchUsers();
       }
-      setShowModal(false);
-      fetchUsers();
     } catch (error) {
-      toast.error(selectedUser ? 'Failed to update user' : 'Failed to create user');
+      toast.error('Failed to update user');
       console.error('Error saving user:', error);
     }
   };
+
+  // Filter users by role (exclude veterinarians from the main list)
+  const filteredUsers = selectedRole 
+    ? users.filter(user => user.role === selectedRole && user.role !== 'VETERINARIAN')
+    : users.filter(user => user.role !== 'VETERINARIAN');
 
   // Get role badge color
   const getRoleBadgeColor = (role) => {
@@ -137,20 +135,75 @@ const UsersManagement = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Users Management</h1>
-          <p className="text-sm text-gray-600">Manage all users in the system</p>
+          <p className="text-sm text-gray-600">Manage all users and administrators in the system</p>
         </div>
-        <button
-          onClick={handleCreateUser}
-          className="inline-flex items-center px-4 py-2 text-white transition-colors rounded-lg bg-primary hover:bg-primary/90"
-        >
-          <Plus size={16} className="mr-2" />
-          Add User
-        </button>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="flex items-center">
+            <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-600">
+              <Users className="w-6 h-6 text-white" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Total Users</p>
+              <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="flex items-center">
+            <div className="p-3 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600">
+              <UserCheck className="w-6 h-6 text-white" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Active Users</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {users.filter(u => u.isActive).length}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="flex items-center">
+            <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600">
+              <Shield className="w-6 h-6 text-white" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Administrators</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {users.filter(u => u.role === 'ADMIN').length}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="flex items-center">
+            <div className="p-3 rounded-lg bg-gradient-to-r from-orange-500 to-amber-600">
+              <Clock className="w-6 h-6 text-white" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Recently Joined</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {users.filter(u => {
+                  const createdDate = new Date(u.createdAt);
+                  const weekAgo = new Date();
+                  weekAgo.setDate(weekAgo.getDate() - 7);
+                  return createdDate >= weekAgo;
+                }).length}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="p-6 bg-white rounded-lg shadow-sm">
-        <form onSubmit={handleSearch} className="flex flex-col gap-4 sm:flex-row">
+      <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+        <form onSubmit={handleSearch} className="flex flex-col gap-4 lg:flex-row">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2" size={16} />
@@ -159,97 +212,156 @@ const UsersManagement = () => {
                 placeholder="Search users by name, email, or username..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
-          <button
-            type="submit"
-            className="px-6 py-2 text-white transition-colors rounded-lg bg-secondary hover:bg-secondary/90"
-          >
-            Search
-          </button>
-          <button
-            type="button"
-            onClick={fetchUsers}
-            className="px-6 py-2 text-white transition-colors bg-gray-500 rounded-lg hover:bg-gray-600"
-          >
-            Clear
-          </button>
+          <div className="flex gap-2">
+            <select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">All Roles</option>
+              <option value="USER">Regular Users</option>
+              <option value="ADMIN">Administrators</option>
+            </select>
+            <button
+              type="submit"
+              className="px-6 py-3 text-white transition-colors rounded-lg bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSearchTerm('');
+                setSelectedRole('');
+                fetchUsers();
+              }}
+              className="px-6 py-3 text-gray-600 transition-colors bg-gray-100 rounded-lg hover:bg-gray-200"
+            >
+              Clear
+            </button>
+          </div>
         </form>
       </div>
 
       {/* Users Table */}
-      <div className="overflow-hidden bg-white rounded-lg shadow-sm">
+      <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   User
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                  Contact
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                  Contact Information
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                  Location
+                </th>
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Role
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Status
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                  Created
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                  Last Login
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-right text-gray-500 uppercase">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {users.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
+              {filteredUsers.map((user) => (
+                <tr key={user.id} className="transition-colors hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex items-center justify-center w-10 h-10 text-white rounded-full bg-primary">
-                        {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
+                      <div className="flex items-center justify-center w-16 h-16 overflow-hidden bg-gray-100 rounded-xl">
+                        {user.profileImageUrl ? (
+                          <img
+                            src={user.profileImageUrl}
+                            alt={`${user.firstName} ${user.lastName}`}
+                            className="object-cover w-full h-full"
+                          />
+                        ) : (
+                          <User className="w-8 h-8 text-gray-400" />
+                        )}
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-semibold text-gray-900">
                           {user.firstName} {user.lastName}
                         </div>
-                        <div className="text-sm text-gray-500">@{user.username}</div>
+                        <div className="text-sm text-gray-500">
+                          @{user.username}
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          ID: #{user.id}
+                        </div>
+                        {user.dateOfBirth && (
+                          <div className="text-xs text-gray-400">
+                            DOB: {new Date(user.dateOfBirth).toLocaleDateString()}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{user.email}</div>
-                    <div className="text-sm text-gray-500">{user.phone || 'N/A'}</div>
+                    <div className="text-sm text-gray-500">{user.phone || 'No phone'}</div>
+                    <div className="text-xs text-gray-400">
+                      {user.emailVerified ? (
+                        <span className="text-green-600">✓ Email verified</span>
+                      ) : (
+                        <span className="text-red-600">✗ Email not verified</span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(user.role)}`}>
+                    <div className="text-sm text-gray-900">
+                      {user.city && user.state ? `${user.city}, ${user.state}` : 'N/A'}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {user.country || 'N/A'}
+                    </div>
+                    {user.zipCode && (
+                      <div className="text-xs text-gray-400">{user.zipCode}</div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(user.role)}`}>
                       {user.role}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeColor(user.isActive)}`}>
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getStatusBadgeColor(user.isActive)}`}>
                       {user.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                    {new Date(user.createdAt).toLocaleDateString()}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">
+                      {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Created: {new Date(user.createdAt).toLocaleDateString()}
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                     <div className="flex items-center justify-end space-x-2">
                       <button
                         onClick={() => handleEditUser(user)}
-                        className="p-1 rounded text-accent hover:text-accent/80"
+                        className="p-2 text-blue-600 transition-colors rounded-lg hover:bg-blue-50"
                         title="Edit User"
                       >
                         <Edit size={16} />
                       </button>
                       <button
                         onClick={() => handleDeleteUser(user)}
-                        className="p-1 text-red-600 rounded hover:text-red-800"
+                        className="p-2 text-red-600 transition-colors rounded-lg hover:bg-red-50"
                         title="Delete User"
                       >
                         <Trash2 size={16} />
@@ -262,8 +374,9 @@ const UsersManagement = () => {
           </table>
         </div>
         
-        {users.length === 0 && (
+        {filteredUsers.length === 0 && (
           <div className="py-12 text-center">
+            <Users className="w-12 h-12 mx-auto mb-4 text-gray-400" />
             <p className="text-gray-500">No users found</p>
           </div>
         )}
@@ -282,7 +395,7 @@ const UsersManagement = () => {
       {showConfirmModal && (
         <ConfirmModal
           title="Delete User"
-          message={`Are you sure you want to delete ${userToDelete?.firstName} ${userToDelete?.lastName}? This action cannot be undone.`}
+          message={`Are you sure you want to delete ${userToDelete?.firstName} ${userToDelete?.lastName} (@${userToDelete?.username})? This action cannot be undone.`}
           onConfirm={confirmDelete}
           onCancel={() => setShowConfirmModal(false)}
         />

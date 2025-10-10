@@ -198,7 +198,7 @@ const AppointmentsManagement = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Appointments Management</h1>
-          <p className="text-sm text-gray-600">Manage all appointments and scheduling</p>
+          
         </div>
         <button
           onClick={handleCreateAppointment}

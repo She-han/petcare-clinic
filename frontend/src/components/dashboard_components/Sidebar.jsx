@@ -93,10 +93,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
       `}>
         
         {/* Header Section */}
-        <div className="relative h-20 overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-          {/* Animated Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-600/20 via-purple-600/20 to-pink-600/20 animate-pulse"></div>
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-white/5 to-transparent"></div>
+        <div className="relative h-20 overflow-hidden bg-[#28283E]">
+    
           
           {/* Header Content */}
           <div className="relative z-10 flex items-center justify-between h-full px-6">
@@ -105,7 +103,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <PetsIcon sx={{ fontSize: 40, color: '#2ECC71' }} />
               </Box>
               <div>
-                <h1 className="text-xl font-bold text-white">Petcare Pro</h1>
+                <h1 className="text-xl font-bold text-white">PetCare<span style={{ color: '#2ECC71' }}>Pro</span></h1>
                 <p className="text-xs font-medium text-purple-200">Admin Console</p>
               </div>
             </div>

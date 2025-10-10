@@ -148,7 +148,7 @@ const ProductsManagement = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Products Management</h1>
-          <p className="text-sm text-gray-600">Manage all products in the inventory</p>
+          
         </div>
         <button
           onClick={handleCreateProduct}

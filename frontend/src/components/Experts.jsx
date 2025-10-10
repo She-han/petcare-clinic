@@ -18,7 +18,7 @@ import toast from 'react-hot-toast'
 import apiService from '../services/api'
 import AppointmentModal from './AppointmentModal'
 
-const Experts = () => {
+const Experts = ({ limit }) => {
   const [veterinarians, setVeterinarians] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedVet, setSelectedVet] = useState(null)
@@ -292,7 +292,7 @@ const Experts = () => {
             </motion.div>
           ) : (
             <div>
-              {veterinarians.slice(0, 4).map((veterinarian, index) => (
+              {veterinarians.slice(0, limit).map((veterinarian, index) => (
                 <ExpertCard 
                   key={veterinarian.id} 
                   veterinarian={veterinarian} 

@@ -165,7 +165,7 @@ const TestimonialManagement = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 border-4 border-violet-600 rounded-full animate-spin border-t-transparent"></div>
+          <div className="w-16 h-16 mx-auto mb-4 border-4 rounded-full border-violet-600 animate-spin border-t-transparent"></div>
           <p className="text-gray-600">Loading testimonials...</p>
         </div>
       </div>
@@ -178,7 +178,7 @@ const TestimonialManagement = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Testimonials Management</h1>
-          <p className="text-sm text-gray-600">Manage customer testimonials and reviews</p>
+         
         </div>
         <button
           onClick={handleCreateTestimonial}
@@ -343,7 +343,7 @@ const TestimonialManagement = () => {
                 <tr key={testimonial.id} className="transition-colors hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex items-center justify-center w-12 h-12 bg-violet-100 rounded-full">
+                      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-violet-100">
                         {testimonial.customerImageUrl ? (
                           <img
                             src={testimonial.customerImageUrl}
