@@ -1,13 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-  IconButton,
-  Link
-} from '@mui/material'
+import { Box, Typography, IconButton, Link } from '@mui/material'
 import {
   Pets as PetsIcon,
   Phone as PhoneIcon,
@@ -16,12 +9,10 @@ import {
   Facebook as FacebookIcon,
   Twitter as TwitterIcon,
   Instagram as InstagramIcon,
-  LinkedIn as LinkedInIcon,
-  Schedule as ScheduleIcon,
-  Security as SecurityIcon,
-  Support as SupportIcon,
-  Verified as VerifiedIcon
+  LinkedIn as LinkedInIcon
 } from '@mui/icons-material'
+
+const MotionBox = motion(Box)
 
 const Footer = () => {
   const quickLinks = [
@@ -50,58 +41,63 @@ const Footer = () => {
   ]
 
   const contactInfo = [
-    { 
-      icon: <PhoneIcon sx={{ color: '#2ECC71', fontSize: 20 }} />, 
+    {
+      icon: <PhoneIcon sx={{ color: '#2ECC71', fontSize: 20 }} />,
       text: '+1 (555) 123-4567',
       subtext: '24/7 Emergency Hotline'
     },
-    { 
-      icon: <EmailIcon sx={{ color: '#2ECC71', fontSize: 20 }} />, 
+    {
+      icon: <EmailIcon sx={{ color: '#2ECC71', fontSize: 20 }} />,
       text: 'hello@petcarepro.com',
       subtext: 'General Inquiries'
     },
-    { 
-      icon: <LocationIcon sx={{ color: '#2ECC71', fontSize: 20 }} />, 
+    {
+      icon: <LocationIcon sx={{ color: '#2ECC71', fontSize: 20 }} />,
       text: '123 Pet Care Street, Pet City, PC 12345',
       subtext: 'Main Branch Location'
     }
   ]
 
-  const badges = [
-    { icon: <SecurityIcon />, text: 'Licensed & Certified' },
-    { icon: <SupportIcon />, text: '24/7 Support' },
-    { icon: <VerifiedIcon />, text: 'Trusted by 10,000+ Pet Owners' }
-  ]
-
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: 'easeOut' }
+    }
   }
 
   const stagger = {
+    hidden: { opacity: 0 },
     visible: {
+      opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.15
       }
     }
   }
 
   return (
-    <Box sx={{ py: 8, backgroundColor:"#28283E", justifyContent: 'space-between',
-             }}>
-      <Box sx={{ width: '100%', mx: 'auto', px: { xs: 2, md: 4 } }}>
+    <Box sx={{ backgroundColor: '#28283E', py: 8 }}>
+      <Box sx={{ maxWidth: '1400px', mx: 'auto', px: { xs: 2, md: 4 } }}>
         <motion.div
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+          animate="visible"
           variants={stagger}
         >
-          <Grid container spacing={6}   >
-            
-            {/* Column 1: Company Info & Social */}
-            <Grid item xs={12} sm={6} lg={3}>
-              <motion.div variants={fadeInUp}>
-                {/* Brand */}
+          <Box
+            sx={{
+              display: 'grid',
+              gap: { xs: 4, md: 6 },
+              gridTemplateColumns: {
+                xs: 'repeat(1, minmax(0, 1fr))',
+                sm: 'repeat(2, minmax(0, 1fr))',
+                md: 'repeat(4, minmax(0, 1fr))'
+              }
+            }}
+          >
+            <MotionBox variants={fadeInUp}>
+              <Box>
                 <Box sx={{ mb: 4 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
                     <PetsIcon sx={{ fontSize: 40, color: '#2ECC71' }} />
@@ -116,7 +112,6 @@ const Footer = () => {
                       PetCare<span style={{ color: '#2ECC71' }}>Pro</span>
                     </Typography>
                   </Box>
-                  
                   <Typography
                     variant="body1"
                     sx={{
@@ -126,12 +121,9 @@ const Footer = () => {
                       fontSize: { xs: '0.9rem', md: '1rem' }
                     }}
                   >
-                    Professional veterinary care with modern technology 
-                    and compassionate service. 
+                    Professional veterinary care with modern technology and compassionate service.
                     
                   </Typography>
-
-                  {/* Social Links */}
                   <Box>
                     <Typography
                       variant="h6"
@@ -145,12 +137,8 @@ const Footer = () => {
                       Follow Us
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                      {socialLinks.map((social, index) => (
-                        <motion.div
-                          key={index}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
+                      {socialLinks.map((social) => (
+                        <motion.div key={social.name} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                           <IconButton
                             href={social.href}
                             sx={{
@@ -170,170 +158,188 @@ const Footer = () => {
                     </Box>
                   </Box>
                 </Box>
-              </motion.div>
-            </Grid>
+              </Box>
+            </MotionBox>
 
-            {/* Column 2: Quick Links */}
-            <Grid item xs={12} sm={6} lg={2}>
-              <motion.div variants={fadeInUp}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 600,
-                    color: '#2ECC71',
-                    mb: 3,
-                    fontSize: '1.2rem'
-                  }}
-                >
-                  Quick Links
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  {quickLinks.map((link, index) => (
-                    <Link
-                      key={index}
-                      href={link.href}
-                      sx={{
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        textDecoration: 'none',
-                        fontSize: '0.95rem',
-                        display: 'block',
-                        py: 0.5,
-                        '&:hover': {
-                          color: '#2ECC71',
-                          transform: 'translateX(5px)',
-                          paddingLeft: 1
-                        },
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      {link.name}
-                    </Link>
-                  ))}
-                </Box>
-              </motion.div>
-            </Grid>
+            <MotionBox variants={fadeInUp}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  color: '#2ECC71',
+                  mb: 3,
+                  fontSize: '1.2rem'
+                }}
+              >
+                Quick Links
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {quickLinks.map((link) => (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    sx={{
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      textDecoration: 'none',
+                      fontSize: '0.95rem',
+                      display: 'block',
+                      py: 0.5,
+                      '&:hover': {
+                        color: '#2ECC71',
+                        transform: 'translateX(5px)',
+                        pl: 1
+                      },
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </Box>
+            </MotionBox>
 
-            {/* Column 3: Our Services */}
-            <Grid item xs={12} sm={6} lg={2}>
-              <motion.div variants={fadeInUp}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 600,
-                    color: '#2ECC71',
-                    mb: 3,
-                    fontSize: '1.2rem'
-                  }}
-                >
-                  Our Services
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  {services.map((service, index) => (
-                    <Link
-                      key={index}
-                      href={service.href}
-                      sx={{
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        textDecoration: 'none',
-                        fontSize: '0.95rem',
-                        display: 'block',
-                        py: 0.5,
-                        '&:hover': {
-                          color: '#2ECC71',
-                          transform: 'translateX(5px)',
-                          paddingLeft: 1
-                        },
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      {service.name}
-                    </Link>
-                  ))}
-                </Box>
-              </motion.div>
-            </Grid>
+            <MotionBox variants={fadeInUp}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  color: '#2ECC71',
+                  mb: 3,
+                  fontSize: '1.2rem'
+                }}
+              >
+                Our Services
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {services.map((service) => (
+                  <Link
+                    key={service.name}
+                    href={service.href}
+                    sx={{
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      textDecoration: 'none',
+                      fontSize: '0.95rem',
+                      display: 'block',
+                      py: 0.5,
+                      '&:hover': {
+                        color: '#2ECC71',
+                        transform: 'translateX(5px)',
+                        pl: 1
+                      },
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    {service.name}
+                  </Link>
+                ))}
+              </Box>
+            </MotionBox>
 
-  
-
-            {/* Column 5: Contact Info */}
-            <Grid item xs={12} lg={3}>
-              <motion.div variants={fadeInUp}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 600,
-                    color: '#2ECC71',
-                    mb: 3,
-                    fontSize: '1.2rem'
-                  }}
-                >
-                  Get in Touch
-                </Typography>
-                
-                {/* Contact Information */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 4 }}>
-                  {contactInfo.map((info, index) => (
+            <MotionBox variants={fadeInUp} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  color: '#2ECC71',
+                  mb: 3,
+                  fontSize: '1.2rem'
+                }}
+              >
+                Get in Touch
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 3,
+                  alignItems: { xs: 'flex-start', md: 'flex-end' }
+                }}
+              >
+                {contactInfo.map((info) => (
+                  <Box
+                    key={info.text}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      flexDirection: { xs: 'row', md: 'row-reverse' },
+                      gap: 2,
+                      p: 2,
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      borderRadius: 2,
+                      transition: 'all 0.3s ease',
+                      textAlign: { xs: 'left', md: 'right' },
+                      width: '100%',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                        transform: 'translateX(5px)'
+                      }
+                    }}
+                  >
                     <Box
-                      key={index}
                       sx={{
+                        minWidth: 40,
+                        height: 40,
+                        borderRadius: '50%',
+                        backgroundColor: 'rgba(46, 204, 113, 0.1)',
                         display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: 2,
-                        p: 2,
-                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                        borderRadius: 2,
-                        '&:hover': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                          transform: 'translateX(5px)'
-                        },
-                        transition: 'all 0.3s ease'
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       }}
                     >
-                      <Box
-                        sx={{
-                          minWidth: 40,
-                          height: 40,
-                          borderRadius: '50%',
-                          backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                      >
-                        {info.icon}
-                      </Box>
-                      <Box>
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            color: 'white',
-                            fontWeight: 600,
-                            fontSize: '0.9rem',
-                            mb: 0.5
-                          }}
-                        >
-                          {info.text}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: 'rgba(255, 255, 255, 0.7)',
-                            fontSize: '0.8rem'
-                          }}
-                        >
-                          {info.subtext}
-                        </Typography>
-                      </Box>
+                      {info.icon}
                     </Box>
-                  ))}
-                </Box>
-
-              
-              </motion.div>
-            </Grid>
-
-          </Grid>
+                    <Box sx={{ textAlign: { xs: 'left', md: 'right' } }}>
+                      <Typography
+                        variant="body1"
+                        sx={{ color: 'white', fontWeight: 600, fontSize: '0.9rem', mb: 0.5 }}
+                      >
+                        {info.text}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}
+                      >
+                        {info.subtext}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            </MotionBox>
+          </Box>
         </motion.div>
+      </Box>
+
+      <Box
+        sx={{
+          maxWidth: '1400px',
+          mx: 'auto',
+          mt: 6,
+          pt: 4,
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          textAlign: 'center',
+          px: { xs: 2, md: 4 }
+        }}
+      >
+        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 1 }}>
+          &copy;{new Date().getFullYear()} PetCarePro | All rights reserved.
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+          Created by{' '}
+          <Link
+            href="https://web.facebook.com/akilashehan.induwara/"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{
+              color: '#2ECC71',
+              fontWeight: 600,
+              textDecoration: 'none',
+              '&:hover': { textDecoration: 'underline' }
+            }}
+          >
+            Shehan Induwara
+          </Link>
+        </Typography>
       </Box>
     </Box>
   )
