@@ -124,9 +124,11 @@ const Dashboard = () => {
       value: stats.totalUsers,
       subValue: `${stats.activeUsers} active`,
       icon: Users,
-      color: 'bg-blue-500',
-      bgColor: 'bg-blue-50',
-      textColor: 'text-blue-600',
+      gradientFrom: 'from-slate-400',
+      gradientTo: 'to-slate-600',
+      bgColor: 'bg-gradient-to-br from-slate-50 to-slate-200',
+      iconBg: 'bg-gradient-to-br from-slate-100 to-slate-300',
+      textColor: 'text-slate-700',
       change: '+12%',
       changeType: 'increase',
     },
@@ -135,9 +137,11 @@ const Dashboard = () => {
       value: stats.totalProducts,
       subValue: `${stats.featuredProducts} featured`,
       icon: Package,
-      color: 'bg-green-500',
-      bgColor: 'bg-green-50',
-      textColor: 'text-green-600',
+      gradientFrom: 'from-emerald-400',
+      gradientTo: 'to-emerald-600',
+      bgColor: 'bg-gradient-to-br from-emerald-50 to-emerald-200',
+      iconBg: 'bg-gradient-to-br from-emerald-100 to-emerald-300',
+      textColor: 'text-emerald-700',
       change: '+5%',
       changeType: 'increase',
     },
@@ -146,9 +150,11 @@ const Dashboard = () => {
       value: stats.totalAppointments,
       subValue: `${stats.pendingAppointments} pending`,
       icon: Calendar,
-      color: 'bg-purple-500',
-      bgColor: 'bg-purple-50',
-      textColor: 'text-purple-600',
+      gradientFrom: 'from-violet-400',
+      gradientTo: 'to-violet-600',
+      bgColor: 'bg-gradient-to-br from-violet-50 to-violet-200',
+      iconBg: 'bg-gradient-to-br from-violet-100 to-violet-300',
+      textColor: 'text-violet-700',
       change: '+8%',
       changeType: 'increase',
     },
@@ -157,9 +163,11 @@ const Dashboard = () => {
       value: stats.totalTestimonials,
       subValue: `${stats.approvedTestimonials} approved`,
       icon: MessageSquare,
-      color: 'bg-orange-500',
-      bgColor: 'bg-orange-50',
-      textColor: 'text-orange-600',
+      gradientFrom: 'from-amber-400',
+      gradientTo: 'to-amber-600',
+      bgColor: 'bg-gradient-to-br from-amber-50 to-amber-200',
+      iconBg: 'bg-gradient-to-br from-amber-100 to-amber-300',
+      textColor: 'text-amber-700',
       change: '+15%',
       changeType: 'increase',
     },
@@ -294,38 +302,46 @@ const Dashboard = () => {
       <div className="p-2 text-gray-900 rounded-lg bg-gradient-to-r from-primary to-secondary">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
          <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-600">Complete Overview</p>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard   <span className="text-xl font-medium text-gray-600">   | Complete Overview |</span></h1>
+          
         </div>
       
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-6">
         {statCards.map((card) => (
-          <div key={card.title} className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <p className="mb-1 text-sm font-medium text-gray-600">
-                  {card.title}
-                </p>
-                <p className="mb-1 text-3xl font-bold text-gray-900">
-                  {card.value.toLocaleString()}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {card.subValue}
-                </p>
-                <div className="flex items-center mt-2">
-                  <TrendingUp className="w-4 h-4 mr-1 text-green-500" />
-                  <span className="text-sm font-medium text-green-600">
-                    {card.change}
-                  </span>
-                  <span className="ml-1 text-sm text-gray-500">vs last month</span>
+          <div key={card.title} className={`relative overflow-hidden ${card.bgColor} backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group`}>
+            <div className="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
+            <div className="relative p-5 lg:p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <p className="mb-1 text-xs font-medium tracking-wide uppercase text-gray-600/80">
+                    {card.title}
+                  </p>
+                  <p className="mb-2 text-2xl font-bold text-gray-900 transition-colors lg:text-3xl group-hover:text-gray-800">
+                    {card.value.toLocaleString()}
+                  </p>
+                </div>
+                <div className={`${card.iconBg} p-3 rounded-xl shadow-sm group-hover:scale-110 transition-transform duration-300`}>
+                  <card.icon className={`h-5 w-5 lg:h-6 lg:w-6 ${card.textColor} group-hover:animate-pulse`} />
                 </div>
               </div>
-              <div className={`${card.bgColor} p-3 rounded-full`}>
-                <card.icon className={`h-6 w-6 ${card.textColor}`} />
+              
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-600">
+                  {card.subValue}
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <TrendingUp className="w-3 h-3 mr-1 text-emerald-500" />
+                    <span className="text-xs font-semibold text-emerald-600">
+                      {card.change}
+                    </span>
+                    <span className="ml-1 text-xs text-gray-500">vs last month</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -333,83 +349,104 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 xl:gap-8">
         
         {/* Quick Actions */}
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
-            <BarChart3 className="w-5 h-5 text-gray-400" />
+        <div className="p-6 transition-all duration-300 border shadow-lg bg-white/90 backdrop-blur-sm border-gray-200/50 rounded-2xl hover:shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
+              <p className="text-sm text-gray-500">Create new entries</p>
+            </div>
+            <div className="p-2 bg-gradient-to-br from-violet-100 to-purple-100 rounded-xl">
+              <BarChart3 className="w-5 h-5 text-violet-600" />
+            </div>
           </div>
-          <div className="space-y-3 ">
+          <div className="space-y-3">
             {quickActions.map((action, index) => (
               <button
                 key={index}
                 onClick={action.action}
-                className="w-full p-4 text-left transition-all duration-200 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 group hover:bg-violet-300"
+                className="w-full p-4 text-left transition-all duration-300 border border-gray-200/60 rounded-xl hover:border-violet-300 hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 group hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
               >
                 <div className="flex items-center">
-                  <div className={`${action.bgColor} p-2 rounded-lg group-hover:scale-110 transition-transform`}>
-                    <action.icon className={`h-5 w-5 ${action.color}`} />
+                  <div className={`${action.bgColor} p-3 rounded-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-sm group-hover:shadow-md`}>
+                    <action.icon className={`h-5 w-5 ${action.color} group-hover:animate-bounce`} />
                   </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-900">{action.title}</p>
-                    <p className="text-xs text-gray-500">{action.description}</p>
+                  <div className="flex-1 ml-4">
+                    <p className="text-sm font-semibold text-gray-900 transition-colors group-hover:text-violet-900">
+                      {action.title}
+                    </p>
+                    <p className="text-xs text-gray-500 transition-colors group-hover:text-violet-600">
+                      {action.description}
+                    </p>
                   </div>
-                  <Plus className="w-4 h-4 ml-auto text-gray-400 group-hover:text-primary" />
+                  <div className="flex items-center space-x-2">
+                    <Plus className="w-4 h-4 text-gray-400 transition-all duration-300 group-hover:text-violet-600 group-hover:rotate-90" />
+                    <div className="w-2 h-2 transition-all duration-300 bg-gray-300 rounded-full group-hover:bg-violet-400 group-hover:scale-150"></div>
+                  </div>
                 </div>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Recent Users */}
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Users</h3>
+        {/* Upcoming Appointments */}
+        <div className="p-6 transition-all duration-300 border shadow-lg bg-white/90 backdrop-blur-sm border-gray-200/50 rounded-2xl hover:shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Upcoming Appointments</h3>
+              <p className="text-sm text-gray-500">Next scheduled visits</p>
+            </div>
             <button
-              onClick={() => navigate('users')}
-              className="text-sm font-medium cursor-pointer text-primary hover:text-primary/80 hover:text-green-600"
+              onClick={() => navigate('appointments')}
+              className="px-3 py-1 text-sm font-medium transition-colors rounded-lg cursor-pointer text-violet-600 hover:text-violet-800 hover:bg-violet-50"
             >
               View All
             </button>
           </div>
           <div className="space-y-3">
-            {recentUsers.length > 0 ? (
-              recentUsers.map((user) => (
-                <div key={user.id} className="flex items-center p-3 rounded-lg hover:bg-gray-50">
-                  <div className="flex items-center justify-center w-10 h-10 text-sm font-medium text-white rounded-full bg-primary">
-                    {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
+            {upcomingAppointments.length > 0 ? (
+              upcomingAppointments.map((appointment) => (
+                <div key={appointment.id} className="flex items-center p-3 rounded-lg hover:bg-gray-50">
+                  <div className="flex items-center justify-center w-10 h-10 text-white rounded-full bg-secondary">
+                    <Calendar className="w-5 h-5" />
                   </div>
                   <div className="flex-1 ml-3">
                     <p className="text-sm font-medium text-gray-900">
-                      {user.firstName} {user.lastName}
+                      {appointment.user?.firstName} {appointment.user?.lastName}
                     </p>
-                    <p className="text-xs text-gray-500">{user.email}</p>
+                    <p className="text-xs text-gray-500">
+                      {formatDate(appointment.appointmentDate)} at {formatTime(appointment.appointmentTime)}
+                    </p>
                   </div>
                   <div className="flex items-center">
-                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                      user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
-                      {user.isActive ? 'Active' : 'Inactive'}
+                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(appointment.status)}`}>
+                      {appointment.status}
                     </span>
                   </div>
                 </div>
               ))
             ) : (
               <div className="py-8 text-center">
-                <Users className="w-12 h-12 mx-auto text-gray-400" />
-                <p className="mt-2 text-sm text-gray-500">No users found</p>
+                <Calendar className="w-12 h-12 mx-auto text-gray-400" />
+                <p className="mt-2 text-sm text-gray-500">No upcoming appointments</p>
               </div>
             )}
           </div>
         </div>
 
+
         {/* System Status */}
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">System Status</h3>
-            <Activity className="w-5 h-5 text-gray-400" />
+        <div className="p-6 transition-all duration-300 border shadow-lg bg-white/90 backdrop-blur-sm border-gray-200/50 rounded-2xl hover:shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">System Status</h3>
+              <p className="text-sm text-gray-500">Service health</p>
+            </div>
+            <div className="p-2 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl">
+              <Activity className="w-5 h-5 text-emerald-600" />
+            </div>
           </div>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
@@ -453,15 +490,18 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:gap-8">
         
         {/* Recent Products */}
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Products</h3>
+        <div className="p-6 transition-all duration-300 border shadow-lg bg-white/90 backdrop-blur-sm border-gray-200/50 rounded-2xl hover:shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Recent Products</h3>
+              <p className="text-sm text-gray-500">Latest inventory</p>
+            </div>
             <button
               onClick={() => navigate('products')}
-              className="text-sm font-medium cursor-pointer text-primary hover:text-primary/80 hover:text-green-600"
+              className="px-3 py-1 text-sm font-medium transition-colors rounded-lg cursor-pointer text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50"
             >
               View All
             </button>
@@ -505,47 +545,51 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Upcoming Appointments */}
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Upcoming Appointments</h3>
+        {/* Recent Users */}
+        <div className="p-6 transition-all duration-300 border shadow-lg bg-white/90 backdrop-blur-sm border-gray-200/50 rounded-2xl hover:shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Recent Users</h3>
+              <p className="text-sm text-gray-500">Latest registrations</p>
+            </div>
             <button
-              onClick={() => navigate('appointments')}
-              className="text-sm font-medium cursor-pointer text-primary hover:text-primary/80 hover:text-green-600"
+              onClick={() => navigate('users')}
+              className="px-3 py-1 text-sm font-medium transition-colors rounded-lg cursor-pointer text-violet-600 hover:text-violet-800 hover:bg-violet-50"
             >
               View All
             </button>
           </div>
           <div className="space-y-3">
-            {upcomingAppointments.length > 0 ? (
-              upcomingAppointments.map((appointment) => (
-                <div key={appointment.id} className="flex items-center p-3 rounded-lg hover:bg-gray-50">
-                  <div className="flex items-center justify-center w-10 h-10 text-white rounded-full bg-secondary">
-                    <Calendar className="w-5 h-5" />
+            {recentUsers.length > 0 ? (
+              recentUsers.map((user) => (
+                <div key={user.id} className="flex items-center p-3 rounded-lg hover:bg-gray-50">
+                  <div className="flex items-center justify-center w-10 h-10 text-sm font-medium text-white rounded-full bg-primary">
+                    {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
                   </div>
                   <div className="flex-1 ml-3">
                     <p className="text-sm font-medium text-gray-900">
-                      {appointment.user?.firstName} {appointment.user?.lastName}
+                      {user.firstName} {user.lastName}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {formatDate(appointment.appointmentDate)} at {formatTime(appointment.appointmentTime)}
-                    </p>
+                    <p className="text-xs text-gray-500">{user.email}</p>
                   </div>
                   <div className="flex items-center">
-                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(appointment.status)}`}>
-                      {appointment.status}
+                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                      user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {user.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </div>
                 </div>
               ))
             ) : (
               <div className="py-8 text-center">
-                <Calendar className="w-12 h-12 mx-auto text-gray-400" />
-                <p className="mt-2 text-sm text-gray-500">No upcoming appointments</p>
+                <Users className="w-12 h-12 mx-auto text-gray-400" />
+                <p className="mt-2 text-sm text-gray-500">No users found</p>
               </div>
             )}
           </div>
         </div>
+
       </div>
 
       {/* Modals */}

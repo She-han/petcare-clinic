@@ -51,7 +51,7 @@ const Header = ({ setSidebarOpen }) => {
       <div className="px-2 py-4 mt-2 text-gray-600 md:mt-0 md:ml-4 lg:ml-0 lg:mb-2 md:p-0">
         <div>
           <h1 className="mb-2 text-xl font-bold md:text-2xl ">
-            Welcome back, {getDisplayName()}! 👋
+            Welcome back, {getDisplayName()}! 
           </h1>
           <p className="hidden text-xs text-primary-100 md:block">
             Here's what's happening with your pet care business today.

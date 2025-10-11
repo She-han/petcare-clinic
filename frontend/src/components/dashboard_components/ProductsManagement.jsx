@@ -163,8 +163,8 @@ const ProductsManagement = () => {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-600">
-              <Package className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-lg bg-gradient-to-r from-blue-100 to-blue-200">
+              <Package className="w-6 h-6 text-blue-800" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Products</p>
@@ -175,8 +175,8 @@ const ProductsManagement = () => {
         
         <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600">
-              <Package className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-lg bg-gradient-to-r from-emerald-100 to-emerald-200">
+              <Package className="w-6 h-6 text-emerald-800" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Active Products</p>
@@ -189,8 +189,8 @@ const ProductsManagement = () => {
         
         <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-gradient-to-r from-orange-500 to-amber-600">
-              <Package className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-lg bg-gradient-to-r from-amber-100 to-amber-200">
+              <Package className="w-6 h-6 text-amber-800" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Low Stock</p>
@@ -203,8 +203,8 @@ const ProductsManagement = () => {
         
         <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600">
-              <Star className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-lg bg-gradient-to-r from-purple-100 to-purple-200">
+              <Star className="w-6 h-6 text-purple-800" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Avg Rating</p>

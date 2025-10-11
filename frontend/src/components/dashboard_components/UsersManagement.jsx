@@ -135,7 +135,7 @@ const UsersManagement = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Users Management</h1>
-          <p className="text-sm text-gray-600">Manage all users and administrators in the system</p>
+          
         </div>
       </div>
 
@@ -143,8 +143,8 @@ const UsersManagement = () => {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-600">
-              <Users className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-lg bg-gradient-to-r from-blue-100 to-blue-200">
+              <Users className="w-6 h-6 text-blue-800" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Users</p>
@@ -155,8 +155,8 @@ const UsersManagement = () => {
         
         <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600">
-              <UserCheck className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-lg bg-gradient-to-r from-emerald-100 to-emerald-200">
+              <UserCheck className="w-6 h-6 text-emerald-800" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Active Users</p>
@@ -169,8 +169,8 @@ const UsersManagement = () => {
         
         <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600">
-              <Shield className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-lg bg-gradient-to-r from-purple-100 to-purple-200">
+              <Shield className="w-6 h-6 text-purple-800" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Administrators</p>
@@ -183,8 +183,8 @@ const UsersManagement = () => {
         
         <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-gradient-to-r from-orange-500 to-amber-600">
-              <Clock className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-lg bg-gradient-to-r from-amber-100 to-amber-200">
+              <Clock className="w-6 h-6 text-amber-800" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Recently Joined</p>

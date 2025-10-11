@@ -86,7 +86,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 h-screen left-0 z-50 w-80 bg-white/95 backdrop-blur-xl shadow-2xl transform transition-all duration-500 ease-out
+        fixed inset-y-0 h-screen left-0 z-50 w-50 xl:w-70 bg-white/95 backdrop-blur-xl shadow-2xl transform transition-all duration-500 ease-out 
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:inset-0
         border-r border-gray-200/50 h-screen
