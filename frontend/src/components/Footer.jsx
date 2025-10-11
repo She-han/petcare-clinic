@@ -93,11 +93,18 @@ const Footer = () => {
                 xs: 'repeat(1, minmax(0, 1fr))',
                 sm: 'repeat(2, minmax(0, 1fr))',
                 md: 'repeat(4, minmax(0, 1fr))',
-                lg: 'repeat(4, minmax(0, 2fr))'
+                lg: 'repeat(4, minmax(0, 1fr))'
               }
             }}
           >
-            <MotionBox variants={fadeInUp}>
+            <MotionBox variants={fadeInUp}
+                 sx={{
+                    gridColumn: { 
+                      xs: '1', 
+                      sm: '1 / -1',  // Full width on small screens
+                      md: '1 / 3'    // Spans columns 1-2 on desktop
+                    }
+                  }} >
               <Box>
                 <Box sx={{ mb: 4 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
@@ -122,7 +129,7 @@ const Footer = () => {
                       fontSize: { xs: '0.9rem', md: '1rem' }
                     }}
                   >
-                    Professional veterinary care with modern technology and compassionate service.
+                    Celebrating 8 years of excellence, PetCarePro is dedicated to providing unparalleled veterinary care by blending state-of-the-art technology with a deeply compassionate approach. Our commitment is to ensure the health and happiness of your beloved pets through comprehensive services and a team of passionate professionals.
                     
                   </Typography>
                   <Box>
@@ -162,7 +169,16 @@ const Footer = () => {
               </Box>
             </MotionBox>
 
-            <MotionBox variants={fadeInUp}>
+            <MotionBox variants={fadeInUp}
+                sx={{
+                textAlign: { xs: 'left', md: 'right' },
+                gridColumn: { 
+                  xs: '1',
+                  sm: '1',
+                  md: '3'  // Column 3
+                }
+              }}
+            >
               <Typography
                 variant="h6"
                 sx={{
@@ -187,7 +203,7 @@ const Footer = () => {
                       py: 0.5,
                       '&:hover': {
                         color: '#2ECC71',
-                        transform: 'translateX(5px)',
+                        transform: 'translateX(-5px)',
                         pl: 1
                       },
                       transition: 'all 0.3s ease'
@@ -199,7 +215,16 @@ const Footer = () => {
               </Box>
             </MotionBox>
 
-            <MotionBox variants={fadeInUp} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
+            <MotionBox variants={fadeInUp} 
+               sx={{ 
+                textAlign: { xs: 'left', md: 'right' },
+                gridColumn: { 
+                  xs: '1',
+                  sm: '2',
+                  md: '4'  // Column 4
+                }
+              }}
+            >
               <Typography
                 variant="h6"
                 sx={{

@@ -552,7 +552,8 @@ const Products = () => {
                           exit={{ opacity: 0, y: -20 }}
                           transition={{ duration: 0.4, delay: index * 0.1 }}
                           whileHover={{ y: 0 }}
-                          className="overflow-hidden transition-all duration-300 bg-white shadow-lg rounded-2xl hover:shadow-xl group"
+                          
+                          className="overflow-hidden transition-all duration-300 bg-white border border-gray-300 shadow-lg rounded-2xl hover:shadow-xl group"
                         >
                           {/* Product Image */}
                           <div className="relative overflow-hidden aspect-square">
