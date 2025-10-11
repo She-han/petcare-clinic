@@ -27,6 +27,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 import apiService from '../services/api';
 import TestimonialModal from './TestimonialModal';
+import Navbar from './Navbar';
 
 const UserProfile = () => {
   const { user, updateUser } = useAuth();
@@ -157,6 +158,8 @@ const UserProfile = () => {
   }
 
   return (
+    <>
+    <Navbar />
     <Container maxWidth="md" sx={{ py: 4, mt: 8 }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -590,7 +593,9 @@ const UserProfile = () => {
         )}
       </motion.div>
     </Container>
+    </>
   );
 };
+
 
 export default UserProfile;

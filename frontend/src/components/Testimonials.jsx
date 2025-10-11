@@ -387,7 +387,7 @@ const Testimonials = () => {
                             }}
                           />
                           <Chip
-                            label={`${testimonial.petName} • ${testimonial.petType}`}
+                            label={`${testimonial.petName}  ( ${testimonial.petType} )`}
                             size="small"
                             sx={{
                               backgroundColor: '#EFF6FF',

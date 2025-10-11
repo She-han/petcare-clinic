@@ -315,6 +315,7 @@ const Experts = ({ limit }) => {
             <Button
               variant="outlined"
               size="large"
+              onClick={() => navigate('/veterinarians')}
               sx={{
                 color: '#2ECC71',
                 borderColor: '#2ECC71',
