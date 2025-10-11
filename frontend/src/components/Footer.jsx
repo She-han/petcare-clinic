@@ -92,7 +92,8 @@ const Footer = () => {
               gridTemplateColumns: {
                 xs: 'repeat(1, minmax(0, 1fr))',
                 sm: 'repeat(2, minmax(0, 1fr))',
-                md: 'repeat(4, minmax(0, 1fr))'
+                md: 'repeat(4, minmax(0, 1fr))',
+                lg: 'repeat(4, minmax(0, 2fr))'
               }
             }}
           >
@@ -193,43 +194,6 @@ const Footer = () => {
                     }}
                   >
                     {link.name}
-                  </Link>
-                ))}
-              </Box>
-            </MotionBox>
-
-            <MotionBox variants={fadeInUp}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  color: '#2ECC71',
-                  mb: 3,
-                  fontSize: '1.2rem'
-                }}
-              >
-                Our Services
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {services.map((service) => (
-                  <Link
-                    key={service.name}
-                    href={service.href}
-                    sx={{
-                      color: 'rgba(255, 255, 255, 0.8)',
-                      textDecoration: 'none',
-                      fontSize: '0.95rem',
-                      display: 'block',
-                      py: 0.5,
-                      '&:hover': {
-                        color: '#2ECC71',
-                        transform: 'translateX(5px)',
-                        pl: 1
-                      },
-                      transition: 'all 0.3s ease'
-                    }}
-                  >
-                    {service.name}
                   </Link>
                 ))}
               </Box>

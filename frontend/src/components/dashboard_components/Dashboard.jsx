@@ -101,12 +101,21 @@ const Dashboard = () => {
       setRecentUsers(users.slice(0, 5));
       setRecentProducts(products.slice(0, 5));
       
-      // Get upcoming appointments (next 5)
-      const today = new Date().toISOString().split('T')[0];
+      // Get upcoming appointments (next 2 weeks)
+      const today = new Date();
+      const twoWeeksFromNow = new Date();
+      twoWeeksFromNow.setDate(today.getDate() + 14);
+      
+      const todayString = today.toISOString().split('T')[0];
+      const twoWeeksString = twoWeeksFromNow.toISOString().split('T')[0];
+      
       const upcoming = appointments
-        .filter(apt => apt.appointmentDate >= today)
+        .filter(apt => 
+          apt.appointmentDate >= todayString && 
+          apt.appointmentDate <= twoWeeksString
+        )
         .sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate))
-        .slice(0, 5);
+        .slice(0, 8); // Show up to 8 appointments
       setUpcomingAppointments(upcoming);
 
     } catch (error) {
@@ -299,7 +308,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="p-2 text-gray-900 rounded-lg bg-gradient-to-r from-primary to-secondary">
+      <div className="p-1 text-gray-900 rounded-lg bg-gradient-to-r from-primary to-secondary">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
          <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard   <span className="text-xl font-medium text-gray-600">   | Complete Overview |</span></h1>
@@ -312,7 +321,7 @@ const Dashboard = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-6">
         {statCards.map((card) => (
-          <div key={card.title} className={`relative overflow-hidden ${card.bgColor} backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group`}>
+          <div key={card.title} className={`relative overflow-hidden ${card.bgColor} backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-102 group`}>
             <div className="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
             <div className="relative p-5 lg:p-6">
               <div className="flex items-start justify-between mb-4">
@@ -349,7 +358,7 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 xl:gap-8">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:gap-8">
         
         {/* Quick Actions */}
         <div className="p-6 transition-all duration-300 border shadow-lg bg-white/90 backdrop-blur-sm border-gray-200/50 rounded-2xl hover:shadow-xl">
@@ -396,7 +405,7 @@ const Dashboard = () => {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">Upcoming Appointments</h3>
-              <p className="text-sm text-gray-500">Next scheduled visits</p>
+              <p className="text-sm text-gray-500">Next 2 weeks scheduled visits</p>
             </div>
             <button
               onClick={() => navigate('appointments')}
@@ -405,92 +414,91 @@ const Dashboard = () => {
               View All
             </button>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-3 overflow-y-auto max-h-80">
             {upcomingAppointments.length > 0 ? (
-              upcomingAppointments.map((appointment) => (
-                <div key={appointment.id} className="flex items-center p-3 rounded-lg hover:bg-gray-50">
-                  <div className="flex items-center justify-center w-10 h-10 text-white rounded-full bg-secondary">
-                    <Calendar className="w-5 h-5" />
+              upcomingAppointments.map((appointment) => {
+                // First try to get doctor from the nested relationship, fallback to finding by ID
+                const doctor = appointment.veterinarian || veterinarians.find(vet => vet.id === appointment.veterinarianId);
+                
+                return (
+                  <div key={appointment.id} className="flex items-center p-4 transition-all duration-300 border border-gray-200/60 rounded-xl hover:border-violet-300 hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 hover:shadow-md group">
+                    {/* Doctor Picture */}
+                    <div className="relative">
+                      <div className="w-12 h-12 overflow-hidden transition-transform duration-300 border-2 border-white rounded-full shadow-sm bg-gradient-to-br from-violet-100 to-purple-100 group-hover:scale-110">
+                        {doctor?.imageUrl || doctor?.photo ? (
+                          <img
+                            src={doctor.imageUrl || doctor.photo}
+                            alt={`Dr. ${doctor.firstName || doctor.fullName?.split(' ')[0]} ${doctor.lastName || doctor.fullName?.split(' ')[1]}`}
+                            className="object-cover w-full h-full"
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center w-full h-full text-sm font-semibold text-violet-600">
+                            {doctor?.firstName?.charAt(0) || doctor?.fullName?.charAt(0) || 'D'}
+                            {doctor?.lastName?.charAt(0) || doctor?.fullName?.split(' ')[1]?.charAt(0) || 'R'}
+                          </div>
+                        )}
+                      </div>
+                      {/* Online status indicator */}
+                      <div className="absolute w-4 h-4 bg-green-400 border-2 border-white rounded-full -bottom-1 -right-1"></div>
+                    </div>
+                    
+                    {/* Appointment Details */}
+                    <div className="flex-1 ml-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900 transition-colors group-hover:text-violet-900">
+                             {doctor?.firstName || doctor?.fullName?.split(' ')[0] || 'Unknown'} {doctor?.lastName || doctor?.fullName?.split(' ').slice(1).join(' ') || 'Doctor'}
+                          </p>
+                          <p className="text-xs text-gray-500 transition-colors group-hover:text-violet-600">
+                            {doctor?.specialization || 'General Practice'}
+                          </p>
+                        </div>
+                        <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full transition-all duration-300 ${getStatusColor(appointment.status)}`}>
+                          {appointment.status}
+                        </span>
+                      </div>
+                      
+                      {/* Date and Time */}
+                      <div className="flex items-center space-x-4 text-xs text-gray-600 transition-colors group-hover:text-gray-700">
+                        <div className="flex items-center space-x-1">
+                          <Calendar className="w-3 h-3 text-violet-500" />
+                          <span className="font-medium">{formatDate(appointment.appointmentDate)}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Clock className="w-3 h-3 text-violet-500" />
+                          <span className="font-medium">{formatTime(appointment.appointmentTime)}</span>
+                        </div>
+                        {(appointment.reasonForVisit || appointment.reason) && (
+                          <div className="flex items-center space-x-1 max-w-32">
+                            <MessageSquare className="w-3 h-3 text-violet-500" />
+                            <span className="truncate">{appointment.reasonForVisit || appointment.reason}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+     
                   </div>
-                  <div className="flex-1 ml-3">
-                    <p className="text-sm font-medium text-gray-900">
-                      {appointment.user?.firstName} {appointment.user?.lastName}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {formatDate(appointment.appointmentDate)} at {formatTime(appointment.appointmentTime)}
-                    </p>
-                  </div>
-                  <div className="flex items-center">
-                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(appointment.status)}`}>
-                      {appointment.status}
-                    </span>
-                  </div>
-                </div>
-              ))
+                );
+              })
             ) : (
-              <div className="py-8 text-center">
-                <Calendar className="w-12 h-12 mx-auto text-gray-400" />
-                <p className="mt-2 text-sm text-gray-500">No upcoming appointments</p>
+              <div className="py-12 text-center">
+                <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-gray-100 to-gray-200">
+                  <Calendar className="w-8 h-8 text-gray-400" />
+                </div>
+                <p className="mb-1 text-sm font-medium text-gray-500">No upcoming appointments</p>
+                <p className="text-xs text-gray-400">The next 2 weeks are clear</p>
               </div>
             )}
           </div>
         </div>
 
 
-        {/* System Status */}
-        <div className="p-6 transition-all duration-300 border shadow-lg bg-white/90 backdrop-blur-sm border-gray-200/50 rounded-2xl hover:shadow-xl">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">System Status</h3>
-              <p className="text-sm text-gray-500">Service health</p>
-            </div>
-            <div className="p-2 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl">
-              <Activity className="w-5 h-5 text-emerald-600" />
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
-              <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
-                <span className="text-sm font-medium text-gray-900">Database</span>
-              </div>
-              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
-                Online
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
-              <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
-                <span className="text-sm font-medium text-gray-900">API Services</span>
-              </div>
-              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
-                Online
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
-              <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
-                <span className="text-sm font-medium text-gray-900">Email Service</span>
-              </div>
-              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
-                Online
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-50">
-              <div className="flex items-center">
-                <AlertCircle className="w-5 h-5 mr-2 text-yellow-500" />
-                <span className="text-sm font-medium text-gray-900">Backup Service</span>
-              </div>
-              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">
-                Maintenance
-              </span>
-            </div>
-          </div>
-        </div>
+
       </div>
 
       {/* Bottom Section */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:gap-8">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 xl:gap-8">
         
         {/* Recent Products */}
         <div className="p-6 transition-all duration-300 border shadow-lg bg-white/90 backdrop-blur-sm border-gray-200/50 rounded-2xl hover:shadow-xl">
@@ -501,7 +509,7 @@ const Dashboard = () => {
             </div>
             <button
               onClick={() => navigate('products')}
-              className="px-3 py-1 text-sm font-medium transition-colors rounded-lg cursor-pointer text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50"
+              className="px-3 py-1 text-sm font-medium transition-colors rounded-lg cursor-pointer text-violet-600 hover:text-violet-800 hover:bg-violet-50"
             >
               View All
             </button>
@@ -587,6 +595,57 @@ const Dashboard = () => {
                 <p className="mt-2 text-sm text-gray-500">No users found</p>
               </div>
             )}
+          </div>
+        </div>
+
+                {/* System Status */}
+        <div className="p-6 transition-all duration-300 border shadow-lg bg-white/90 backdrop-blur-sm border-gray-200/50 rounded-2xl hover:shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">System Status</h3>
+              <p className="text-sm text-gray-500">Service health</p>
+            </div>
+            <div className="p-2 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl">
+              <Activity className="w-5 h-5 text-emerald-600" />
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
+              <div className="flex items-center">
+                <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
+                <span className="text-sm font-medium text-gray-900">Database</span>
+              </div>
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                Online
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
+              <div className="flex items-center">
+                <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
+                <span className="text-sm font-medium text-gray-900">API Services</span>
+              </div>
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                Online
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
+              <div className="flex items-center">
+                <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
+                <span className="text-sm font-medium text-gray-900">Email Service</span>
+              </div>
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                Online
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-50">
+              <div className="flex items-center">
+                <AlertCircle className="w-5 h-5 mr-2 text-yellow-500" />
+                <span className="text-sm font-medium text-gray-900">Backup Service</span>
+              </div>
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">
+                Maintenance
+              </span>
+            </div>
           </div>
         </div>
 

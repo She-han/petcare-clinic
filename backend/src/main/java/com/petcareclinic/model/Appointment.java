@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "appointments")
@@ -18,6 +19,17 @@ public class Appointment {
 
     @Column(name = "user_id") // Can be null for guest appointments
     private Long userId;
+
+    // JPA Relationships
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "veterinarian_id", insertable = false, updatable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Veterinarian veterinarian;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User user;
 
     @Column(name = "client_name", nullable = false)
     private String clientName;
@@ -147,4 +159,11 @@ public class Appointment {
 
     public LocalDateTime getReviewCreatedAt() { return reviewCreatedAt; }
     public void setReviewCreatedAt(LocalDateTime reviewCreatedAt) { this.reviewCreatedAt = reviewCreatedAt; }
+
+    // Relationship getters and setters
+    public Veterinarian getVeterinarian() { return veterinarian; }
+    public void setVeterinarian(Veterinarian veterinarian) { this.veterinarian = veterinarian; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }
