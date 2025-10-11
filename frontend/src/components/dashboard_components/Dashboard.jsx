@@ -16,6 +16,11 @@ import {
 import { useNavigate } from 'react-router-dom';
 import apiService from '../../services/api';
 import toast from 'react-hot-toast';
+import TestimonialModel from './TestimonialModel';
+import AppointmentModal from './AppointmentModal';
+import UserModal from './UserModal';
+import VeterinarianModal from './VeterinarianModal';
+import ProductModal from './ProductModal';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -33,6 +38,15 @@ const Dashboard = () => {
   const [recentProducts, setRecentProducts] = useState([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Modal states
+  const [showVeterinarianModal, setShowVeterinarianModal] = useState(false);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const [showTestimonialModal, setShowTestimonialModal] = useState(false);
+  
+  // Data for modals
+  const [veterinarians, setVeterinarians] = useState([]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -47,18 +61,24 @@ const Dashboard = () => {
         usersResponse, 
         productsResponse, 
         appointmentsResponse, 
-        testimonialsResponse
+        testimonialsResponse,
+        veterinariansResponse
       ] = await Promise.all([
         apiService.users.getAll(),
         apiService.products.getAll(),
         apiService.appointments.getAll(),
         apiService.testimonials.getAll(),
+        apiService.veterinarians.getAll(),
       ]);
 
       const users = usersResponse.data || [];
       const products = productsResponse.data || [];
       const appointments = appointmentsResponse.data || [];
       const testimonials = testimonialsResponse.data || [];
+      const veterinarians = veterinariansResponse.data || [];
+      
+      // Set veterinarians for appointment modal
+      setVeterinarians(veterinarians);
 
       // Calculate stats
       const activeUsers = users.filter(user => user.isActive).length;
@@ -147,12 +167,12 @@ const Dashboard = () => {
 
   const quickActions = [
     {
-      title: 'Add New User',
-      description: 'Create a new user account',
+      title: 'Add New Doctor',
+      description: 'Create a new veterinarian account',
       icon: Users,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
-      action: () => navigate('/users'),
+      action: () => setShowVeterinarianModal(true),
     },
     {
       title: 'Add New Product',
@@ -160,23 +180,23 @@ const Dashboard = () => {
       icon: Package,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
-      action: () => navigate('/products'),
+      action: () => setShowProductModal(true),
     },
     {
-      title: 'View Appointments',
-      description: 'Manage appointments',
+      title: 'New Appointments',
+      description: 'Make new appointments',
       icon: Calendar,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
-      action: () => navigate('/appointments'),
+      action: () => setShowAppointmentModal(true),
     },
     {
-      title: 'Manage Testimonials',
-      description: 'Review testimonials',
+      title: 'Add Testimonials',
+      description: 'Create new testimonials',
       icon: MessageSquare,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
-      action: () => navigate('/testimonials'),
+      action: () => setShowTestimonialModal(true),
     },
   ];
 
@@ -208,6 +228,55 @@ const Dashboard = () => {
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Modal handlers
+  const handleSaveVeterinarian = async (veterinarianData) => {
+    try {
+      await apiService.veterinarians.create(veterinarianData);
+      toast.success('Veterinarian created successfully!');
+      setShowVeterinarianModal(false);
+      fetchDashboardData(); // Refresh data
+    } catch (error) {
+      console.error('Error creating veterinarian:', error);
+      toast.error('Failed to create veterinarian');
+    }
+  };
+
+  const handleSaveProduct = async (productData) => {
+    try {
+      await apiService.products.create(productData);
+      toast.success('Product created successfully!');
+      setShowProductModal(false);
+      fetchDashboardData(); // Refresh data
+    } catch (error) {
+      console.error('Error creating product:', error);
+      toast.error('Failed to create product');
+    }
+  };
+
+  const handleSaveAppointment = async (appointmentData) => {
+    try {
+      await apiService.appointments.create(appointmentData);
+      toast.success('Appointment created successfully!');
+      setShowAppointmentModal(false);
+      fetchDashboardData(); // Refresh data
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+      toast.error('Failed to create appointment');
+    }
+  };
+
+  const handleSaveTestimonial = async (testimonialData) => {
+    try {
+      await apiService.testimonials.create(testimonialData);
+      toast.success('Testimonial created successfully!');
+      setShowTestimonialModal(false);
+      fetchDashboardData(); // Refresh data
+    } catch (error) {
+      console.error('Error creating testimonial:', error);
+      toast.error('Failed to create testimonial');
     }
   };
 
@@ -272,12 +341,12 @@ const Dashboard = () => {
             <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
             <BarChart3 className="w-5 h-5 text-gray-400" />
           </div>
-          <div className="space-y-3">
+          <div className="space-y-3 ">
             {quickActions.map((action, index) => (
               <button
                 key={index}
                 onClick={action.action}
-                className="w-full p-4 text-left transition-all duration-200 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 group"
+                className="w-full p-4 text-left transition-all duration-200 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 group hover:bg-violet-300"
               >
                 <div className="flex items-center">
                   <div className={`${action.bgColor} p-2 rounded-lg group-hover:scale-110 transition-transform`}>
@@ -299,8 +368,8 @@ const Dashboard = () => {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Recent Users</h3>
             <button
-              onClick={() => navigate('/users')}
-              className="text-sm font-medium text-primary hover:text-primary/80"
+              onClick={() => navigate('users')}
+              className="text-sm font-medium cursor-pointer text-primary hover:text-primary/80 hover:text-green-600"
             >
               View All
             </button>
@@ -391,8 +460,8 @@ const Dashboard = () => {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Recent Products</h3>
             <button
-              onClick={() => navigate('/products')}
-              className="text-sm font-medium text-primary hover:text-primary/80"
+              onClick={() => navigate('products')}
+              className="text-sm font-medium cursor-pointer text-primary hover:text-primary/80 hover:text-green-600"
             >
               View All
             </button>
@@ -441,8 +510,8 @@ const Dashboard = () => {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Upcoming Appointments</h3>
             <button
-              onClick={() => navigate('/appointments')}
-              className="text-sm font-medium text-primary hover:text-primary/80"
+              onClick={() => navigate('appointments')}
+              className="text-sm font-medium cursor-pointer text-primary hover:text-primary/80 hover:text-green-600"
             >
               View All
             </button>
@@ -478,6 +547,40 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      {showVeterinarianModal && (
+        <VeterinarianModal
+          veterinarian={null}
+          onClose={() => setShowVeterinarianModal(false)}
+          onSave={handleSaveVeterinarian}
+        />
+      )}
+
+      {showProductModal && (
+        <ProductModal
+          product={null}
+          onClose={() => setShowProductModal(false)}
+          onSave={handleSaveProduct}
+        />
+      )}
+
+      {showAppointmentModal && (
+        <AppointmentModal
+          appointment={null}
+          veterinarians={veterinarians}
+          onClose={() => setShowAppointmentModal(false)}
+          onSave={handleSaveAppointment}
+        />
+      )}
+
+      {showTestimonialModal && (
+        <TestimonialModel
+          testimonial={null}
+          onClose={() => setShowTestimonialModal(false)}
+          onSave={handleSaveTestimonial}
+        />
+      )}
     </div>
   );
 };

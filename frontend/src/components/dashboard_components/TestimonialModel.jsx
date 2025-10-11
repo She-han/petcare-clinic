@@ -115,23 +115,28 @@ const TestimonialModel = ({ testimonial, onClose, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop with blur effect */}
+      <div 
+        className="absolute inset-0 z-10 transition-all duration-300 bg-black/30 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div className="bg-white z-50 rounded-2xl shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">
+        <div className="flex items-center justify-between p-6 text-white bg-gradient-to-r from-violet-500 to-purple-600">
+          <h2 className="text-xl font-semibold">
             {testimonial ? 'Edit Testimonial' : 'Create New Testimonial'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 transition-colors hover:text-gray-600"
+            className="text-gray-200 transition-colors hover:text-gray-50"
           >
             <X size={24} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6">
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Customer Information */}
             <div className="md:col-span-2">
@@ -344,7 +349,7 @@ const TestimonialModel = ({ testimonial, onClose, onSave }) => {
                   name="isApproved"
                   checked={formData.isApproved}
                   onChange={handleChange}
-                  className="w-5 h-5 text-violet-600 border-gray-300 rounded focus:ring-2 focus:ring-violet-500"
+                  className="w-5 h-5 border-gray-300 rounded text-violet-600 focus:ring-2 focus:ring-violet-500"
                 />
                 <span className="text-sm font-medium text-gray-700">
                   Approved for Display
@@ -362,7 +367,7 @@ const TestimonialModel = ({ testimonial, onClose, onSave }) => {
                   name="isFeatured"
                   checked={formData.isFeatured}
                   onChange={handleChange}
-                  className="w-5 h-5 text-violet-600 border-gray-300 rounded focus:ring-2 focus:ring-violet-500"
+                  className="w-5 h-5 border-gray-300 rounded text-violet-600 focus:ring-2 focus:ring-violet-500"
                 />
                 <span className="text-sm font-medium text-gray-700">
                   Featured Testimonial

@@ -139,23 +139,28 @@ const AppointmentModal = ({ appointment, veterinarians, onClose, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop with blur effect */}
+      <div 
+        className="absolute inset-0 z-10 transition-all duration-300 bg-black/30 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div className="bg-white rounded-2xl z-50 shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">
+        <div className="flex items-center justify-between p-6 text-white bg-gradient-to-r from-violet-500 to-purple-600">
+          <h2 className="text-xl font-semibold">
             {appointment ? 'Edit Appointment' : 'Create New Appointment'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 transition-colors hover:text-gray-600"
+            className="text-gray-200 transition-colors hover:text-gray-50"
           >
             <X size={24} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6">
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Veterinarian Selection */}
             <div className="md:col-span-2">
