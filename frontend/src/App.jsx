@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Checkout from './pages/Checkout';
 import Cart from './pages/Cart';
 import Veterinarians from './pages/Veterinarians';
+import OrderSuccess from './pages/OrderSuccess';
 
 function App() {
   console.log('App component rendering...');
@@ -31,7 +32,7 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/veterinarians" element={<Veterinarians/>}/>
-            
+            <Route path="/order-success" element={<OrderSuccess />} />
             
             
             {/* Admin Routes */}

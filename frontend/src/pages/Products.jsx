@@ -370,7 +370,7 @@ const Products = () => {
                                   {product.name}
                                 </h3>
                                 <p className="text-lg font-bold text-green-600">
-                                  ${product.price}
+                                  LKR {product.price}
                                 </p>
                               </div>
                             </motion.div>
@@ -471,8 +471,8 @@ const Products = () => {
                           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                         />
                         <div className="flex justify-between text-sm text-gray-600">
-                          <span>$0</span>
-                          <span>${filters.priceRange[1]}</span>
+                          <span>LKR 0</span>
+                          <span>LKR {filters.priceRange[1]}</span>
                         </div>
                       </div>
                     </div>
@@ -612,11 +612,11 @@ const Products = () => {
                             {/* Price */}
                             <div className="flex items-center mb-4 space-x-2">
                               <span className="text-2xl font-bold text-green-600">
-                                ${product.price}
+                                LKR {product.price}
                               </span>
                               {product.discountPrice && (
                                 <span className="text-sm text-gray-500 line-through">
-                                  ${product.discountPrice}
+                                  LKR {product.discountPrice}
                                 </span>
                               )}
                             </div>

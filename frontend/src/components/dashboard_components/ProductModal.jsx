@@ -317,7 +317,7 @@ const uploadImage = async (file) => {
 
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Price *
+                  Price (LKR) *
                 </label>
                 <input
                   type="number"
@@ -336,7 +336,7 @@ const uploadImage = async (file) => {
 
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Discount Price
+                  Discount Price (LKR)
                 </label>
                 <input
                   type="number"

@@ -283,7 +283,7 @@ const Cart = () => {
                               {item.product?.name || 'Unknown Product'}
                             </h3>
                             <p className="mb-2 text-gray-600">
-                              ${Number(item.unitPrice || 0).toFixed(2)} each
+                              LKR {Number(item.unitPrice || 0).toFixed(2)} each
                             </p>
                             <div className="text-sm text-gray-500">
                               Category: {item.product?.category || 'N/A'}
@@ -331,7 +331,7 @@ const Cart = () => {
                           
                           <div className="ml-4 text-right">
                             <p className="text-lg font-medium text-gray-900">
-                              ${Number(item.totalPrice || 0).toFixed(2)}
+                              LKR {Number(item.totalPrice || 0).toFixed(2)}
                             </p>
                           </div>
                         </div>
@@ -354,26 +354,26 @@ const Cart = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal</span>
-                      <span className="font-medium">${Number(cart.totalAmount || 0).toFixed(2)}</span>
+                      <span className="font-medium">LKR {Number(cart.totalAmount || 0).toFixed(2)}</span>
                     </div>
                     
                     {cart.discountAmount && Number(cart.discountAmount) > 0 && (
                       <div className="flex justify-between text-green-600">
                         <span>Discount</span>
-                        <span>-${Number(cart.discountAmount).toFixed(2)}</span>
+                        <span>-LKR {Number(cart.discountAmount).toFixed(2)}</span>
                       </div>
                     )}
                     
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tax</span>
-                      <span className="font-medium">${Number(cart.taxAmount || 0).toFixed(2)}</span>
+                      <span className="font-medium">LKR {Number(cart.taxAmount || 0).toFixed(2)}</span>
                     </div>
                     
                     <div className="pt-4 border-t">
                       <div className="flex justify-between text-lg font-medium">
                         <span>Total</span>
                         <span className="text-green-600">
-                          ${Number(cart.finalAmount || cart.totalAmount || 0).toFixed(2)}
+                          LKR {Number(cart.finalAmount || cart.totalAmount || 0).toFixed(2)}
                         </span>
                       </div>
                     </div>

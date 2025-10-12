@@ -296,7 +296,7 @@ const ProductDetailsModal = ({ product, onClose }) => {
                           fontSize: { xs: '2rem', md: '2.5rem' }
                         }}
                       >
-                        ${product.price}
+                        LKR {product.price}
                       </Typography>
                       {product.discountPrice && (
                         <Typography
@@ -306,7 +306,7 @@ const ProductDetailsModal = ({ product, onClose }) => {
                             textDecoration: 'line-through'
                           }}
                         >
-                          ${product.discountPrice}
+                          LKR {product.discountPrice}
                         </Typography>
                       )}
                     </Box>

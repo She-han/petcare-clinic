@@ -415,7 +415,7 @@ const VeterinarianModal = ({ veterinarian, onClose, onSave }) => {
 
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Consultation Fee *
+                  Consultation Fee (LKR) *
                 </label>
                 <div className="relative">
                   <DollarSign className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />

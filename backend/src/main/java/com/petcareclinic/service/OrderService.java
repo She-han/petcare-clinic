@@ -17,7 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Map;
@@ -36,10 +39,18 @@ public class OrderService {
 
     // Create new order from cart items
     @Transactional
+    @SuppressWarnings("unchecked")
     public Order createOrder(Map<String, Object> orderData) {
         try {
             Long userId = Long.valueOf(orderData.get("userId").toString());
-            List<Long> cartItemIds = (List<Long>) orderData.get("cartItemIds");
+            
+            // Handle cartItemIds conversion from Integer to Long
+            List<?> rawCartItemIds = (List<?>) orderData.get("cartItemIds");
+            List<Long> cartItemIds = new ArrayList<>();
+            for (Object id : rawCartItemIds) {
+                cartItemIds.add(Long.valueOf(id.toString()));
+            }
+            
             Map<String, Object> shippingDetails = (Map<String, Object>) orderData.get("shippingDetails");
             String paymentMethod = orderData.get("paymentMethod").toString();
             BigDecimal subtotal = new BigDecimal(orderData.get("subtotal").toString());
@@ -163,16 +174,24 @@ public class OrderService {
         Optional<Order> orderOpt = orderRepository.findById(orderId);
         if (orderOpt.isPresent()) {
             Order order = orderOpt.get();
-            OrderStatus oldStatus = order.getStatus();
             order.setStatus(newStatus);
 
             // Set appropriate dates based on status
             LocalDateTime now = LocalDateTime.now();
             switch (newStatus) {
+                case PENDING:
+                    // Order created, no specific date needed
+                    break;
                 case CONFIRMED:
                     if (order.getConfirmedDate() == null) {
                         order.setConfirmedDate(now);
                     }
+                    break;
+                case PROCESSING:
+                    // Order is being processed, no specific date needed
+                    break;
+                case TO_BE_SENT:
+                    // Order ready to be sent, no specific date needed
                     break;
                 case SENT:
                     if (order.getShippedDate() == null) {
@@ -188,6 +207,9 @@ public class OrderService {
                     if (order.getCancelledDate() == null) {
                         order.setCancelledDate(now);
                     }
+                    break;
+                case REFUNDED:
+                    // Refund processed, no specific date needed
                     break;
             }
 

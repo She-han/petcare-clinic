@@ -92,36 +92,83 @@ const Checkout = () => {
 
     // Validate shipping details
     const requiredFields = ['fullName', 'email', 'phone', 'address', 'city', 'state', 'zipCode'];
-    const missingFields = requiredFields.filter(field => !shippingDetails[field]);
+    const missingFields = requiredFields.filter(field => !shippingDetails[field]?.trim());
     
     if (missingFields.length > 0) {
       toast.error(`Please fill in: ${missingFields.join(', ')}`);
       return;
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(shippingDetails.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
     try {
       setLoading(true);
+      
+      // Calculate amounts with proper precision
+      const subtotal = Math.round(calculateSubtotal() * 100) / 100;
+      const taxAmount = Math.round(calculateTax() * 100) / 100;
+      const totalAmount = Math.round(calculateTotal() * 100) / 100;
       
       const orderPayload = {
         userId: user.id,
         cartItemIds: selectedItems,
-        shippingDetails,
+        shippingDetails: {
+          ...shippingDetails,
+          // Trim all string values
+          fullName: shippingDetails.fullName.trim(),
+          email: shippingDetails.email.trim().toLowerCase(),
+          phone: shippingDetails.phone.trim(),
+          address: shippingDetails.address.trim(),
+          city: shippingDetails.city.trim(),
+          state: shippingDetails.state.trim(),
+          zipCode: shippingDetails.zipCode.trim(),
+          country: shippingDetails.country.trim()
+        },
         paymentMethod: selectedPaymentMethod,
-        subtotal: calculateSubtotal(),
-        taxAmount: calculateTax(),
-        totalAmount: calculateTotal()
+        subtotal: subtotal,
+        taxAmount: taxAmount,
+        totalAmount: totalAmount
       };
 
+      console.log('Creating order with payload:', orderPayload);
+      
       const response = await apiService.orders.create(orderPayload);
       
-      toast.success('Order placed successfully!');
+      console.log('Order created successfully:', response.data);
+      
+      // Show success message with order number if available
+      const orderNumber = response.data?.orderNumber || response.data?.id;
+      toast.success(`Order #${orderNumber} placed successfully!`, { duration: 4000 });
+      
+      // Navigate to success page with order details
       navigate('/order-success', { 
-        state: { orderId: response.data.id } 
+        state: { 
+          orderId: response.data?.id,
+          orderNumber: response.data?.orderNumber,
+          totalAmount: totalAmount
+        }
       });
       
     } catch (error) {
       console.error('Checkout error:', error);
-      toast.error('Failed to place order. Please try again.');
+      
+      // Handle specific error messages
+      if (error.response?.data?.error) {
+        toast.error(`Order failed: ${error.response.data.error}`);
+      } else if (error.response?.status === 400) {
+        toast.error('Invalid order data. Please check your information and try again.');
+      } else if (error.response?.status === 404) {
+        toast.error('Some items in your cart are no longer available.');
+      } else if (error.response?.status >= 500) {
+        toast.error('Server error. Please try again later.');
+      } else {
+        toast.error('Failed to place order. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -393,13 +440,13 @@ const Checkout = () => {
                             Quantity: {item.quantity}
                           </p>
                           <p className="text-lg font-bold text-green-600">
-                            ${parseFloat(item.unitPrice).toFixed(2)}
+                            LKR {parseFloat(item.unitPrice).toFixed(2)}
                           </p>
                         </div>
                         
                         <div className="text-right">
                           <p className="text-lg font-bold text-gray-800">
-                            ${(parseFloat(item.unitPrice) * item.quantity).toFixed(2)}
+                            LKR {(parseFloat(item.unitPrice) * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       </motion.div>
@@ -419,11 +466,11 @@ const Checkout = () => {
                 <div className="mb-6 space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal:</span>
-                    <span className="font-semibold">${calculateSubtotal().toFixed(2)}</span>
+                    <span className="font-semibold">LKR {calculateSubtotal().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax (8%):</span>
-                    <span className="font-semibold">${calculateTax().toFixed(2)}</span>
+                    <span className="font-semibold">LKR {calculateTax().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping:</span>
@@ -433,7 +480,7 @@ const Checkout = () => {
                     <div className="flex justify-between text-xl">
                       <span className="font-bold">Total:</span>
                       <span className="font-bold text-green-600">
-                        ${calculateTotal().toFixed(2)}
+                        LKR {calculateTotal().toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -444,15 +491,17 @@ const Checkout = () => {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleConfirmCheckout}
                   disabled={loading || selectedItems.length === 0}
-                  className="w-full py-4 text-lg font-semibold text-white transition-all duration-200 shadow-lg bg-gradient-to-r from-red-600 via-red-500 to-red-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:from-red-700 hover:via-red-700 hover:to-red-700"
+                  className="w-full py-4 text-lg font-semibold text-white transition-all duration-200 shadow-lg bg-gradient-to-r from-green-600 via-green-500 to-green-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:from-green-700 hover:via-green-700 hover:to-green-700"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center">
                       <div className="w-5 h-5 mr-2 border-b-2 border-white rounded-full animate-spin"></div>
-                      Processing...
+                      Processing Order...
                     </div>
                   ) : (
-                    `Confirm Checkout (${selectedItems.length} items)`
+                    <>
+                      🛒 Confirm Order - LKR {calculateTotal().toFixed(2)} ({selectedItems.length} items)
+                    </>
                   )}
                 </motion.button>
 

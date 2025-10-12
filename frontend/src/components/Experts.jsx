@@ -160,7 +160,7 @@ const Experts = ({ limit }) => {
                   {/* Fee */}
                   <div className="px-4 py-2 border border-green-200 rounded-full shadow-sm bg-green-50">
                     <span className="text-sm font-semibold text-green-700">
-                      ${parseFloat(veterinarian.consultationFee || 0).toFixed(0)} / Visit
+                      LKR {parseFloat(veterinarian.consultationFee || 0).toFixed(0)} / Visit
                     </span>
                   </div>
                 </div>

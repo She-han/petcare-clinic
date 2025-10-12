@@ -8,6 +8,7 @@ import ProductsManagement from '../components/dashboard_components/ProductsManag
 import VeterinariansManagement from '../components/dashboard_components/VeterinariansManagement';
 import AppointmentsManagement from '../components/dashboard_components/AppointmentsManagement';
 import TestimonialManagement from '../components/dashboard_components/TestimonialManagement';
+import OrdersManagement from '../components/dashboard_components/OrdersManagement';
 
 const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -34,6 +35,7 @@ const AdminDashboard = () => {
               <Route path="veterinarians" element={<VeterinariansManagement />} />
               <Route path="appointments" element={<AppointmentsManagement />} />
               <Route path="testimonials" element={<TestimonialManagement />} />
+              <Route path="orders" element={<OrdersManagement />} />
             </Routes>
           </div>
         </main>

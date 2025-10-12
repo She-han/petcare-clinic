@@ -377,7 +377,7 @@ const Products = () => {
                           fontSize: { xs: '1rem', md: '1.2rem' }
                         }}
                       >
-                        ${product.price}
+                        LKR {product.price}
                       </Typography>
                       {product.discountPrice && (
                         <Typography
@@ -388,7 +388,7 @@ const Products = () => {
                             opacity: 0.6
                           }}
                         >
-                          ${product.discountPrice}
+                          LKR {product.discountPrice}
                         </Typography>
                       )}
                     </Box>
