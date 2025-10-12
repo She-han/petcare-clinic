@@ -126,12 +126,22 @@ const apiService = {
   },
 
   // Orders API (for checkout)
-  orders: {
-    create: (orderData) => apiClient.post('/orders', orderData),
-    getById: (id) => apiClient.get(`/orders/${id}`),
-    getByUser: (userId) => apiClient.get(`/orders/user/${userId}`),
-    updateStatus: (id, status) => apiClient.put(`/orders/${id}/status`, { status }),
-  },
+  orders : {
+  create: (orderData) => api.post('/orders', orderData),
+  getAll: (params = {}) => api.get('/orders', { params }),
+  getById: (id) => api.get(`/orders/${id}`),
+  getByOrderNumber: (orderNumber) => api.get(`/orders/order-number/${orderNumber}`),
+  getByUserId: (userId, params = {}) => api.get(`/orders/user/${userId}`, { params }),
+  getByStatus: (status) => api.get(`/orders/status/${status}`),
+  updateStatus: (id, status) => api.patch(`/orders/${id}/status`, { status }),
+  cancel: (id, reason) => api.patch(`/orders/${id}/cancel`, { reason }),
+  addTracking: (id, trackingData) => api.patch(`/orders/${id}/tracking`, trackingData),
+  search: (params) => api.get('/orders/search', { params }),
+  getRecent: () => api.get('/orders/recent'),
+  getToShip: () => api.get('/orders/to-ship'),
+  getCountByStatus: (status) => api.get(`/orders/count/status/${status}`),
+  delete: (id) => api.delete(`/orders/${id}`)
+},
 
   // Testimonials API
   testimonials: {
