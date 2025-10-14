@@ -80,16 +80,44 @@ const OrdersManagement = () => {
     
     try {
       setLoading(true);
-      const response = await apiService.orders.search(searchTerm);
-      console.log('Search API Response:', response);
+      console.log('Searching for:', searchTerm);
       
-      // Handle search response (might be paginated or array)
-      if (response.data && response.data.content) {
-        setOrders(response.data.content);
-      } else if (Array.isArray(response.data)) {
-        setOrders(response.data);
-      } else {
-        setOrders([]);
+      // Check if search endpoint exists, if not use client-side filtering
+      try {
+        const response = await apiService.orders.search(searchTerm);
+        console.log('Search API Response:', response);
+        
+        // Handle search response (might be paginated or array)
+        if (response.data && response.data.content) {
+          setOrders(response.data.content);
+        } else if (Array.isArray(response.data)) {
+          setOrders(response.data);
+        } else {
+          setOrders([]);
+        }
+      } catch (apiError) {
+        console.log('API search failed, using client-side filtering:', apiError);
+        
+        // Fallback to client-side search if API search fails
+        const allOrders = await apiService.orders.getAll();
+        const ordersData = allOrders.data && allOrders.data.content ? 
+          allOrders.data.content : 
+          Array.isArray(allOrders.data) ? allOrders.data : [];
+        
+        const filteredOrders = ordersData.filter(order => {
+          const searchLower = searchTerm.toLowerCase();
+          return (
+            (order.orderNumber && order.orderNumber.toLowerCase().includes(searchLower)) ||
+            (order.shippingFullName && order.shippingFullName.toLowerCase().includes(searchLower)) ||
+            (order.shippingEmail && order.shippingEmail.toLowerCase().includes(searchLower)) ||
+            (order.user?.firstName && order.user.firstName.toLowerCase().includes(searchLower)) ||
+            (order.user?.lastName && order.user.lastName.toLowerCase().includes(searchLower)) ||
+            (order.user?.email && order.user.email.toLowerCase().includes(searchLower))
+          );
+        });
+        
+        setOrders(filteredOrders);
+        toast.success(`Found ${filteredOrders.length} orders`);
       }
     } catch (error) {
       toast.error('Search failed');
@@ -167,21 +195,9 @@ const OrdersManagement = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Orders Management</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Manage and track all customer orders
-          </p>
+        
         </div>
-        <button
-          onClick={() => {
-            console.log('Test button clicked');
-            console.log('Current orders state:', orders);
-            console.log('Orders length:', orders.length);
-            fetchOrders();
-          }}
-          className="px-4 py-2 text-white bg-blue-500 rounded"
-        >
-          Test Fetch Orders
-        </button>
+   
       </div>
 
       {/* Stats Cards */}

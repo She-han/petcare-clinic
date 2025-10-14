@@ -143,16 +143,27 @@ public class OrderController {
     // Search orders
     @GetMapping("/search")
     public ResponseEntity<Page<Order>> searchOrders(
-            @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) OrderStatus status,
-            @RequestParam(required = false) String orderNumber,
-            @RequestParam(required = false) String customerName,
+            @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        
-        Pageable pageable = PageRequest.of(page, size, Sort.by("orderDate").descending());
-        Page<Order> orders = orderService.searchOrders(userId, status, orderNumber, customerName, pageable);
-        return ResponseEntity.ok(orders);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "orderDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+        try {
+            Pageable pageable = PageRequest.of(
+                page, 
+                size, 
+                sortDir.equalsIgnoreCase("desc") ? 
+                    Sort.by(sortBy).descending() : 
+                    Sort.by(sortBy).ascending()
+            );
+            
+            Page<Order> orders = orderService.searchOrdersByQuery(query, pageable);
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            System.err.println("Error searching orders: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     // Get recent orders

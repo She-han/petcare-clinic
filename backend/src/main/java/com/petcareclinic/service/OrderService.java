@@ -288,6 +288,16 @@ public class OrderService {
         return orderRepository.searchOrders(userId, status, orderNumber, customerName, pageable);
     }
 
+    // Search orders by general query
+    public Page<Order> searchOrdersByQuery(String query, Pageable pageable) {
+        if (query == null || query.trim().isEmpty()) {
+            return orderRepository.findAll(pageable);
+        }
+        
+        String searchTerm = "%" + query.toLowerCase().trim() + "%";
+        return orderRepository.searchOrdersByQuery(searchTerm, pageable);
+    }
+
     // Get orders that need to be shipped
     public List<Order> getOrdersToBeShipped() {
         return orderRepository.findOrdersToBeShipped();

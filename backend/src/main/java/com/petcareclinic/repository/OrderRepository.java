@@ -63,4 +63,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                             @Param("orderNumber") String orderNumber,
                             @Param("customerName") String customerName,
                             Pageable pageable);
+
+    // Search orders by general query
+    @Query("SELECT o FROM Order o LEFT JOIN o.user u WHERE " +
+           "LOWER(o.orderNumber) LIKE :searchTerm OR " +
+           "LOWER(o.shippingFullName) LIKE :searchTerm OR " +
+           "LOWER(o.shippingEmail) LIKE :searchTerm OR " +
+           "LOWER(u.firstName) LIKE :searchTerm OR " +
+           "LOWER(u.lastName) LIKE :searchTerm OR " +
+           "LOWER(u.email) LIKE :searchTerm " +
+           "ORDER BY o.orderDate DESC")
+    Page<Order> searchOrdersByQuery(@Param("searchTerm") String searchTerm, Pageable pageable);
 }
