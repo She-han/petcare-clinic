@@ -77,11 +77,26 @@ const Checkout = () => {
   };
 
   const calculateTax = () => {
-    return calculateSubtotal() * 0.08; // 8% tax
+    return calculateSubtotal() * 0; // 0% tax
+  };
+
+  const calculateShippingcost = () => {
+    const totalQuantity = getSelectedItemsData().reduce((total, item) => {
+      return total + item.quantity;
+    }, 0);
+
+    if(totalQuantity <= 5){
+      return 400;
+    }else if(totalQuantity > 5 && totalQuantity <= 10){
+      return 500;
+    }else if(totalQuantity > 10){
+      return 650;
+    }
+    return 400; // Default fallback
   };
 
   const calculateTotal = () => {
-    return calculateSubtotal() + calculateTax();
+    return calculateSubtotal() + calculateTax() + calculateShippingcost();
   };
 
   const handleConfirmCheckout = async () => {
@@ -112,6 +127,7 @@ const Checkout = () => {
       // Calculate amounts with proper precision
       const subtotal = Math.round(calculateSubtotal() * 100) / 100;
       const taxAmount = Math.round(calculateTax() * 100) / 100;
+      const shippingCost = Math.round(calculateShippingcost() * 100) / 100;
       const totalAmount = Math.round(calculateTotal() * 100) / 100;
       
       const orderPayload = {
@@ -132,6 +148,7 @@ const Checkout = () => {
         paymentMethod: selectedPaymentMethod,
         subtotal: subtotal,
         taxAmount: taxAmount,
+        shippingCost: shippingCost,
         totalAmount: totalAmount
       };
 
@@ -469,12 +486,12 @@ const Checkout = () => {
                     <span className="font-semibold">LKR {calculateSubtotal().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Tax (8%):</span>
+                    <span className="text-gray-600">Tax (0%):</span>
                     <span className="font-semibold">LKR {calculateTax().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping:</span>
-                    <span className="font-semibold text-green-600">FREE</span>
+                    <span className="font-semibold text-green-600">LKR {calculateShippingcost().toFixed(2)}</span>
                   </div>
                   <div className="pt-3 border-t">
                     <div className="flex justify-between text-xl">

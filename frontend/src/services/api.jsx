@@ -136,7 +136,11 @@ const apiService = {
     updateStatus: (id, status) => apiClient.patch(`/orders/${id}/status`, { status }),
     cancel: (id, reason) => apiClient.patch(`/orders/${id}/cancel`, { reason }),
     addTracking: (id, trackingData) => apiClient.patch(`/orders/${id}/tracking`, trackingData),
-    search: (query) => apiClient.get(`/orders/search?q=${query}`),
+    search: (query, page = 0, size = 100) => {
+      // URL encode the search query to handle special characters
+      const encodedQuery = encodeURIComponent(query);
+      return apiClient.get(`/orders/search?query=${encodedQuery}&page=${page}&size=${size}`);
+    },
     getRecent: () => apiClient.get('/orders/recent'),
     getToShip: () => apiClient.get('/orders/to-ship'),
     getCountByStatus: (status) => apiClient.get(`/orders/count/status/${status}`),

@@ -279,7 +279,7 @@ const OrderSuccess = () => {
             </button>
 
             <button
-              onClick={() => navigate('/my-orders')}
+              onClick={() => navigate('/profile')}
               className="flex items-center justify-center px-8 py-3 text-green-600 transition-colors border-2 border-green-600 rounded-xl hover:bg-green-50"
             >
               <ReceiptPercentIcon className="w-5 h-5 mr-2" />
