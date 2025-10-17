@@ -227,11 +227,11 @@ const Products = () => {
         </motion.div>
 
         <Grid container spacing={4} sx={{ justifyContent: 'center', alignItems: 'stretch' }}>
-          {products.slice(1,5).map((product, index) => (
+          {products.slice(1,10).map((product, index) => (
             <Grid item xs={12} sm={6} lg={3} key={product.id}>
               <motion.div
                 variants={fadeInUp}
-                whileHover={{ 
+                whileHover={{
                   y: 0,
                   transition: { duration: 0.3 }
                 }}

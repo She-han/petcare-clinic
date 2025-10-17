@@ -39,7 +39,7 @@ const Products = () => {
   
   // Filter state
   const [filters, setFilters] = useState({
-    priceRange: [0, 1000],
+    priceRange: [0, 10000],
     sortBy: 'latest',
     categories: [],
     searchTerm: ''
@@ -462,7 +462,7 @@ const Products = () => {
                         <input
                           type="range"
                           min="0"
-                          max="1000"
+                          max="10000"
                           value={filters.priceRange[1]}
                           onChange={(e) => setFilters(prev => ({
                             ...prev,
