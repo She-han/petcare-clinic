@@ -16,6 +16,7 @@ import {
   Phone as PhoneIcon,
   Email as EmailIcon
 } from '@mui/icons-material'
+import clinic from '../assets/clinic.webp'
 
 const Services = () => {
   const fadeInUp = {
@@ -79,7 +80,7 @@ const Services = () => {
       mx: 'auto',
       overflow: 'hidden',
       borderRadius: 12,
-      background: 'linear-gradient(180deg, #f8fffe 0%, #ffffff 50%, #f0f9ff 100%)',
+      
       py: { xs: 8, md: 12 }
     }}>
       <Container maxWidth="xl">
@@ -115,13 +116,13 @@ const Services = () => {
               >
                 <Box
                   component="img"
-                  src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&h=600&fit=crop"
+                  src={clinic}
                   alt="PetCare Clinic & Shop"
                   sx={{
                     width: '100%',
-                    height: { xs: 280, md: 380 },
+                    height: { xs: 280, md: 600 },
                     objectFit: 'cover',
-                    borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+                    borderRadius: '2px 60px 2px 60px',
                     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
                   }}
                 />
@@ -137,7 +138,7 @@ const Services = () => {
                     background: 'linear-gradient(135deg, #2ECC71 0%, #0074D9 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    mb: 3,
+                    mb: 2,
                     lineHeight: 1.2
                   }}
                 >
@@ -150,8 +151,8 @@ const Services = () => {
                     color: '#144E8C',
                     fontSize: { xs: '1rem', md: '1.15rem' },
                     lineHeight: 1.9,
-                    mb: 4,
-                    textAlign: 'justify'
+                    mb: 3,
+                    textAlign: 'left'
                   }}
                 >
                   Welcome to PetCare Clinic & Shop, your trusted partner in pet health and wellness since 2014. 
