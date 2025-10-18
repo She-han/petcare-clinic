@@ -447,12 +447,8 @@ const Services = () => {
                           color: service.color,
                           transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                           willChange: 'transform, background, border-color',
-                          cursor: 'default',
-                          '&:hover': {
-                            transform: 'scale(1.08) translateY(-3px)',
-                            background: `linear-gradient(135deg, ${service.color}25 0%, ${service.color}15 100%)`,
-                            borderColor: service.color,
-                          }
+                          cursor: 'default'
+                         
                         }}
                       >
                         {badge}
