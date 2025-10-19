@@ -122,7 +122,7 @@ const Services = () => {
                     width: '100%',
                     height: { xs: 280, md: 600 },
                     objectFit: 'cover',
-                    borderRadius: '2px 60px 2px 60px',
+                    borderRadius: '20px 60px 20px 60px',
                     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
                   }}
                 />
@@ -233,7 +233,7 @@ const Services = () => {
               <HeartIcon sx={{ 
                 fontSize: { xs: 50, md: 70 }, 
                 color: '#2ECC71',
-                mb: 3,
+                mb: 1,
                 filter: 'drop-shadow(0 4px 8px rgba(46, 204, 113, 0.3))'
               }} />
             </motion.div>
@@ -246,7 +246,7 @@ const Services = () => {
                 background: 'linear-gradient(135deg, #2ECC71 0%, #0074D9 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                mb: 3,
+                mb: 0,
                 lineHeight: 1.2
               }}
             >
@@ -268,22 +268,7 @@ const Services = () => {
               Where Every Paw Matters, Every Tail Wags with Joy
             </Typography>
 
-            <Typography
-              variant="body1"
-              sx={{
-                color: '#28283E',
-                maxWidth: 900,
-                mx: 'auto',
-                fontSize: { xs: '1rem', md: '1.1rem' },
-                lineHeight: 1.9,
-                opacity: 0.85
-              }}
-            >
-              We understand that your pets are family. For over a decade, 
-              we've been providing comprehensive veterinary care with compassion, expertise, 
-              and cutting-edge medical technology. Our mission is to ensure your furry companions 
-              live their happiest, healthiest lives.
-            </Typography>
+         
           </Box>
         </motion.div>
 
@@ -315,43 +300,60 @@ const Services = () => {
                   {/* Decorative floating icon - positioned outside the frame */}
                   <motion.div
                     animate={{
-                      y: [0, -10, 0],
-                      rotate: [0, 5, 0]
+                      y: [0, -15, 0],
+                      rotate: [0, 8, -8, 0],
+                      scale: [1, 1.05, 1]
                     }}
                     transition={{
-                      duration: 3,
+                      duration: 4,
                       repeat: Infinity,
-                      ease: "easeInOut"
+                      ease: [0.4, 0, 0.6, 1],
+                      times: [0, 0.5, 1]
                     }}
+                 
                     style={{
                       position: 'absolute',
                       top: 350,
                       left: '60%',
-                      transform: 'translateX(-50%)',
-                      zIndex: 100
+                      translateX: '-50%',
+                      zIndex: 100,
+                      willChange: 'transform'
                     }}
                   >
-                    <Box
-                      sx={{
-                        width: { xs: 80, md: 100 },
-                        height: { xs: 80, md: 100 },
+                    <motion.div
+                      style={{
+                        width: window.innerWidth < 768 ? 80 : 100,
+                        height: window.innerWidth < 768 ? 80 : 100,
                         borderRadius: '50%',
                         background: 'linear-gradient(135deg, #ffffff 0%, #f8fffe 100%)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: `0 15px 40px ${service.color}50`,
-                        border: '5px solid white'
+                        border: '5px solid white',
+                        cursor: 'pointer',
+                        willChange: 'transform'
+                      }}
+                      animate={{
+                        boxShadow: [
+                          `0 15px 40px ${service.color}30`,
+                          `0 25px 60px ${service.color}50`,
+                          `0 15px 40px ${service.color}30`
+                        ]
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
                       }}
                     >
                       {service.icon}
-                    </Box>
+                    </motion.div>
                   </motion.div>
 
                   <Box
                     sx={{
                       position: 'relative',
-                      borderRadius: service.align === 'left' ? '48% 52% 68% 32% / 42% 78% 22% 58%' : '100% 100% 100% 100% / 72% 24% 76% 28%',
+                      borderRadius: service.align === 'right' ? '48% 52% 68% 32% / 42% 78% 22% 58%' : '100% 100% 100% 100% / 72% 24% 76% 28%',
                       overflow: 'hidden',
                       boxShadow: `0 20px 60px ${service.color}30`,
                       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
