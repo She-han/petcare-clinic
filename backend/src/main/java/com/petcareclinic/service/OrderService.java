@@ -69,9 +69,9 @@ public class OrderService {
             order.setShippingCost(BigDecimal.ZERO); // Free shipping for now
             order.setTotalAmount(totalAmount);
             order.setPaymentMethod(paymentMethod);
-            order.setStatus(OrderStatus.CONFIRMED);
-            order.setPaymentStatus("COMPLETED");
-            order.setConfirmedDate(LocalDateTime.now());
+            order.setStatus(OrderStatus.PENDING); // Initially PENDING until payment confirmation
+            order.setPaymentStatus("PENDING"); // Payment status pending until PayHere confirms
+            // Don't set confirmedDate yet - will be set when payment is confirmed
 
             // Set shipping details
             order.setShippingFullName(shippingDetails.get("fullName").toString());
@@ -301,6 +301,28 @@ public class OrderService {
     // Get orders that need to be shipped
     public List<Order> getOrdersToBeShipped() {
         return orderRepository.findOrdersToBeShipped();
+    }
+
+    // Update order payment status (used by PayHere notification)
+    @Transactional
+    public Order updateOrderPaymentStatus(String orderNumber, String paymentStatus) {
+        Optional<Order> orderOpt = orderRepository.findByOrderNumber(orderNumber);
+        if (orderOpt.isPresent()) {
+            Order order = orderOpt.get();
+            order.setPaymentStatus(paymentStatus);
+            
+            if ("COMPLETED".equals(paymentStatus)) {
+                order.setStatus(OrderStatus.CONFIRMED);
+                order.setConfirmedDate(LocalDateTime.now());
+            } else if ("FAILED".equals(paymentStatus)) {
+                order.setStatus(OrderStatus.CANCELLED);
+                order.setCancelledDate(LocalDateTime.now());
+                order.setCancellationReason("Payment failed");
+            }
+            
+            return orderRepository.save(order);
+        }
+        throw new RuntimeException("Order not found with order number: " + orderNumber);
     }
 
     // Delete order (admin only)
