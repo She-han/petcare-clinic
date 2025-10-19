@@ -1,82 +1,83 @@
-import React from 'react'
+import React, { memo, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import {
-  Typography,
-  Box,
-  Container
-} from '@mui/material'
-import {
-  LocalHospital as HospitalIcon,
-  Schedule as ScheduleIcon,
-  ShoppingCart as ShoppingIcon,
-  Pets as PetsIcon,
-  Favorite as HeartIcon,
-  Star as StarIcon,
-  LocationOn as LocationIcon,
-  Phone as PhoneIcon,
-  Email as EmailIcon
-} from '@mui/icons-material'
+// Optimized individual imports for better tree-shaking
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+// Individual icon imports to reduce bundle size
+import LocalHospital from '@mui/icons-material/LocalHospital'
+import Schedule from '@mui/icons-material/Schedule'
+import ShoppingCart from '@mui/icons-material/ShoppingCart'
+import Pets from '@mui/icons-material/Pets'
+import Star from '@mui/icons-material/Star'
+import LocationOn from '@mui/icons-material/LocationOn'
+import Phone from '@mui/icons-material/Phone'
+import Email from '@mui/icons-material/Email'
 import clinic from '../assets/clinic.webp'
 
-const Services = () => {
-  const fadeInUp = {
+// Move animation variants outside component to prevent recreation on every render
+const animationVariants = {
+  fadeInUp: {
     hidden: { opacity: 0, y: 40 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-  }
-
-  const fadeInLeft = {
+  },
+  fadeInLeft: {
     hidden: { opacity: 0, x: -60 },
     visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: "easeOut" } }
-  }
-
-  const fadeInRight = {
+  },
+  fadeInRight: {
     hidden: { opacity: 0, x: 60 },
     visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: "easeOut" } }
-  }
-
-  const scaleIn = {
+  },
+  scaleIn: {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: "easeOut" } }
   }
+}
 
-  const services = [
+// Memoize the Services component to prevent unnecessary re-renders
+const Services = memo(() => {
+
+  // Memoize services data to prevent recreation on every render
+  const services = useMemo(() => [
     {
-      icon: <HospitalIcon sx={{ fontSize: 50, color: '#2ECC71' }} />,
+      icon: <LocalHospital sx={{ fontSize: 50, color: '#2ECC71' }} />,
       title: '24/7 Emergency Care',
       description: 'Your pet\'s health emergency is our priority. Our dedicated team of experienced veterinarians is available round the clock to provide immediate medical attention. From minor injuries to critical care, we ensure your beloved companion receives the best treatment when they need it most.',
-      image: 'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=800&h=600&fit=crop',
+      image: 'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=400&h=300&fit=crop&auto=format&q=75', // Optimized: smaller size, auto format, quality 75
       align: 'left',
       color: '#2ECC71'
     },
     {
-      icon: <ScheduleIcon sx={{ fontSize: 50, color: '#0074D9' }} />,
+      icon: <Schedule sx={{ fontSize: 50, color: '#0074D9' }} />,
       title: 'Smart Appointment Booking',
       description: 'Schedule your pet\'s visit with ease through our intuitive online booking system. Choose your preferred veterinarian, select a convenient time slot, and receive instant confirmation. We send automated reminders so you never miss an appointment, making pet care hassle-free.',
-      image: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=800&h=600&fit=crop',
+      image: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=400&h=300&fit=crop&auto=format&q=75', // Optimized
       align: 'right',
       color: '#0074D9'
     },
     {
-      icon: <ShoppingIcon sx={{ fontSize: 50, color: '#144E8C' }} />,
+      icon: <ShoppingCart sx={{ fontSize: 50, color: '#144E8C' }} />,
       title: 'Premium Pet Products',
       description: 'Discover our curated collection of high-quality pet care essentials. From nutritious food and treats to toys, accessories, and medications, we offer everything your pet needs. All products are carefully selected and recommended by our expert veterinarians for your peace of mind.',
-      image: 'https://images.unsplash.com/photo-1548681528-6a5c45b66b42?w=800&h=600&fit=crop',
+      image: 'https://images.unsplash.com/photo-1548681528-6a5c45b66b42?w=400&h=300&fit=crop&auto=format&q=75', // Optimized
       align: 'left',
       color: '#144E8C'
     },
     {
-      icon: <PetsIcon sx={{ fontSize: 50, color: '#2ECC71' }} />,
+      icon: <Pets sx={{ fontSize: 50, color: '#2ECC71' }} />,
       title: 'Professional Grooming & Spa',
       description: 'Treat your pet to our luxurious grooming services that go beyond just looking good. Our certified groomers provide gentle care including bathing, haircuts, nail trimming, and specialized spa treatments. Regular grooming maintains your pet\'s health while keeping them comfortable and stylish.',
-      image: 'https://images.unsplash.com/photo-1570018144715-43110363d70a?w=800&h=600&fit=crop',
+      image: 'https://images.unsplash.com/photo-1570018144715-43110363d70a?w=400&h=300&fit=crop&auto=format&q=75', // Optimized
       align: 'right',
       color: '#2ECC71'
     }
-  ]
+  ], []) // Empty dependency array since services are static
 
   return (
     <Box sx={{ 
-      width: '90%', 
+
+      width: {xs:'95%',md:'90%'}, 
       mx: 'auto',
       overflow: 'hidden',
       borderRadius: 12,
@@ -89,11 +90,11 @@ const Services = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          variants={fadeInUp}
+          variants={animationVariants.fadeInUp}
         >
           <Box sx={{ 
             mb: { xs: 12, md: 18 },
-            px: { xs: 2, md: 4 }
+            px: { xs: 0, md: 4 }
           }}>
             <Box sx={{
               display: 'flex',
@@ -118,6 +119,7 @@ const Services = () => {
                   component="img"
                   src={clinic}
                   alt="PetCare Clinic & Shop"
+                  loading="lazy" // Add lazy loading for better performance
                   sx={{
                     width: '100%',
                     height: { xs: 280, md: 600 },
@@ -164,21 +166,21 @@ const Services = () => {
                 {/* Contact Information */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <LocationIcon sx={{ color: '#2ECC71', fontSize: 28 }} />
+                    <LocationOn sx={{ color: '#2ECC71', fontSize: 28 }} />
                     <Typography sx={{ color: '#28283E', fontSize: '1rem' }}>
                       123 Pet Street, Colombo 07, Sri Lanka
                     </Typography>
                   </Box>
 
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <PhoneIcon sx={{ color: '#0074D9', fontSize: 28 }} />
+                    <Phone sx={{ color: '#0074D9', fontSize: 28 }} />
                     <Typography sx={{ color: '#28283E', fontSize: '1rem' }}>
                       +94 11 234 5678 | Emergency: +94 77 123 4567
                     </Typography>
                   </Box>
 
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <EmailIcon sx={{ color: '#144E8C', fontSize: 28 }} />
+                    <Email sx={{ color: '#144E8C', fontSize: 28 }} />
                     <Typography sx={{ color: '#28283E', fontSize: '1rem' }}>
                       info@petcareclinic.lk | support@petcareclinic.lk
                     </Typography>
@@ -217,7 +219,7 @@ const Services = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          variants={fadeInUp}
+          variants={animationVariants.fadeInUp}
         >
           <Box sx={{ 
             textAlign: 'center', 
@@ -230,12 +232,7 @@ const Services = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <HeartIcon sx={{ 
-                fontSize: { xs: 50, md: 70 }, 
-                color: '#2ECC71',
-                mb: 1,
-                filter: 'drop-shadow(0 4px 8px rgba(46, 204, 113, 0.3))'
-              }} />
+            
             </motion.div>
 
             <Typography
@@ -279,7 +276,7 @@ const Services = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            variants={service.align === 'left' ? fadeInLeft : fadeInRight}
+            variants={service.align === 'left' ? animationVariants.fadeInLeft : animationVariants.fadeInRight}
           >
             <Box sx={{ 
               mb: { xs: 12, md: 20 },
@@ -297,58 +294,32 @@ const Services = () => {
               }}>
                 {/* Image Section with Curved Frame */}
                 <Box sx={{ flex: 1, position: 'relative' }}>
-                  {/* Decorative floating icon - positioned outside the frame */}
-                  <motion.div
-                    animate={{
-                      y: [0, -15, 0],
-                      rotate: [0, 8, -8, 0],
-                      scale: [1, 1.05, 1]
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: [0.4, 0, 0.6, 1],
-                      times: [0, 0.5, 1]
-                    }}
-                 
-                    style={{
+                  {/* Simplified floating icon - removed heavy animations */}
+                  <Box
+                    sx={{
                       position: 'absolute',
                       top: 350,
                       left: '60%',
-                      translateX: '-50%',
+                      transform: 'translateX(-50%)',
                       zIndex: 100,
-                      willChange: 'transform'
+                      width: { xs: 80, md: 100 },
+                      height: { xs: 80, md: 100 },
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #ffffff 0%, #f8fffe 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '5px solid white',
+                      boxShadow: `0 15px 40px ${service.color}30`,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateX(-50%) scale(1.1)',
+                        boxShadow: `0 25px 60px ${service.color}50`
+                      }
                     }}
                   >
-                    <motion.div
-                      style={{
-                        width: window.innerWidth < 768 ? 80 : 100,
-                        height: window.innerWidth < 768 ? 80 : 100,
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #ffffff 0%, #f8fffe 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        border: '5px solid white',
-                        cursor: 'pointer',
-                        willChange: 'transform'
-                      }}
-                      animate={{
-                        boxShadow: [
-                          `0 15px 40px ${service.color}30`,
-                          `0 25px 60px ${service.color}50`,
-                          `0 15px 40px ${service.color}30`
-                        ]
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    >
-                      {service.icon}
-                    </motion.div>
-                  </motion.div>
+                    {service.icon}
+                  </Box>
 
                   <Box
                     sx={{
@@ -370,6 +341,7 @@ const Services = () => {
                       component="img"
                       src={service.image}
                       alt={service.title}
+                      loading="lazy" // Add lazy loading for better performance
                       sx={{
                         width: '100%',
                         height: { xs: 300, md: 400 },
@@ -387,7 +359,7 @@ const Services = () => {
                 {/* Content Section */}
                 <Box sx={{ flex: 1 }}>
                   <motion.div
-                    variants={scaleIn}
+                    variants={animationVariants.scaleIn}
                     whileInView="visible"
                     viewport={{ once: true }}
                   >
@@ -406,7 +378,7 @@ const Services = () => {
                           transition: 'width 0.4s ease'
                         }}
                       />
-                      <StarIcon sx={{ color: service.color, fontSize: 24 }} />
+                      <Star sx={{ color: service.color, fontSize: 24 }} />
                     </Box>
                   </motion.div>
 
@@ -487,6 +459,6 @@ const Services = () => {
       </Container>
     </Box>
   )
-}
+})
 
 export default Services
