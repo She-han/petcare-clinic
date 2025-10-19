@@ -158,6 +158,11 @@ const apiService = {
     approve: (id, approvedBy) => apiClient.put(`/testimonials/${id}/approve`, { approvedBy }),
     delete: (id) => apiClient.delete(`/testimonials/${id}`),
   },
+
+  // PayHere Payment API
+  payments: {
+    generateHash: (orderData) => apiClient.post('/payments/generate-hash', orderData),
+  },
 };
 
 export default apiService;

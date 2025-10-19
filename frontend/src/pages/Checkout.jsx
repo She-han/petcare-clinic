@@ -8,6 +8,11 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const Checkout = () => {
+
+    const handlePayNow = () => {
+
+    };
+
   const { user } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
@@ -130,6 +135,7 @@ const Checkout = () => {
       const shippingCost = Math.round(calculateShippingcost() * 100) / 100;
       const totalAmount = Math.round(calculateTotal() * 100) / 100;
       
+      // Step 1: Create order in database with PENDING status
       const orderPayload = {
         userId: user.id,
         cartItemIds: selectedItems,
@@ -155,21 +161,97 @@ const Checkout = () => {
       console.log('Creating order with payload:', orderPayload);
       
       const response = await apiService.orders.create(orderPayload);
+      const createdOrder = response.data;
       
-      console.log('Order created successfully:', response.data);
+      console.log('Order created successfully:', createdOrder);
       
-      // Show success message with order number if available
-      const orderNumber = response.data?.orderNumber || response.data?.id;
-      toast.success(`Order #${orderNumber} placed successfully!`, { duration: 4000 });
-      
-      // Navigate to success page with order details
-      navigate('/order-success', { 
-        state: { 
-          orderId: response.data?.id,
-          orderNumber: response.data?.orderNumber,
-          totalAmount: totalAmount
-        }
+      // Step 2: Generate PayHere hash from backend
+      const hashResponse = await apiService.payments.generateHash({
+        orderId: createdOrder.orderNumber,
+        amount: totalAmount.toFixed(2),
+        currency: "LKR"
       });
+      
+      console.log('Hash generated successfully:', hashResponse.data);
+      
+      // Step 3: Initialize PayHere payment with the created order
+      const payment = {
+        sandbox: true, // Test mode (Sandbox)
+        merchant_id: hashResponse.data.merchant_id, // Use merchant ID from backend
+        return_url: `${window.location.origin}/order-success`,
+        cancel_url: `${window.location.origin}/checkout`,
+        notify_url: undefined, // Remove notify_url for testing
+        
+        // Order details
+        order_id: createdOrder.orderNumber,
+        items: `PetCare Order #${createdOrder.orderNumber}`,
+        amount: totalAmount.toFixed(2),
+        currency: "LKR",
+        hash: hashResponse.data.hash, // Generated hash from backend
+        
+        // Customer details (required fields)
+        first_name: shippingDetails.fullName.split(' ')[0] || 'Test',
+        last_name: shippingDetails.fullName.split(' ').slice(1).join(' ') || 'User',
+        email: shippingDetails.email,
+        phone: shippingDetails.phone || '0771234567',
+        address: shippingDetails.address || 'Test Address',
+        city: shippingDetails.city || 'Colombo',
+        country: "Sri Lanka" // PayHere works best with "Sri Lanka"
+      };
+
+      // Debug: Log payment configuration
+      console.log('PayHere Payment Configuration:', {
+        ...payment,
+        merchant_id: payment.merchant_id,
+        amount: payment.amount,
+        currency: payment.currency,
+        sandbox: payment.sandbox,
+        hash: payment.hash ? 'Generated' : 'Missing'
+      });
+
+      // Step 4: Setup PayHere event handlers
+      window.payhere.onCompleted = function (orderId) {
+        console.log("Payment completed on frontend. OrderID:", orderId);
+        toast.success("Payment successful! Updating order status...");
+        
+        // Manually update order status since notification might not work in localhost
+        const updateOrderStatus = async () => {
+          try {
+            // Call your backend to confirm the order
+            await apiService.orders.updateStatus(createdOrder.id, 'CONFIRMED');
+            console.log("Order status updated to CONFIRMED");
+          } catch (error) {
+            console.error("Failed to update order status:", error);
+          }
+        };
+        
+        updateOrderStatus();
+        
+        // Navigate to success page
+        navigate('/order-success', { 
+          state: { 
+            orderId: createdOrder.id,
+            orderNumber: createdOrder.orderNumber,
+            totalAmount: totalAmount,
+            paymentCompleted: true
+          }
+        });
+      };
+
+      window.payhere.onDismissed = function () {
+        console.log("Payment dismissed by user.");
+        toast.error("Payment was cancelled.");
+        setLoading(false);
+      };
+
+      window.payhere.onError = function (error) {
+        console.log("PayHere Error:", error);
+        toast.error("Payment failed. Please try again.");
+        setLoading(false);
+      };
+
+      // Step 5: Start PayHere payment
+      window.payhere.startPayment(payment);
       
     } catch (error) {
       console.error('Checkout error:', error);
@@ -186,7 +268,6 @@ const Checkout = () => {
       } else {
         toast.error('Failed to place order. Please try again.');
       }
-    } finally {
       setLoading(false);
     }
   };
