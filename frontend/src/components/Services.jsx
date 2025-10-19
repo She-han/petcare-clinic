@@ -311,11 +311,47 @@ const Services = () => {
                 px: { xs: 2, md: 4 }
               }}>
                 {/* Image Section with Curved Frame */}
-                <Box sx={{ flex: 1 }}>
+                <Box sx={{ flex: 1, position: 'relative' }}>
+                  {/* Decorative floating icon - positioned outside the frame */}
+                  <motion.div
+                    animate={{
+                      y: [0, -10, 0],
+                      rotate: [0, 5, 0]
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    style={{
+                      position: 'absolute',
+                      top: 350,
+                      left: '60%',
+                      transform: 'translateX(-50%)',
+                      zIndex: 100
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: { xs: 80, md: 100 },
+                        height: { xs: 80, md: 100 },
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #ffffff 0%, #f8fffe 100%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: `0 15px 40px ${service.color}50`,
+                        border: '5px solid white'
+                      }}
+                    >
+                      {service.icon}
+                    </Box>
+                  </motion.div>
+
                   <Box
                     sx={{
                       position: 'relative',
-                      borderRadius: service.align === 'left' ? '40% 60% 60% 40% / 60% 40% 60% 40%' : '60% 40% 40% 60% / 40% 60% 40% 60%',
+                      borderRadius: service.align === 'left' ? '48% 52% 68% 32% / 42% 78% 22% 58%' : '100% 100% 100% 100% / 72% 24% 76% 28%',
                       overflow: 'hidden',
                       boxShadow: `0 20px 60px ${service.color}30`,
                       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -343,39 +379,6 @@ const Services = () => {
                         }
                       }}
                     />
-                    
-                    {/* Decorative floating icon */}
-                    <motion.div
-                      animate={{
-                        y: [0, -15, 0],
-                        rotate: [0, 10, 0]
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          top: -20,
-                          right: service.align === 'left' ? -20 : 'auto',
-                          left: service.align === 'right' ? -20 : 'auto',
-                          width: { xs: 70, md: 90 },
-                          height: { xs: 70, md: 90 },
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #ffffff 0%, #f8fffe 100%)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          boxShadow: `0 10px 30px ${service.color}40`,
-                          border: '4px solid white'
-                        }}
-                      >
-                        {service.icon}
-                      </Box>
-                    </motion.div>
                   </Box>
                 </Box>
 
