@@ -596,7 +596,7 @@ const UserProfile = () => {
                         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                           {/* Items */}
                           <div className="lg:col-span-2">
-                            <h4 className="flex items-center gap-2 mb-3 font-semibold text-gray-700">
+                            <h4 className="flex items-center gap-2 mb-3 font-semibold text-gray-600">
                               <FaBoxOpen className="w-4 h-4" />
                               Items ({order.orderItems?.length || 0})
                             </h4>
@@ -604,10 +604,10 @@ const UserProfile = () => {
                               <div className="space-y-2 overflow-y-auto max-h-32">
                                 {order.orderItems.map((item, index) => (
                                   <div key={index} className="flex items-center justify-between px-3 py-2 bg-green-100 border-gray-100 rounded-lg">
-                                    <span className="font-medium text-gray-700">
+                                    <span className="font-medium text-gray-600">
                                       {item.productName} × {item.quantity}
                                     </span>
-                                    <span className="font-semibold text-gray-800">
+                                    <span className="font-semibold text-gray-600">
                                       LKR {item.unitPrice*item.quantity?.toFixed(2)}
                                     </span>
                                   </div>
@@ -622,7 +622,7 @@ const UserProfile = () => {
                                     <span className="font-medium text-gray-700">
                                       Shipping Cost
                                     </span>
-                                    <span className="font-semibold text-gray-800">
+                                    <span className="font-semibold text-gray-600">
                                       LKR {order.shippingCost}
                                     </span>
                                   </div>
@@ -630,7 +630,20 @@ const UserProfile = () => {
                               </div>
                           </div>
 
-                          {/* Shipping Address */}
+                          <div className='grid lg:grid-rows-2'>
+                            <div>
+                              <h4 className="flex items-center gap-2 mb-3 font-semibold text-gray-700">
+                                <FaEnvelope className="w-4 h-4" />
+                                Payment Method
+                              </h4>
+                              <div className="p-3 bg-white border-gray-500 rounded-lg">
+                                <p className="text-sm leading-relaxed text-gray-700">
+                                  {order.paymentMethod}</p>
+                              </div>
+                            </div>
+
+                            <div>
+                               {/* Shipping Address */}
                           {order.shippingAddress && (   
                             <div>
                               <h4 className="flex items-center gap-2 mb-3 font-semibold text-gray-700">
@@ -640,9 +653,18 @@ const UserProfile = () => {
                               <div className="p-3 bg-white border-gray-500 rounded-lg">
                                 <p className="text-sm leading-relaxed text-gray-700">
                                   {order.shippingAddress}</p>
+                                <p className="text-sm leading-relaxed text-gray-700">
+                                  {order.shippingCity}</p>
+                               
                               </div>
                             </div>
+
+                            
                           )}
+                            </div>
+                          </div>
+                         
+
                         </div>
                       </motion.div>
                     ))}
