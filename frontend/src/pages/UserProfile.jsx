@@ -243,7 +243,7 @@ const UserProfile = () => {
           >
             {/* Profile Header */}
             <div className="mb-8 overflow-hidden bg-white shadow-xl rounded-2xl">
-              <div className="px-8 py-12 bg-gradient-to-r from-emerald-500 to-teal-600">
+              <div className="px-8 py-12 bg-gradient-to-r from-[#27AE60] to-[#2ECC71]">
                 <div className="flex flex-col items-center gap-6 md:flex-row">
                   <div className="relative">
                     <div className="flex items-center justify-center w-32 h-32 bg-white rounded-full shadow-lg">
@@ -432,7 +432,7 @@ const UserProfile = () => {
 
             {/* Appointments Section */}
             <div className="mb-8 overflow-hidden bg-white shadow-xl rounded-2xl">
-              <div className="px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600">
+              <div className="px-8 py-6 bg-gradient-to-r from-[#27AE60] to-[#2ECC71]">
                 <div className="flex items-center gap-3">
                   <FaCalendarAlt className="w-6 h-6 text-white" />
                   <h2 className="text-2xl font-bold text-white">My Appointments</h2>
@@ -525,7 +525,7 @@ const UserProfile = () => {
                         ) : (
                           <button
                             onClick={() => handleOpenTestimonialModal(appointment)}
-                            className="flex items-center justify-center w-full gap-2 py-3 font-semibold text-white transition-all duration-200 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl hover:from-emerald-600 hover:to-teal-700"
+                            className="flex items-center justify-center w-full gap-2 py-3 font-semibold text-white transition-all duration-200 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700"
                           >
                             <FaStar className="w-4 h-4" />
                             Rate Appointment
@@ -540,7 +540,7 @@ const UserProfile = () => {
 
             {/* Orders Section */}
             <div className="overflow-hidden bg-white shadow-xl rounded-2xl">
-              <div className="px-8 py-6 bg-gradient-to-r from-purple-500 to-pink-600">
+              <div className="px-8 py-6 bg-gradient-to-r from-[#27AE60] to-[#2ECC71]">
                 <div className="flex items-center gap-3">
                   <FaShoppingBag className="w-6 h-6 text-white" />
                   <h2 className="text-2xl font-bold text-white">My Orders</h2>
@@ -603,12 +603,12 @@ const UserProfile = () => {
                             {order.orderItems && order.orderItems.length > 0 ? (
                               <div className="space-y-2 overflow-y-auto max-h-32">
                                 {order.orderItems.map((item, index) => (
-                                  <div key={index} className="flex items-center justify-between px-3 py-2 bg-white border rounded-lg">
+                                  <div key={index} className="flex items-center justify-between px-3 py-2 bg-green-100 border-gray-100 rounded-lg">
                                     <span className="font-medium text-gray-700">
                                       {item.productName} × {item.quantity}
                                     </span>
                                     <span className="font-semibold text-gray-800">
-                                      LKR {item.price?.toFixed(2)}
+                                      LKR {item.unitPrice*item.quantity?.toFixed(2)}
                                     </span>
                                   </div>
                                 ))}
@@ -616,19 +616,30 @@ const UserProfile = () => {
                             ) : (
                               <p className="italic text-gray-500">No items available</p>
                             )}
+                            <div className="space-y-2 overflow-y-auto max-h-32">
+                                
+                                  <div className="flex items-center justify-between px-3 py-2 mt-2 bg-green-100 border-gray-100 rounded-lg">
+                                    <span className="font-medium text-gray-700">
+                                      Shipping Cost
+                                    </span>
+                                    <span className="font-semibold text-gray-800">
+                                      LKR {order.shippingCost}
+                                    </span>
+                                  </div>
+                                
+                              </div>
                           </div>
 
                           {/* Shipping Address */}
-                          {order.shippingAddress && (
+                          {order.shippingAddress && (   
                             <div>
                               <h4 className="flex items-center gap-2 mb-3 font-semibold text-gray-700">
                                 <FaMapMarkerAlt className="w-4 h-4" />
                                 Shipping Address
                               </h4>
-                              <div className="p-3 bg-white border rounded-lg">
+                              <div className="p-3 bg-white border-gray-500 rounded-lg">
                                 <p className="text-sm leading-relaxed text-gray-700">
-                                  {order.shippingAddress}
-                                </p>
+                                  {order.shippingAddress}</p>
                               </div>
                             </div>
                           )}

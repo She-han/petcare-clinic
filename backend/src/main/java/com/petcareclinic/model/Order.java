@@ -117,12 +117,12 @@ public class Order {
     // Constructors
     public Order() {}
 
-    public Order(Long userId, String orderNumber, BigDecimal subtotal, BigDecimal taxAmount, 
-                 BigDecimal totalAmount, String paymentMethod) {
+    public Order(Long userId, String orderNumber, BigDecimal subtotal, BigDecimal taxAmount, BigDecimal shippingCost, BigDecimal totalAmount, String paymentMethod) {
         this.userId = userId;
         this.orderNumber = orderNumber;
         this.subtotal = subtotal;
         this.taxAmount = taxAmount;
+        this.shippingCost = shippingCost;
         this.totalAmount = totalAmount;
         this.paymentMethod = paymentMethod;
         this.orderDate = LocalDateTime.now();

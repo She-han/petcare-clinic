@@ -56,6 +56,12 @@ public class OrderService {
             BigDecimal subtotal = new BigDecimal(orderData.get("subtotal").toString());
             BigDecimal taxAmount = new BigDecimal(orderData.get("taxAmount").toString());
             BigDecimal totalAmount = new BigDecimal(orderData.get("totalAmount").toString());
+            
+            // Handle shipping cost from payload
+            BigDecimal shippingCost = BigDecimal.ZERO;
+            if (orderData.containsKey("shippingCost") && orderData.get("shippingCost") != null) {
+                shippingCost = new BigDecimal(orderData.get("shippingCost").toString());
+            }
 
             // Generate unique order number
             String orderNumber = generateOrderNumber();
@@ -66,7 +72,7 @@ public class OrderService {
             order.setOrderNumber(orderNumber);
             order.setSubtotal(subtotal);
             order.setTaxAmount(taxAmount);
-            order.setShippingCost(BigDecimal.ZERO); // Free shipping for now
+            order.setShippingCost(shippingCost); // Use shipping cost from payload
             order.setTotalAmount(totalAmount);
             order.setPaymentMethod(paymentMethod);
             order.setStatus(OrderStatus.PENDING); // Initially PENDING until payment confirmation
