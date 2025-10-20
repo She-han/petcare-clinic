@@ -31,7 +31,7 @@ const Checkout = () => {
     city: user?.city || '',
     state: user?.state || '',
     zipCode: user?.zipCode || '',
-    country: user?.country || 'United States'
+    country: user?.country || 'Sri Lanka'
   });
 
   useEffect(() => {
@@ -85,10 +85,11 @@ const Checkout = () => {
     return calculateSubtotal() * 0; // 0% tax
   };
 
+  const totalQuantity = getSelectedItemsData().reduce((total, item) => {
+    return total + item.quantity;
+  }, 0);
+  
   const calculateShippingcost = () => {
-    const totalQuantity = getSelectedItemsData().reduce((total, item) => {
-      return total + item.quantity;
-    }, 0);
 
     if(totalQuantity <= 5){
       return 400;
@@ -274,29 +275,18 @@ const Checkout = () => {
 
   const paymentMethods = [
     {
-      id: 'card',
-      name: 'Credit/Debit Card',
+      id: 'online',
+      name: 'Online Payment',
       icon: '💳',
-      description: 'Visa, Mastercard, American Express'
+      description: 'Pay via credit/debit cards or online banking'
     },
     {
-      id: 'paypal',
-      name: 'PayPal',
-      icon: '🅿️',
-      description: 'Pay with your PayPal account'
+      id: 'cod',
+      name: 'Cash on Delivery',
+      icon: '💵',
+      description: 'Pay cash when you receive the product'
     },
-    {
-      id: 'apple',
-      name: 'Apple Pay',
-      icon: '🍎',
-      description: 'Touch ID or Face ID'
-    },
-    {
-      id: 'google',
-      name: 'Google Pay',
-      icon: '🎯',
-      description: 'Pay with Google'
-    }
+
   ];
 
   return (
@@ -448,7 +438,7 @@ const Checkout = () => {
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-1">
                   {paymentMethods.map((method) => (
                     <motion.div
                       key={method.id}
@@ -598,7 +588,7 @@ const Checkout = () => {
                     </div>
                   ) : (
                     <>
-                      🛒 Confirm Order - LKR {calculateTotal().toFixed(2)} ({selectedItems.length} items)
+                      🛒 Confirm Order - LKR {calculateTotal().toFixed(2)} ({totalQuantity} items)
                     </>
                   )}
                 </motion.button>
