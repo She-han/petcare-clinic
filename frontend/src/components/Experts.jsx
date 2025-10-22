@@ -71,102 +71,81 @@ const Experts = ({ limit }) => {
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={fadeIn}
-        className="relative w-full mb-16"
+        className="relative w-full mb-8 md:mb-16"
       >
-        {/* Content Container with Outline */}
-        <div className={`relative ${isLeft ? 'ml-0 mr-8' : 'mr-0 ml-8'}`}>
-          {/* Outline Border */}
-          <div className={`absolute inset-0 ${
-            isLeft 
-              ? 'rounded-r-full border-r-4 border-t-4 border-b-4 border-l-0' 
-              : 'rounded-l-full border-l-4 border-t-4 border-b-4 border-r-0'
-          } border-[#edf2fd]`}></div>
-          
-          {/* Content Background */}
-          <div className={`relative  ${
-            isLeft 
-              ? 'rounded-r-full pr-8 pl-4 mr-4' 
-              : 'rounded-l-full pl-8 pr-4 ml-4'
-          } py-8`}>
-            
-            <div className={`flex items-center gap-8 ${isLeft ? 'flex-row' : 'flex-row-reverse'}`}>
-              {/* Expert Image Circle */}
-              <div className="relative flex-shrink-0">
-                <div className="w-48 h-48 overflow-hidden border-4 border-white rounded-full shadow-lg">
-                  <img
-                    src={veterinarian.imageUrl || 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&h=300&fit=crop&crop=face'}
-                    alt={veterinarian.fullName}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                
-                {/* Rating badge */}
-                <div className="absolute p-2 bg-white border-2 border-gray-100 rounded-full shadow-md -top-2 -right-2">
-                  <div className="flex items-center gap-1">
-                    <StarIcon className="text-sm text-yellow-500" />
-                    <span className="text-xs font-semibold text-gray-700">
-                      {parseFloat(veterinarian.rating || 0).toFixed(1)}
-                    </span>
+        {/* Mobile Layout */}
+        <div className="block md:hidden">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            {/* Mobile Header with Image and Basic Info */}
+            <div className="relative">
+              <div className="h-48 bg-gradient-to-br from-emerald-50 to-blue-50 flex items-center justify-center">
+                <div className="relative">
+                  <div className="w-32 h-32 overflow-hidden border-4 border-white rounded-full shadow-lg">
+                    <img
+                      src={veterinarian.imageUrl || 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&h=300&fit=crop&crop=face'}
+                      alt={veterinarian.fullName}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  {/* Rating badge */}
+                  <div className="absolute -top-2 -right-2 bg-white border-2 border-gray-100 rounded-full shadow-md p-2">
+                    <div className="flex items-center gap-1">
+                      <StarIcon className="text-yellow-500 text-sm" />
+                      <span className="text-xs font-semibold text-gray-700">
+                        {parseFloat(veterinarian.rating || 0).toFixed(1)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Expert Details */}
-              <div className={`flex-1 ${isLeft ? 'text-left' : 'text-right'}`}>
-                {/* Name and Title */}
-                <div className="mb-4">
-                  <Typography
-                    variant="h4"
-                    className="mb-2 font-bold text-gray-800"
-                    sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
-                  >
-                    {veterinarian.fullName}
-                  </Typography>
-                  
-                  <div className={`flex items-center gap-2 mb-3 ${!isLeft ? 'justify-end' : ''}`}>
-                    <MedicalIcon className="text-lg text-green-600" />
-                    <Typography
-                      variant="h6"
-                      className="font-medium text-green-600"
-                      sx={{ fontSize: { xs: '1rem', md: '1.1rem' } }}
-                    >
-                      {veterinarian.specialization || 'General Practice'}
-                    </Typography>
-                  </div>
+            {/* Mobile Content */}
+            <div className="p-6">
+              {/* Name and Specialization */}
+              <div className="text-center mb-4">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                  {veterinarian.fullName}
+                </h3>
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <MedicalIcon className="text-emerald-600 text-lg" />
+                  <span className="text-emerald-600 font-medium">
+                    {veterinarian.specialization || 'General Practice'}
+                  </span>
                 </div>
+              </div>
 
-                {/* Stats Row */}
-                <div className={`flex flex-wrap gap-3 mb-4 ${!isLeft ? 'justify-end' : ''}`}>
-                  {/* Experience */}
-                  <div className="px-4 py-2 bg-white border border-gray-200 rounded-full shadow-sm">
-                    <div className="flex items-center gap-2">
-                      <ScheduleIcon className="text-sm text-gray-600" />
-                      <span className="text-sm font-medium text-gray-700">
-                        {veterinarian.yearsOfExperience || 0} Years
-                      </span>
-                    </div>
+              {/* Mobile Stats Grid */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-gray-50 rounded-lg p-3 text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <ScheduleIcon className="text-gray-600 text-sm" />
+                    <span className="text-xs text-gray-600">Experience</span>
                   </div>
-
-                  {/* Reviews */}
-                  <div className="px-4 py-2 bg-white border border-gray-200 rounded-full shadow-sm">
-                    <div className="flex items-center gap-2">
-                      <PersonIcon className="text-sm text-gray-600" />
-                      <span className="text-sm font-medium text-gray-700">
-                        {veterinarian.totalReviews || 0} Reviews
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Fee */}
-                  <div className="px-4 py-2 border border-green-200 rounded-full shadow-sm bg-green-50">
-                    <span className="text-sm font-semibold text-green-700">
-                      LKR {parseFloat(veterinarian.consultationFee || 0).toFixed(0)} / Visit
-                    </span>
-                  </div>
+                  <span className="text-sm font-semibold text-gray-800">
+                    {veterinarian.yearsOfExperience || 0} Years
+                  </span>
                 </div>
+                <div className="bg-gray-50 rounded-lg p-3 text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <PersonIcon className="text-gray-600 text-sm" />
+                    <span className="text-xs text-gray-600">Reviews</span>
+                  </div>
+                  <span className="text-sm font-semibold text-gray-800">
+                    {veterinarian.totalReviews || 0}
+                  </span>
+                </div>
+              </div>
 
-                {/* Rating */}
-                <div className={`flex items-center gap-3 mb-4 ${!isLeft ? 'justify-end' : ''}`}>
+              {/* Fee and Rating */}
+              <div className="mb-4">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 mb-3 text-center">
+                  <span className="text-emerald-700 font-semibold">
+                    LKR {parseFloat(veterinarian.consultationFee || 0).toFixed(0)} / Visit
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-center gap-2">
                   <Rating
                     value={parseFloat(veterinarian.rating) || 0}
                     precision={0.1}
@@ -178,42 +157,171 @@ const Experts = ({ limit }) => {
                       }
                     }}
                   />
-                  <Typography variant="body2" className="font-medium text-gray-600">
-                    ({veterinarian.totalReviews || 0} reviews)
-                  </Typography>
+                  <span className="text-sm text-gray-600">
+                    ({veterinarian.totalReviews || 0})
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-gray-600 text-sm leading-relaxed mb-4 text-center">
+                {veterinarian.bio || 'Experienced veterinarian dedicated to providing excellent care for your pets.'}
+              </p>
+
+              {/* Book Button */}
+              <button
+                onClick={() => handleBookAppointment(veterinarian)}
+                className="w-full bg-emerald-500 text-white py-3 rounded-xl font-semibold hover:bg-emerald-600 transition-colors duration-200 shadow-lg hover:shadow-xl"
+              >
+                Book Appointment
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden md:block">
+          <div className={`relative ${isLeft ? 'ml-0 mr-8' : 'mr-0 ml-8'}`}>
+            {/* Outline Border */}
+            <div className={`absolute inset-0 ${
+              isLeft 
+                ? 'rounded-r-full border-r-4 border-t-4 border-b-4 border-l-0' 
+                : 'rounded-l-full border-l-4 border-t-4 border-b-4 border-r-0'
+            } border-[#edf2fd]`}></div>
+            
+            {/* Content Background */}
+            <div className={`relative ${
+              isLeft 
+                ? 'rounded-r-full pr-8 pl-4 mr-4' 
+                : 'rounded-l-full pl-8 pr-4 ml-4'
+            } py-8`}>
+              
+              <div className={`flex items-center gap-8 ${isLeft ? 'flex-row' : 'flex-row-reverse'}`}>
+                {/* Expert Image Circle */}
+                <div className="relative flex-shrink-0">
+                  <div className="w-48 h-48 overflow-hidden border-4 border-white rounded-full shadow-lg">
+                    <img
+                      src={veterinarian.imageUrl || 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&h=300&fit=crop&crop=face'}
+                      alt={veterinarian.fullName}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  
+                  {/* Rating badge */}
+                  <div className="absolute p-2 bg-white border-2 border-gray-100 rounded-full shadow-md -top-2 -right-2">
+                    <div className="flex items-center gap-1">
+                      <StarIcon className="text-sm text-yellow-500" />
+                      <span className="text-xs font-semibold text-gray-700">
+                        {parseFloat(veterinarian.rating || 0).toFixed(1)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Description */}
-                <Typography
-                  variant="body1"
-                  className="!mb-4 leading-relaxed text-gray-600 "
-                  sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }}
-                >
-                  {veterinarian.bio || 'general practice'}.
-                </Typography>
+                {/* Expert Details */}
+                <div className={`flex-1 ${isLeft ? 'text-left' : 'text-right'}`}>
+                  {/* Name and Title */}
+                  <div className="mb-4">
+                    <Typography
+                      variant="h4"
+                      className="mb-2 font-bold text-gray-800"
+                      sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
+                    >
+                      {veterinarian.fullName}
+                    </Typography>
+                    
+                    <div className={`flex items-center gap-2 mb-3 ${!isLeft ? 'justify-end' : ''}`}>
+                      <MedicalIcon className="text-lg text-green-600" />
+                      <Typography
+                        variant="h6"
+                        className="font-medium text-green-600"
+                        sx={{ fontSize: { xs: '1rem', md: '1.1rem' } }}
+                      >
+                        {veterinarian.specialization || 'General Practice'}
+                      </Typography>
+                    </div>
+                  </div>
 
-                {/* Action Button */}
-                <Button
-                  variant="contained"
-                  size="medium"
-                  onClick={() => handleBookAppointment(veterinarian)}
-                  sx={{
-                    backgroundColor: '#2ECC71',
-                    color: 'white',
-                    borderRadius: '25px',
-                    px: 4,
-                    py: 1.5,
-                    fontWeight: 600,
-                    fontSize: { xs: '0.9rem', md: '1rem' },
-                    '&:hover': {
-                      backgroundColor: '#27AE60'
-                    },
-                    transition: 'background-color 0.3s ease',
-                    boxShadow: 'none'
-                  }}
-                >
-                  Book Appointment
-                </Button>
+                  {/* Stats Row */}
+                  <div className={`flex flex-wrap gap-3 mb-4 ${!isLeft ? 'justify-end' : ''}`}>
+                    {/* Experience */}
+                    <div className="px-4 py-2 bg-white border border-gray-200 rounded-full shadow-sm">
+                      <div className="flex items-center gap-2">
+                        <ScheduleIcon className="text-sm text-gray-600" />
+                        <span className="text-sm font-medium text-gray-700">
+                          {veterinarian.yearsOfExperience || 0} Years
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Reviews */}
+                    <div className="px-4 py-2 bg-white border border-gray-200 rounded-full shadow-sm">
+                      <div className="flex items-center gap-2">
+                        <PersonIcon className="text-sm text-gray-600" />
+                        <span className="text-sm font-medium text-gray-700">
+                          {veterinarian.totalReviews || 0} Reviews
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Fee */}
+                    <div className="px-4 py-2 border border-green-200 rounded-full shadow-sm bg-green-50">
+                      <span className="text-sm font-semibold text-green-700">
+                        LKR {parseFloat(veterinarian.consultationFee || 0).toFixed(0)} / Visit
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Rating */}
+                  <div className={`flex items-center gap-3 mb-4 ${!isLeft ? 'justify-end' : ''}`}>
+                    <Rating
+                      value={parseFloat(veterinarian.rating) || 0}
+                      precision={0.1}
+                      readOnly
+                      size="small"
+                      sx={{
+                        '& .MuiRating-iconFilled': {
+                          color: '#F59E0B'
+                        }
+                      }}
+                    />
+                    <Typography variant="body2" className="font-medium text-gray-600">
+                      ({veterinarian.totalReviews || 0} reviews)
+                    </Typography>
+                  </div>
+
+                  {/* Description */}
+                  <Typography
+                    variant="body1"
+                    className="!mb-4 leading-relaxed text-gray-600"
+                    sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }}
+                  >
+                    {veterinarian.bio || 'Experienced veterinarian dedicated to providing excellent care for your pets.'}.
+                  </Typography>
+
+                  {/* Action Button */}
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    onClick={() => handleBookAppointment(veterinarian)}
+                    sx={{
+                      backgroundColor: '#2ECC71',
+                      color: 'white',
+                      borderRadius: '25px',
+                      px: 4,
+                      py: 1.5,
+                      fontWeight: 600,
+                      fontSize: { xs: '0.9rem', md: '1rem' },
+                      '&:hover': {
+                        backgroundColor: '#27AE60'
+                      },
+                      transition: 'background-color 0.3s ease',
+                      boxShadow: 'none'
+                    }}
+                  >
+                    Book Appointment
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
