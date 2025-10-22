@@ -13,7 +13,7 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <Hero/>
+     
       <Services/>
       <Experts limit={3}/>
       <Products/>

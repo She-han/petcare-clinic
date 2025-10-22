@@ -3,6 +3,7 @@ package com.petcareclinic.service;
 import com.petcareclinic.model.User;
 import com.petcareclinic.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -44,22 +45,38 @@ public class UserService {
 
     public Optional<User> loginUser(String usernameOrEmail, String password) {
         try {
+            System.out.println("UserService: Looking up user: " + usernameOrEmail);
             Optional<User> userOptional = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
 
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-
-                // Simple password comparison (in production, use proper password hashing)
-                if (password.equals(user.getPasswordHash())) {
+                System.out.println("UserService: User found: " + user.getUsername());
+                System.out.println("UserService: Stored hash: " + user.getPasswordHash());
+                System.out.println("UserService: Input password: " + password);
+                
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                
+                // Verify password using BCrypt matches method
+                // This compares the plain password with the stored hash
+                boolean passwordMatches = encoder.matches(password, user.getPasswordHash());
+                System.out.println("UserService: Password matches: " + passwordMatches);
+                
+                if (passwordMatches) {
+                    System.out.println("UserService: Login successful for user: " + user.getUsername());
                     // Update last login
                     user.setLastLogin(LocalDateTime.now());
                     userRepository.save(user);
                     return Optional.of(user);
+                } else {
+                    System.out.println("UserService: Password verification failed");
                 }
+            } else {
+                System.out.println("UserService: User not found: " + usernameOrEmail);
             }
 
             return Optional.empty();
         } catch (Exception e) {
+            System.err.println("UserService: Login error: " + e.getMessage());
             e.printStackTrace();
             return Optional.empty();
         }

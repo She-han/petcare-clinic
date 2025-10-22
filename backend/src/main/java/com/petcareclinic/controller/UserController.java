@@ -5,6 +5,8 @@ import com.petcareclinic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -54,16 +56,25 @@ public class UserController {
                 return ResponseEntity.badRequest().body(response);
             }
 
+            // Hash the password using BCrypt
+            PasswordEncoder encoder = new BCryptPasswordEncoder(12); // cost factor = 12
+            String hashedPassword = encoder.encode(password);
+
+            System.out.println("Original password: " + password);
+            System.out.println("Hashed password: " + hashedPassword);
+            System.out.println("Hash verification test: " + encoder.matches(password, hashedPassword));
+
             // Create new user
             User user = new User();
             user.setUsername(username);
             user.setEmail(email);
             user.setFirstName(firstName);
             user.setLastName(lastName);
-            user.setPasswordHash(password); // In production, hash the password
+            user.setPasswordHash(hashedPassword); // Store the hashed password
             user.setRole("USER");
 
             User registeredUser = userService.registerUser(user);
+            System.out.println("User registered with hashed password: " + registeredUser.getPasswordHash());
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -107,6 +118,9 @@ public class UserController {
                 return ResponseEntity.badRequest().body(response);
             }
 
+            System.out.println("Attempting login for: " + usernameOrEmail);
+            System.out.println("Password received: " + password);
+            
             Optional<User> userOptional = userService.loginUser(usernameOrEmail, password);
 
             if (userOptional.isPresent()) {
