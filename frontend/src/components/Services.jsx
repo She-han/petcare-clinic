@@ -79,7 +79,8 @@ const Services = memo(() => {
 
       width: {xs:'95%',md:'90%'}, 
       mx: 'auto',
-      overflow: 'hidden',
+      
+      overflow: 'visible',
       borderRadius: 12,
       
       py: { xs: 8, md: 12 }
@@ -328,7 +329,7 @@ const Services = memo(() => {
                       overflow: 'hidden',
                       boxShadow: `0 20px 60px ${service.color}30`,
                       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      maxWidth: { xs: '100%', md: 500 },
+                      maxWidth: { xs: '100%', md: 600 },
                       mx: 'auto',
                       willChange: 'transform, box-shadow',
                       '&:hover': {
@@ -402,7 +403,7 @@ const Services = memo(() => {
                       fontSize: { xs: '1rem', md: '1.15rem' },
                       lineHeight: 2,
                       mb: 4,
-                      textAlign: 'justify'
+                      textAlign: 'left'
                     }}
                   >
                     {service.description}
