@@ -77,7 +77,7 @@ const Services = memo(() => {
   return (
     <Box sx={{ 
 
-      width: {xs:'95%',md:'90%'}, 
+      width: {xs:'95%',lg:'90%'}, 
       mx: 'auto',
       
       overflow: 'visible',
