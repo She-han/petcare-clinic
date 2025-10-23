@@ -12,6 +12,22 @@ export default function Appointments() {
         >
           View All Appointments
         </button>
+        <button
+          type="button"
+          className="inline-flex items-center px-6 py-3 text-white transition rounded-md shadow bg-accent hover:opacity-90"
+          onClick={() => (window.location.href = '/appointments/new')}
+          aria-label="Book a new appointment"
+        >
+          Book a New Appointment
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center px-6 py-3 text-white transition rounded-md shadow bg-accent hover:opacity-90"
+          onClick={() => (window.location.href = '/appointments/my')}
+          aria-label="View my appointments"
+        >
+          View My Appointments
+        </button>
       </div>
     </div>
   );
