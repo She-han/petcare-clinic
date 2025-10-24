@@ -28,6 +28,65 @@ export default function Appointments() {
         >
           View My Appointments
         </button>
+        <button
+          type="button"
+          className="inline-flex items-center px-6 py-3 text-white transition rounded-md shadow bg-accent hover:opacity-90"
+          onClick={() => (window.location.href = '/appointments/my')}
+          aria-label="View my appointments"
+        >
+          View My Appointments
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center px-6 py-3 text-white transition rounded-md shadow bg-accent hover:opacity-90"
+          onClick={() => (window.location.href = '/appointments/my')}
+          aria-label="View my appointments"
+        >
+          View My Appointments
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center px-6 py-3 text-white transition rounded-md shadow bg-accent hover:opacity-90"
+          onClick={() => (window.location.href = '/appointments/my')}
+          aria-label="View my appointments"
+        >
+          View My Appointments
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center px-6 py-3 text-white transition rounded-md shadow bg-accent hover:opacity-90"
+          onClick={() => (window.location.href = '/appointments/my')}
+          aria-label="View my appointments"
+        >
+          View My Appointments
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center px-6 py-3 text-white transition rounded-md shadow bg-accent hover:opacity-90"
+          onClick={() => (window.location.href = '/appointments/my')}
+          aria-label="View my appointments"
+        >
+          View My Appointments
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center px-6 py-3 text-white transition rounded-md shadow bg-accent hover:opacity-90"
+          onClick={() => (window.location.href = '/appointments/my')}
+          aria-label="View my appointments"
+        >
+          View My Appointments
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center px-6 py-3 text-white transition rounded-md shadow bg-accent hover:opacity-90"
+          onClick={() => (window.location.href = '/appointments/my')}
+          aria-label="View my appointments"
+        >
+          View My Appointments
+        </button>
+        <div>
+          
+        </div>
       </div>
     </div>
   );
